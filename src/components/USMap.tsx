@@ -12,37 +12,36 @@ interface USMapProps {
 
 // City coordinates as percentages of the map image
 // Based on the provided dark map.webp showing US with city labels
-// Adjusted for better visibility with scaled map
 const CITY_COORDINATES: Record<string, { x: number; y: number }> = {
-  // California - shifted right for visibility
-  'ca-sf': { x: 10, y: 42 },
-  'ca-oak': { x: 11, y: 44 },
-  'ca-sj': { x: 11, y: 48 },
-  'ca-la': { x: 14, y: 58 },
-  'ca-sd': { x: 16, y: 64 },
+  // California - on the coast
+  'ca-sf': { x: 4, y: 46 },
+  'ca-oak': { x: 5, y: 48 },
+  'ca-sj': { x: 5, y: 51 },
+  'ca-la': { x: 8, y: 64 },
+  'ca-sd': { x: 10, y: 70 },
   // Nevada
-  'nv-vegas': { x: 20, y: 52 },
+  'nv-vegas': { x: 14, y: 58 },
   // Arizona
-  'az-phoenix': { x: 26, y: 62 },
-  'az-mesa-tempe': { x: 27, y: 64 },
+  'az-phoenix': { x: 20, y: 66 },
+  'az-mesa-tempe': { x: 21, y: 68 },
   // Texas
-  'tx-austin': { x: 50, y: 72 },
-  'tx-dallas': { x: 52, y: 64 },
-  'tx-houston': { x: 56, y: 74 },
-  'tx-san-antonio': { x: 48, y: 76 },
+  'tx-austin': { x: 47, y: 76 },
+  'tx-dallas': { x: 50, y: 68 },
+  'tx-houston': { x: 54, y: 78 },
+  'tx-san-antonio': { x: 45, y: 80 },
   // Colorado
-  'co-denver': { x: 36, y: 40 },
+  'co-denver': { x: 32, y: 44 },
   // Illinois
-  'il-chicago': { x: 68, y: 32 },
+  'il-chicago': { x: 65, y: 36 },
   // Florida
-  'fl-miami': { x: 88, y: 88 },
-  'fl-tampa': { x: 84, y: 80 },
-  'fl-orlando': { x: 85, y: 76 },
-  'fl-jacksonville': { x: 83, y: 68 },
+  'fl-miami': { x: 85, y: 92 },
+  'fl-tampa': { x: 82, y: 84 },
+  'fl-orlando': { x: 83, y: 80 },
+  'fl-jacksonville': { x: 81, y: 72 },
   // Other cities
-  'ma-boston': { x: 94, y: 22 },
-  'ny-brooklyn': { x: 92, y: 28 },
-  'ny-queens': { x: 92, y: 26 },
+  'ma-boston': { x: 92, y: 26 },
+  'ny-brooklyn': { x: 90, y: 32 },
+  'ny-queens': { x: 90, y: 30 },
 };
 
 export function USMap({ states, onCityClick }: USMapProps) {
