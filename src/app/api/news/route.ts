@@ -1,13 +1,5 @@
 import { NextResponse } from 'next/server';
 
-interface NewsAPIArticle {
-  title: string;
-  source: { name: string };
-  url: string;
-  publishedAt: string;
-  description: string | null;
-}
-
 interface NewsItem {
   id: string;
   title: string;
@@ -17,12 +9,64 @@ interface NewsItem {
   snippet?: string;
 }
 
-// Cache news for 15 minutes to avoid rate limiting
+// Cache news for 15 minutes
 let cachedNews: NewsItem[] | null = null;
 let cacheTimestamp: number = 0;
 const CACHE_DURATION = 15 * 60 * 1000; // 15 minutes
 
-const NEWS_API_KEY = process.env.NEWS_API_KEY || '75d8b37e8cfd432ab7d80405536d19cf';
+// Parse Google News RSS feed
+function parseRSS(xml: string): NewsItem[] {
+  const items: NewsItem[] = [];
+  const itemRegex = /<item>([\s\S]*?)<\/item>/g;
+  let match;
+  let index = 0;
+
+  while ((match = itemRegex.exec(xml)) !== null && index < 20) {
+    const itemXml = match[1];
+
+    const titleMatch = itemXml.match(/<title><!\[CDATA\[(.*?)\]\]><\/title>|<title>(.*?)<\/title>/);
+    const linkMatch = itemXml.match(/<link>(.*?)<\/link>/);
+    const pubDateMatch = itemXml.match(/<pubDate>(.*?)<\/pubDate>/);
+    const sourceMatch = itemXml.match(/<source.*?>(.*?)<\/source>/);
+
+    if (titleMatch && linkMatch) {
+      const title = (titleMatch[1] || titleMatch[2] || '').trim();
+      const url = linkMatch[1].trim();
+
+      // Skip if title contains common spam patterns
+      if (title.includes('[Removed]') || !title) continue;
+
+      // Extract source from title if not in source tag (Google News format: "Title - Source")
+      let source = sourceMatch ? sourceMatch[1].trim() : '';
+      if (!source && title.includes(' - ')) {
+        const parts = title.split(' - ');
+        source = parts[parts.length - 1];
+      }
+
+      // Parse date
+      let date = new Date().toISOString().split('T')[0];
+      if (pubDateMatch) {
+        try {
+          date = new Date(pubDateMatch[1]).toISOString().split('T')[0];
+        } catch {
+          // Keep default date
+        }
+      }
+
+      items.push({
+        id: `news-${index}-${Date.now()}`,
+        title: title.replace(/ - [^-]+$/, ''), // Remove source from title
+        source: source || 'News',
+        url,
+        date,
+      });
+
+      index++;
+    }
+  }
+
+  return items;
+}
 
 export async function GET() {
   // Return cached data if still valid
@@ -31,43 +75,28 @@ export async function GET() {
   }
 
   try {
-    // Search for Tesla robotaxi news
+    // Fetch from Google News RSS - search for Tesla robotaxi news
+    const searchQuery = encodeURIComponent('tesla robotaxi OR tesla FSD autonomous');
     const response = await fetch(
-      `https://newsapi.org/v2/everything?q=tesla+robotaxi+OR+tesla+FSD+OR+tesla+autonomous&sortBy=publishedAt&language=en&pageSize=20&apiKey=${NEWS_API_KEY}`,
+      `https://news.google.com/rss/search?q=${searchQuery}&hl=en-US&gl=US&ceid=US:en`,
       {
         headers: {
-          'User-Agent': 'ShadowMode/1.0',
+          'User-Agent': 'Mozilla/5.0 (compatible; ShadowMode/1.0)',
         },
-        next: { revalidate: 900 }, // 15 minutes
+        next: { revalidate: 900 },
       }
     );
 
     if (!response.ok) {
-      throw new Error(`NewsAPI error: ${response.status}`);
+      throw new Error(`Google News RSS error: ${response.status}`);
     }
 
-    const data = await response.json();
+    const xml = await response.text();
+    const articles = parseRSS(xml);
 
-    if (data.status !== 'ok') {
-      throw new Error(data.message || 'NewsAPI returned error');
+    if (articles.length === 0) {
+      throw new Error('No articles parsed from RSS');
     }
-
-    // Transform to our format
-    const articles: NewsItem[] = data.articles
-      .filter((article: NewsAPIArticle) =>
-        article.title &&
-        article.url &&
-        !article.title.includes('[Removed]') &&
-        article.source?.name
-      )
-      .map((article: NewsAPIArticle, index: number) => ({
-        id: `news-${index}-${Date.now()}`,
-        title: article.title,
-        source: article.source.name,
-        url: article.url,
-        date: article.publishedAt.split('T')[0],
-        snippet: article.description || undefined,
-      }));
 
     // Cache the results
     cachedNews = articles;
@@ -75,7 +104,7 @@ export async function GET() {
 
     return NextResponse.json({ articles, cached: false });
   } catch (error) {
-    console.error('News API error:', error);
+    console.error('News RSS error:', error);
 
     // Return cached data if available, even if expired
     if (cachedNews) {
