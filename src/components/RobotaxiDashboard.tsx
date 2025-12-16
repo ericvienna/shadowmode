@@ -14,7 +14,6 @@ import { TimelineView } from './TimelineView';
 import { CityModal } from './CityModal';
 import { CompareModal } from './CompareModal';
 import { FilterSort, type SortOption, type SortDirection, type FilterOption } from './FilterSort';
-import { Confetti } from './Confetti';
 import { getCityProgress } from '@/lib/utils';
 import {
   Car,
@@ -39,25 +38,9 @@ export function RobotaxiDashboard({ data }: RobotaxiDashboardProps) {
   const [selectedCity, setSelectedCity] = useState<City | null>(null);
   const [selectedState, setSelectedState] = useState<State | null>(null);
   const [showCompare, setShowCompare] = useState(false);
-  const [showConfetti, setShowConfetti] = useState(false);
   const [sortOption, setSortOption] = useState<SortOption>('progress');
   const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
   const [filterOption, setFilterOption] = useState<FilterOption>('all');
-
-  // Check for driverless achievement and trigger confetti
-  useEffect(() => {
-    const hasDriverless = data.states.some(state =>
-      state.cities.some(city => city.milestones.no_safety_monitor.status === 'completed')
-    );
-    if (hasDriverless) {
-      // Only show confetti once per session
-      const shown = sessionStorage.getItem('confetti-shown');
-      if (!shown) {
-        setShowConfetti(true);
-        sessionStorage.setItem('confetti-shown', 'true');
-      }
-    }
-  }, [data.states]);
 
   // Filter and sort states/cities
   const processedStates = useMemo(() => {
@@ -138,9 +121,6 @@ export function RobotaxiDashboard({ data }: RobotaxiDashboardProps) {
 
   return (
     <div className="min-h-screen bg-black">
-      {/* Confetti Effect */}
-      <Confetti trigger={showConfetti} onComplete={() => setShowConfetti(false)} />
-
       {/* Header */}
       <header className="bg-black/80 backdrop-blur border-b border-neutral-800 sticky top-0 z-50">
         <div className="w-full px-3 sm:px-4 lg:px-6 py-3">
