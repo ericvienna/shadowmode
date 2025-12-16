@@ -61,10 +61,10 @@ export function ProgressMatrix({ states }: ProgressMatrixProps) {
   };
 
   return (
-    <div className="bg-neutral-950 border border-neutral-800 rounded-xl" style={{ overflow: 'visible' }}>
-      <div className="overflow-x-auto" style={{ overflow: 'visible', overflowX: 'auto' }}>
-        <table className="w-full border-collapse"  style={{ overflow: 'visible' }}>
-          <thead className="bg-black sticky top-[52px] sm:top-[56px] z-30">
+    <div className="bg-neutral-950 border border-neutral-800 rounded-xl overflow-hidden">
+      <div className="overflow-x-auto max-h-[70vh] sm:max-h-none overflow-y-auto sm:overflow-y-visible">
+        <table className="w-full border-collapse">
+          <thead className="bg-black sticky top-0 z-30">
             <tr>
               <th className="px-2 sm:px-3 py-2 text-left text-[10px] font-medium text-neutral-400 uppercase border-b border-r border-neutral-800 w-[140px] sm:w-[180px] min-w-[140px] sm:min-w-[180px] max-w-[140px] sm:max-w-[180px] sticky left-0 bg-black z-40">
                 Location
