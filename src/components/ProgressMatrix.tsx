@@ -66,7 +66,7 @@ export function ProgressMatrix({ states }: ProgressMatrixProps) {
         <table className="w-full border-collapse"  style={{ overflow: 'visible' }}>
           <thead className="bg-black/50 sticky top-0 z-10">
             <tr>
-              <th className="px-3 py-2 text-left text-[10px] font-medium text-neutral-400 uppercase border-b border-r border-neutral-800 min-w-[180px] sticky left-0 bg-black/90 z-20">
+              <th className="px-3 py-2 text-left text-[10px] font-medium text-neutral-400 uppercase border-b border-r border-neutral-800 min-w-[100px] sm:min-w-[180px] sticky left-0 bg-black/90 z-20">
                 Location
               </th>
               {MILESTONE_DEFINITIONS.map(def => (
