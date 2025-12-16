@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Newspaper, ExternalLink, RefreshCw, Rss } from 'lucide-react';
 
 interface NewsItem {
@@ -12,154 +12,6 @@ interface NewsItem {
   snippet?: string;
 }
 
-// Real news data with verified article links
-const REAL_NEWS: NewsItem[] = [
-  {
-    id: '1',
-    title: 'Tesla Starts Testing Robotaxis in Austin With No Safety Driver',
-    source: 'TechCrunch',
-    url: 'https://techcrunch.com/2025/12/15/tesla-starts-testing-robotaxis-in-austin-with-no-safety-driver/',
-    date: '2025-12-15',
-    snippet: 'Tesla is now letting robotaxis drive around Austin with no safety monitor onboard, a major milestone for FSD Unsupervised...',
-  },
-  {
-    id: '2',
-    title: 'Empty Tesla Robotaxis Spotted Driving Autonomously in Austin',
-    source: 'NotATeslaApp',
-    url: 'https://www.notateslaapp.com/news/3424/empty-tesla-robotaxis-spotted-driving-autonomously-in-austin-video',
-    date: '2025-12-14',
-    snippet: 'Tesla Model Y with zero occupants spotted navigating public roads in Austin, Texas...',
-  },
-  {
-    id: '3',
-    title: 'Tesla Robotaxi Goes Driverless as Musk Confirms Safety Monitor Removal',
-    source: 'Teslarati',
-    url: 'https://www.teslarati.com/tesla-starts-robotaxi-testing-without-any-vehicle-occupants/',
-    date: '2025-12-13',
-    snippet: 'Testing begins just a week after Musk confirmed Tesla would remove Safety Monitors from vehicles...',
-  },
-  {
-    id: '4',
-    title: 'Tesla Is Finally Letting Robotaxis Drive Solo In Austin',
-    source: 'InsideEVs',
-    url: 'https://insideevs.com/news/781782/tesla-removes-robotaxi-model-y-safety-driver-testing/',
-    date: '2025-12-12',
-    snippet: 'Six months after starting testing, Tesla removes safety monitors from its robotaxi fleet...',
-  },
-  {
-    id: '5',
-    title: 'Tesla to Launch Larger FSD Model After the Holidays',
-    source: 'NotATeslaApp',
-    url: 'https://www.notateslaapp.com/news/3417/tesla-to-launch-a-larger-fsd-model-after-the-holidays-will-remove-robotaxi-safety-monitors-in-three-weeks',
-    date: '2025-12-10',
-    snippet: 'New FSD model an order of magnitude larger, introducing reasoning and advanced learning capabilities...',
-  },
-  {
-    id: '6',
-    title: 'Musk Slashes Tesla Robotaxi Fleet Goal from 500 to ~60 in Austin',
-    source: 'Electrek',
-    url: 'https://electrek.co/2025/11/26/elon-musk-slashes-tesla-robotaxi-fleet-goal-austin/',
-    date: '2025-11-26',
-    snippet: 'Tesla will "roughly double" its Austin fleet next month as riders report long wait times...',
-  },
-  {
-    id: '7',
-    title: 'Tesla to Begin Cybercab Production in April, Musk Claims',
-    source: 'TechCrunch',
-    url: 'https://techcrunch.com/2025/11/06/tesla-to-begin-cybercab-production-in-april-musk-claims/',
-    date: '2025-11-06',
-    snippet: 'Purpose-built robotaxi without steering wheel or pedals to start production at Texas factory...',
-  },
-  {
-    id: '8',
-    title: 'NHTSA Opens New Investigation Into Tesla Full Self-Driving',
-    source: 'Road & Track',
-    url: 'https://www.roadandtrack.com/news/a68987045/tesla-full-self-driving-system-nhtsa-federal-investigation/',
-    date: '2025-10-09',
-    snippet: 'Investigation covers 2.9 million vehicles after reports of traffic violations and crashes...',
-  },
-  {
-    id: '9',
-    title: 'Tesla FSD Under Investigation for Traffic Safety Violations',
-    source: 'TechCrunch',
-    url: 'https://techcrunch.com/2025/10/09/teslas-full-self-driving-software-under-investigation-for-traffic-safety-violations/',
-    date: '2025-10-09',
-    snippet: 'NHTSA probing more than 50 reports of traffic violations including running red lights...',
-  },
-  {
-    id: '10',
-    title: 'Tesla Releases FSD v14, First Major Update in a Year',
-    source: 'Electrek',
-    url: 'https://electrek.co/2025/10/07/tesla-fsd-v14-release-notes/',
-    date: '2025-10-07',
-    snippet: 'FSD v14 brings learnings from Robotaxi program to consumer vehicles with improved navigation...',
-  },
-  {
-    id: '11',
-    title: 'Tesla Robotaxi to Expand Austin Coverage, Bay Area Launch Targeted',
-    source: 'Teslarati',
-    url: 'https://www.teslarati.com/tesla-robotaxi-to-expand-austin-coverage-bay-area-launch-targeted-in-coming-months/',
-    date: '2025-09-15',
-    snippet: 'Tesla aims for 500 robotaxis in Austin, 1,000 in Bay Area by end of 2025...',
-  },
-  {
-    id: '12',
-    title: 'California Robotaxis: Tesla Gets First Permit for Robotaxi Plans',
-    source: 'Autoblog',
-    url: 'https://www.autoblog.com/news/tesla-receives-first-round-of-permits-to-operate-robotaxis-in-california',
-    date: '2025-03-19',
-    snippet: 'CPUC grants Tesla transportation charter-party carrier permit as first step toward robotaxi service...',
-  },
-  {
-    id: '13',
-    title: 'What Tesla Can and Can\'t Do With Its New California Permit',
-    source: 'TechCrunch',
-    url: 'https://techcrunch.com/2025/03/18/what-tesla-can-and-cant-do-in-california-with-its-new-passenger-transportation-permit/',
-    date: '2025-03-18',
-    snippet: 'TCP permit allows employee transport but doesn\'t authorize autonomous ride-hailing yet...',
-  },
-  {
-    id: '14',
-    title: 'Tesla Launches Robotaxi Rides in Austin With Big Promises',
-    source: 'TechCrunch',
-    url: 'https://techcrunch.com/2025/06/22/tesla-launches-robotaxi-rides-in-austin-with-big-promises-and-unanswered-questions/',
-    date: '2025-06-22',
-    snippet: 'Service launches in limited capacity in South Austin with Model Y SUVs and safety monitors...',
-  },
-  {
-    id: '15',
-    title: 'Tesla\'s Paid Robotaxi Service Is Starting Small but Having Issues',
-    source: 'Car and Driver',
-    url: 'https://www.caranddriver.com/news/a63632919/tesla-robotaxi-paid-service-start-austin-texas/',
-    date: '2025-06-25',
-    snippet: 'Initial fleet of about ten Model Y SUVs operating in narrowly defined area of Austin...',
-  },
-  {
-    id: '16',
-    title: 'Tesla Begins FSD Supervised Ride-Hail Tests With Employees',
-    source: 'TechCrunch',
-    url: 'https://techcrunch.com/2025/04/23/tesla-begins-fsd-supervised-ride-hail-tests-with-employees-in-austin-bay-area/',
-    date: '2025-04-23',
-    snippet: 'Over 1,500 trips and 15,000 miles completed in Austin and San Francisco Bay Area...',
-  },
-  {
-    id: '17',
-    title: 'Tesla\'s Cybercab Robotaxi: Everything To Know About the Reveal',
-    source: 'MotorTrend',
-    url: 'https://www.motortrend.com/news/tesla-robotaxi-first-look-review',
-    date: '2024-10-11',
-    snippet: 'Cybercab unveiled at "We, Robot" event with no steering wheel or pedals, expected under $30,000...',
-  },
-  {
-    id: '18',
-    title: 'Tesla Robotaxi Service Launches in Austin With Safety Drivers',
-    source: 'KVUE',
-    url: 'https://www.kvue.com/article/money/cars/austin-tesla-robotaxi-launch/269-9d0118a0-a22a-486e-ac6c-a23b84e45d33',
-    date: '2025-06-22',
-    snippet: 'Tesla\'s highly anticipated robotaxi service begins operating in Austin, Texas...',
-  },
-];
-
 interface NewsFeedProps {
   maxItems?: number;
 }
@@ -169,35 +21,38 @@ export function NewsFeed({ maxItems = 5 }: NewsFeedProps) {
   const [isLoading, setIsLoading] = useState(true);
   const [lastRefresh, setLastRefresh] = useState<Date | null>(null);
   const [mounted, setMounted] = useState(false);
+  const [isLive, setIsLive] = useState(false);
+
+  const fetchNews = useCallback(async () => {
+    setIsLoading(true);
+    try {
+      const response = await fetch('/api/news');
+      if (response.ok) {
+        const data = await response.json();
+        if (data.articles && data.articles.length > 0) {
+          setNews(data.articles.slice(0, maxItems));
+          setIsLive(true);
+        }
+      }
+    } catch (error) {
+      console.error('Failed to fetch news:', error);
+    } finally {
+      setIsLoading(false);
+      setLastRefresh(new Date());
+    }
+  }, [maxItems]);
 
   useEffect(() => {
     setMounted(true);
-    // Load news data
-    const fetchNews = async () => {
-      setIsLoading(true);
-      // Sort by date (newest first) and slice
-      const sortedNews = [...REAL_NEWS].sort((a, b) =>
-        new Date(b.date).getTime() - new Date(a.date).getTime()
-      );
-      await new Promise(resolve => setTimeout(resolve, 300));
-      setNews(sortedNews.slice(0, maxItems));
-      setIsLoading(false);
-      setLastRefresh(new Date());
-    };
-
     fetchNews();
-  }, [maxItems]);
+
+    // Auto-refresh every 15 minutes
+    const interval = setInterval(fetchNews, 15 * 60 * 1000);
+    return () => clearInterval(interval);
+  }, [fetchNews]);
 
   const refresh = () => {
-    setIsLoading(true);
-    setTimeout(() => {
-      const sortedNews = [...REAL_NEWS].sort((a, b) =>
-        new Date(b.date).getTime() - new Date(a.date).getTime()
-      );
-      setNews(sortedNews.slice(0, maxItems));
-      setIsLoading(false);
-      setLastRefresh(new Date());
-    }, 300);
+    fetchNews();
   };
 
   const getSourceColor = (source: string) => {
@@ -239,6 +94,9 @@ export function NewsFeed({ maxItems = 5 }: NewsFeedProps) {
         <div className="flex items-center gap-2">
           <Newspaper className="w-4 h-4 text-blue-500" />
           <h3 className="text-white text-xs font-semibold">Latest News</h3>
+          {isLive && (
+            <span className="text-[8px] text-green-500 animate-pulse">Live</span>
+          )}
         </div>
         <button
           onClick={refresh}
