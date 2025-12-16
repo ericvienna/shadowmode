@@ -66,7 +66,7 @@ export function ProgressMatrix({ states }: ProgressMatrixProps) {
         <table className="w-full border-collapse"  style={{ overflow: 'visible' }}>
           <thead className="bg-black/50 sticky top-0 z-10">
             <tr>
-              <th className="px-3 py-2 text-left text-[10px] font-medium text-neutral-400 uppercase border-b border-r border-neutral-800 min-w-[100px] sm:min-w-[180px] sticky left-0 bg-black/90 z-20">
+              <th className="px-2 sm:px-3 py-2 text-left text-[10px] font-medium text-neutral-400 uppercase border-b border-r border-neutral-800 w-[100px] sm:w-[180px] min-w-[100px] sm:min-w-[180px] max-w-[100px] sm:max-w-[180px] sticky left-0 bg-black/90 z-20">
                 Location
               </th>
               {MILESTONE_DEFINITIONS.map(def => (
@@ -95,26 +95,26 @@ export function ProgressMatrix({ states }: ProgressMatrixProps) {
                   onMouseLeave={() => setHoveredRow(null)}
                 >
                   <td
-                    className="px-3 py-2 border-b border-r border-neutral-800 sticky left-0 bg-neutral-900/90 z-10"
+                    className="px-2 sm:px-3 py-2 border-b border-r border-neutral-800 sticky left-0 bg-neutral-900/90 z-10 w-[100px] sm:w-[180px] min-w-[100px] sm:min-w-[180px] max-w-[100px] sm:max-w-[180px]"
                   >
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-1 sm:gap-2 overflow-hidden">
                       {expandedStates.has(state.id) ? (
-                        <ChevronDown className="w-4 h-4 text-neutral-400" />
+                        <ChevronDown className="w-3 h-3 sm:w-4 sm:h-4 text-neutral-400 flex-shrink-0" />
                       ) : (
-                        <ChevronRight className="w-4 h-4 text-neutral-400" />
+                        <ChevronRight className="w-3 h-3 sm:w-4 sm:h-4 text-neutral-400 flex-shrink-0" />
                       )}
-                      <span className="font-semibold text-white text-xs">
+                      <span className="font-semibold text-white text-[10px] sm:text-xs truncate">
                         {state.name}
                       </span>
-                      <span className="text-neutral-500 text-[10px]">
+                      <span className="text-neutral-500 text-[9px] sm:text-[10px] hidden sm:inline">
                         ({state.abbreviation})
                       </span>
-                      <span className="text-neutral-600 text-[10px]">
+                      <span className="text-neutral-600 text-[9px] sm:text-[10px] hidden sm:inline">
                         {state.cities.length} {state.cities.length === 1 ? 'city' : 'cities'}
                       </span>
                     </div>
                     {state.notes && (
-                      <div className="ml-6 text-[9px] text-neutral-500 mt-0.5 max-w-[300px] truncate">
+                      <div className="hidden sm:block ml-6 text-[9px] text-neutral-500 mt-0.5 max-w-[300px] truncate">
                         {state.notes}
                       </div>
                     )}
@@ -144,14 +144,14 @@ export function ProgressMatrix({ states }: ProgressMatrixProps) {
                         onMouseEnter={() => setHoveredRow(city.id)}
                         onMouseLeave={() => setHoveredRow(null)}
                       >
-                        <td className="px-3 py-1.5 border-b border-r border-neutral-800/50 sticky left-0 bg-black/90 z-10">
-                          <div className="flex items-center gap-2 pl-6">
-                            <MapPin className="w-3 h-3 text-neutral-500" />
-                            <span className="text-neutral-200 text-xs">
+                        <td className="px-2 sm:px-3 py-1.5 border-b border-r border-neutral-800/50 sticky left-0 bg-black/90 z-10 w-[100px] sm:w-[180px] min-w-[100px] sm:min-w-[180px] max-w-[100px] sm:max-w-[180px]">
+                          <div className="flex items-center gap-1 sm:gap-2 pl-4 sm:pl-6 overflow-hidden">
+                            <MapPin className="w-3 h-3 text-neutral-500 flex-shrink-0" />
+                            <span className="text-neutral-200 text-[10px] sm:text-xs truncate">
                               {city.name}
                             </span>
                             {hasDriverless && (
-                              <span className="px-1.5 py-0.5 text-[8px] font-semibold bg-green-500/20 text-green-400 rounded border border-green-500/30">
+                              <span className="hidden sm:inline px-1.5 py-0.5 text-[8px] font-semibold bg-green-500/20 text-green-400 rounded border border-green-500/30">
                                 DRIVERLESS
                               </span>
                             )}
