@@ -44,6 +44,7 @@ export function MilestoneCell({ milestone, definition }: MilestoneCellProps) {
   return (
     <td
       className="relative px-1.5 py-1.5 text-center border-r border-neutral-800/50"
+      style={{ zIndex: showTooltip ? 9999 : 'auto', position: 'relative' }}
       onMouseEnter={() => setShowTooltip(true)}
       onMouseLeave={() => setShowTooltip(false)}
     >
@@ -55,9 +56,13 @@ export function MilestoneCell({ milestone, definition }: MilestoneCellProps) {
         {getDisplayContent()}
       </div>
 
-      {/* Tooltip */}
+      {/* Tooltip - renders below to avoid clipping issues */}
       {showTooltip && (
-        <div className="absolute z-[200] bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-2 bg-neutral-900 border border-neutral-700 rounded-lg shadow-xl min-w-[200px] text-left pointer-events-none">
+        <div className="absolute z-[9999] top-full left-1/2 -translate-x-1/2 mt-2 px-3 py-2 bg-neutral-900 border border-neutral-700 rounded-lg shadow-2xl min-w-[200px] text-left pointer-events-none"
+          style={{ filter: 'drop-shadow(0 4px 12px rgba(0,0,0,0.5))' }}
+        >
+          {/* Tooltip arrow pointing up */}
+          <div className="absolute bottom-full left-1/2 -translate-x-1/2 border-8 border-transparent border-b-neutral-700" />
           <div className="text-white font-medium text-xs mb-1">
             {definition.label}
           </div>
@@ -84,8 +89,6 @@ export function MilestoneCell({ milestone, definition }: MilestoneCellProps) {
               {milestone.notes}
             </div>
           )}
-          {/* Tooltip arrow */}
-          <div className="absolute top-full left-1/2 -translate-x-1/2 border-8 border-transparent border-t-neutral-700" />
         </div>
       )}
     </td>

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import type { State } from '@/types/robotaxi';
 import { MILESTONE_DEFINITIONS } from '@/types/robotaxi';
 import { MilestoneCell } from './MilestoneCell';
@@ -12,10 +12,41 @@ interface ProgressMatrixProps {
   states: State[];
 }
 
+// Calculate state activity score based on city progress
+function getStateActivityScore(state: State): number {
+  if (state.cities.length === 0) return 0;
+
+  // Sum of all city progress percentages + bonus for driverless
+  let score = 0;
+  state.cities.forEach(city => {
+    score += getCityProgress(city);
+    // Big bonus for driverless cities
+    if (city.milestones.no_safety_monitor.status === 'completed') {
+      score += 500;
+    }
+    // Bonus for public program
+    if (city.milestones.public_test_program_launched.status === 'completed') {
+      score += 200;
+    }
+    // Bonus for app access
+    if (city.milestones.robotaxi_app_access_opens.status === 'completed') {
+      score += 100;
+    }
+  });
+
+  return score;
+}
+
 export function ProgressMatrix({ states }: ProgressMatrixProps) {
   const [expandedStates, setExpandedStates] = useState<Set<string>>(
     new Set(states.map(s => s.id))
   );
+  const [hoveredRow, setHoveredRow] = useState<string | null>(null);
+
+  // Sort states by activity score (most active first)
+  const sortedStates = useMemo(() => {
+    return [...states].sort((a, b) => getStateActivityScore(b) - getStateActivityScore(a));
+  }, [states]);
 
   const toggleState = (stateId: string) => {
     setExpandedStates(prev => {
@@ -30,9 +61,9 @@ export function ProgressMatrix({ states }: ProgressMatrixProps) {
   };
 
   return (
-    <div className="bg-neutral-950 border border-neutral-800 rounded-xl overflow-visible">
-      <div className="overflow-x-auto overflow-y-visible">
-        <table className="w-full border-collapse">
+    <div className="bg-neutral-950 border border-neutral-800 rounded-xl" style={{ overflow: 'visible' }}>
+      <div className="overflow-x-auto" style={{ overflow: 'visible', overflowX: 'auto' }}>
+        <table className="w-full border-collapse"  style={{ overflow: 'visible' }}>
           <thead className="bg-black/50 sticky top-0 z-10">
             <tr>
               <th className="px-3 py-2 text-left text-[10px] font-medium text-neutral-400 uppercase border-b border-r border-neutral-800 min-w-[180px] sticky left-0 bg-black/90 z-20">
@@ -53,12 +84,15 @@ export function ProgressMatrix({ states }: ProgressMatrixProps) {
             </tr>
           </thead>
           <tbody>
-            {states.map(state => (
+            {sortedStates.map((state, stateIndex) => (
               <React.Fragment key={state.id}>
                 {/* State Header Row */}
                 <tr
                   className="bg-neutral-900/50 hover:bg-neutral-900 cursor-pointer transition-colors"
                   onClick={() => toggleState(state.id)}
+                  style={{ position: 'relative', zIndex: hoveredRow === state.id ? 100 : 1 }}
+                  onMouseEnter={() => setHoveredRow(state.id)}
+                  onMouseLeave={() => setHoveredRow(null)}
                 >
                   <td
                     className="px-3 py-2 border-b border-r border-neutral-800 sticky left-0 bg-neutral-900/90 z-10"
@@ -106,6 +140,9 @@ export function ProgressMatrix({ states }: ProgressMatrixProps) {
                         className={`hover:bg-neutral-900/30 transition-colors ${
                           hasDriverless ? 'bg-green-500/5' : ''
                         }`}
+                        style={{ position: 'relative', zIndex: hoveredRow === city.id ? 100 : 1 }}
+                        onMouseEnter={() => setHoveredRow(city.id)}
+                        onMouseLeave={() => setHoveredRow(null)}
                       >
                         <td className="px-3 py-1.5 border-b border-r border-neutral-800/50 sticky left-0 bg-black/90 z-10">
                           <div className="flex items-center gap-2 pl-6">
