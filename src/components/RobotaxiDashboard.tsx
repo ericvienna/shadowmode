@@ -154,7 +154,7 @@ export function RobotaxiDashboard({ data }: RobotaxiDashboardProps) {
                 height={36}
                 className="h-9 w-auto object-contain"
               />
-              <div className="flex flex-col">
+              <div className="hidden sm:flex flex-col">
                 <span className="text-neutral-500 text-[10px] sm:text-xs uppercase tracking-wide">
                   Tesla FSD / Robotaxi
                 </span>
