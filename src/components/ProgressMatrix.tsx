@@ -64,21 +64,21 @@ export function ProgressMatrix({ states }: ProgressMatrixProps) {
     <div className="bg-neutral-950 border border-neutral-800 rounded-xl" style={{ overflow: 'visible' }}>
       <div className="overflow-x-auto" style={{ overflow: 'visible', overflowX: 'auto' }}>
         <table className="w-full border-collapse"  style={{ overflow: 'visible' }}>
-          <thead className="bg-black/50 sticky top-0 z-10">
+          <thead className="bg-black sticky top-[52px] sm:top-[56px] z-30">
             <tr>
-              <th className="px-2 sm:px-3 py-2 text-left text-[10px] font-medium text-neutral-400 uppercase border-b border-r border-neutral-800 w-[140px] sm:w-[180px] min-w-[140px] sm:min-w-[180px] max-w-[140px] sm:max-w-[180px] sticky left-0 bg-black/90 z-20">
+              <th className="px-2 sm:px-3 py-2 text-left text-[10px] font-medium text-neutral-400 uppercase border-b border-r border-neutral-800 w-[140px] sm:w-[180px] min-w-[140px] sm:min-w-[180px] max-w-[140px] sm:max-w-[180px] sticky left-0 bg-black z-40">
                 Location
               </th>
               {MILESTONE_DEFINITIONS.map(def => (
                 <th
                   key={def.type}
-                  className="px-1.5 py-2 text-center text-[9px] font-medium text-neutral-400 uppercase border-b border-r border-neutral-800/50 min-w-[70px]"
+                  className="px-1.5 py-2 text-center text-[9px] font-medium text-neutral-400 uppercase border-b border-r border-neutral-800/50 min-w-[70px] bg-black"
                   title={def.description}
                 >
                   {def.shortLabel}
                 </th>
               ))}
-              <th className="px-2 py-2 text-center text-[10px] font-medium text-neutral-400 uppercase border-b border-neutral-800 min-w-[60px]">
+              <th className="px-2 py-2 text-center text-[10px] font-medium text-neutral-400 uppercase border-b border-neutral-800 min-w-[60px] bg-black">
                 Progress
               </th>
             </tr>
