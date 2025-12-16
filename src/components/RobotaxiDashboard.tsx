@@ -149,11 +149,11 @@ export function RobotaxiDashboard({ data }: RobotaxiDashboardProps) {
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-lg flex items-center justify-center overflow-hidden">
                 <Image
-                  src="/robotaxi-logo.jpg"
-                  alt="Robotaxi"
+                  src="/shadowmode-logo.svg"
+                  alt="SHADOWMODE"
                   width={40}
                   height={40}
-                  className="object-cover"
+                  className="object-contain"
                 />
               </div>
               <div>
