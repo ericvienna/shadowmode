@@ -118,8 +118,8 @@ export function ProgressMatrix({ states }: ProgressMatrixProps) {
                         <div className="hidden sm:block ml-6 text-[9px] text-neutral-500 mt-0.5 truncate">
                           {state.notes}
                         </div>
-                        {/* Tooltip on hover */}
-                        <div className="absolute left-full ml-2 top-1/2 -translate-y-1/2 px-3 py-2 bg-black/95 border border-neutral-700 rounded-lg text-[10px] text-neutral-300 whitespace-nowrap z-[200] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all shadow-xl pointer-events-none">
+                        {/* Tooltip on hover - positioned below */}
+                        <div className="absolute left-0 top-full mt-1 px-3 py-2 bg-black/95 border border-neutral-700 rounded-lg text-[10px] text-neutral-300 whitespace-nowrap z-[200] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all shadow-xl pointer-events-none">
                           <div className="font-semibold text-white mb-1">{state.name} ({state.abbreviation})</div>
                           <div className="max-w-[600px] whitespace-normal">{state.notes}</div>
                         </div>
