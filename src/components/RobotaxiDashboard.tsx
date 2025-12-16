@@ -145,8 +145,8 @@ export function RobotaxiDashboard({ data }: RobotaxiDashboardProps) {
       <header className="bg-black/80 backdrop-blur border-b border-neutral-800 sticky top-0 z-50">
         <div className="w-full px-3 sm:px-4 lg:px-6 py-3">
           <div className="flex items-center justify-between relative">
-            {/* Left: Logo */}
-            <div className="flex items-center">
+            {/* Left: Logo and Text */}
+            <div className="flex items-center gap-3">
               <Image
                 src="/shadowmode-logo.svg"
                 alt="SHADOWMODE"
@@ -154,6 +154,19 @@ export function RobotaxiDashboard({ data }: RobotaxiDashboardProps) {
                 height={36}
                 className="h-9 w-auto object-contain"
               />
+              <div className="flex flex-col">
+                <div className="flex items-center gap-2">
+                  <span className="text-neutral-500 text-[10px] sm:text-xs uppercase tracking-wide">
+                    Tesla FSD / Robotaxi
+                  </span>
+                  <span className="px-1.5 py-0.5 text-[8px] font-semibold bg-red-500/20 text-red-400 rounded border border-red-500/30">
+                    BETA
+                  </span>
+                </div>
+                <span className="text-neutral-500 text-[10px] sm:text-xs uppercase tracking-wide">
+                  Deployment Progress
+                </span>
+              </div>
             </div>
 
             {/* Center: Tesla Wordmark (desktop only) */}
