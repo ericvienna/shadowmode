@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="public/shadowmode-logo.svg" alt="SHADOWMODE" width="400" />
+  <img src="https://raw.githubusercontent.com/ericvienna/shadowmode/main/public/shadowmode-logo.svg" alt="SHADOWMODE" width="400" />
 </p>
 
 <p align="center">
