@@ -1,0 +1,165 @@
+'use client';
+
+import React, { useState } from 'react';
+import type { State } from '@/types/robotaxi';
+import { MILESTONE_DEFINITIONS } from '@/types/robotaxi';
+import { MilestoneCell } from './MilestoneCell';
+import { getCityProgress, getCitySparklineData } from '@/lib/utils';
+import { Sparkline } from './Sparkline';
+import { ChevronDown, ChevronRight, MapPin } from 'lucide-react';
+
+interface ProgressMatrixProps {
+  states: State[];
+}
+
+export function ProgressMatrix({ states }: ProgressMatrixProps) {
+  const [expandedStates, setExpandedStates] = useState<Set<string>>(
+    new Set(states.map(s => s.id))
+  );
+
+  const toggleState = (stateId: string) => {
+    setExpandedStates(prev => {
+      const next = new Set(prev);
+      if (next.has(stateId)) {
+        next.delete(stateId);
+      } else {
+        next.add(stateId);
+      }
+      return next;
+    });
+  };
+
+  return (
+    <div className="bg-neutral-950 border border-neutral-800 rounded-xl overflow-visible">
+      <div className="overflow-x-auto overflow-y-visible">
+        <table className="w-full border-collapse">
+          <thead className="bg-black/50 sticky top-0 z-10">
+            <tr>
+              <th className="px-3 py-2 text-left text-[10px] font-medium text-neutral-400 uppercase border-b border-r border-neutral-800 min-w-[180px] sticky left-0 bg-black/90 z-20">
+                Location
+              </th>
+              {MILESTONE_DEFINITIONS.map(def => (
+                <th
+                  key={def.type}
+                  className="px-1.5 py-2 text-center text-[9px] font-medium text-neutral-400 uppercase border-b border-r border-neutral-800/50 min-w-[70px]"
+                  title={def.description}
+                >
+                  {def.shortLabel}
+                </th>
+              ))}
+              <th className="px-2 py-2 text-center text-[10px] font-medium text-neutral-400 uppercase border-b border-neutral-800 min-w-[60px]">
+                Progress
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {states.map(state => (
+              <React.Fragment key={state.id}>
+                {/* State Header Row */}
+                <tr
+                  className="bg-neutral-900/50 hover:bg-neutral-900 cursor-pointer transition-colors"
+                  onClick={() => toggleState(state.id)}
+                >
+                  <td
+                    className="px-3 py-2 border-b border-r border-neutral-800 sticky left-0 bg-neutral-900/90 z-10"
+                  >
+                    <div className="flex items-center gap-2">
+                      {expandedStates.has(state.id) ? (
+                        <ChevronDown className="w-4 h-4 text-neutral-400" />
+                      ) : (
+                        <ChevronRight className="w-4 h-4 text-neutral-400" />
+                      )}
+                      <span className="font-semibold text-white text-xs">
+                        {state.name}
+                      </span>
+                      <span className="text-neutral-500 text-[10px]">
+                        ({state.abbreviation})
+                      </span>
+                      <span className="text-neutral-600 text-[10px]">
+                        {state.cities.length} {state.cities.length === 1 ? 'city' : 'cities'}
+                      </span>
+                    </div>
+                    {state.notes && (
+                      <div className="ml-6 text-[9px] text-neutral-500 mt-0.5 max-w-[300px] truncate">
+                        {state.notes}
+                      </div>
+                    )}
+                  </td>
+                  {MILESTONE_DEFINITIONS.map(def => (
+                    <td
+                      key={def.type}
+                      className="border-b border-r border-neutral-800/50 bg-neutral-900/30"
+                    />
+                  ))}
+                  <td className="border-b border-neutral-800 bg-neutral-900/30" />
+                </tr>
+
+                {/* City Rows */}
+                {expandedStates.has(state.id) &&
+                  state.cities.map(city => {
+                    const progress = getCityProgress(city);
+                    const hasDriverless = city.milestones.no_safety_monitor.status === 'completed';
+
+                    return (
+                      <tr
+                        key={city.id}
+                        className={`hover:bg-neutral-900/30 transition-colors ${
+                          hasDriverless ? 'bg-green-500/5' : ''
+                        }`}
+                      >
+                        <td className="px-3 py-1.5 border-b border-r border-neutral-800/50 sticky left-0 bg-black/90 z-10">
+                          <div className="flex items-center gap-2 pl-6">
+                            <MapPin className="w-3 h-3 text-neutral-500" />
+                            <span className="text-neutral-200 text-xs">
+                              {city.name}
+                            </span>
+                            {hasDriverless && (
+                              <span className="px-1.5 py-0.5 text-[8px] font-semibold bg-green-500/20 text-green-400 rounded border border-green-500/30">
+                                DRIVERLESS
+                              </span>
+                            )}
+                          </div>
+                        </td>
+                        {MILESTONE_DEFINITIONS.map(def => (
+                          <MilestoneCell
+                            key={def.type}
+                            milestone={city.milestones[def.type]}
+                            definition={def}
+                          />
+                        ))}
+                        <td className="px-2 py-1.5 border-b border-neutral-800/50 text-center">
+                          <div className="flex items-center justify-center gap-2">
+                            <Sparkline
+                              data={getCitySparklineData(city)}
+                              width={40}
+                              height={16}
+                              color={progress >= 75 ? '#22c55e' : progress >= 40 ? '#eab308' : '#6b7280'}
+                            />
+                            <div className="w-12 h-1.5 bg-neutral-800 rounded-full overflow-hidden">
+                              <div
+                                className={`h-full rounded-full animate-progress ${
+                                  progress >= 75
+                                    ? 'bg-green-500'
+                                    : progress >= 40
+                                    ? 'bg-yellow-500'
+                                    : 'bg-neutral-600'
+                                }`}
+                                style={{ width: `${progress}%` }}
+                              />
+                            </div>
+                            <span className="text-[10px] text-neutral-400 w-8">
+                              {progress}%
+                            </span>
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })}
+              </React.Fragment>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
