@@ -145,28 +145,15 @@ export function RobotaxiDashboard({ data }: RobotaxiDashboardProps) {
       <header className="bg-black/80 backdrop-blur border-b border-neutral-800 sticky top-0 z-50">
         <div className="w-full px-3 sm:px-4 lg:px-6 py-3">
           <div className="flex items-center justify-between relative">
-            {/* Left: Logo and Title */}
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-lg flex items-center justify-center overflow-hidden">
-                <Image
-                  src="/shadowmode-logo.svg"
-                  alt="SHADOWMODE"
-                  width={40}
-                  height={40}
-                  className="object-contain"
-                />
-              </div>
-              <div>
-                <h1 className="text-sm sm:text-base font-bold text-white flex items-center gap-2">
-                  SHADOWMODE.US
-                  <span className="hidden sm:inline-flex px-1.5 py-0.5 text-[8px] font-semibold bg-red-500/20 text-red-400 rounded border border-red-500/30">
-                    BETA
-                  </span>
-                </h1>
-                <p className="text-neutral-500 text-[10px] sm:text-xs uppercase tracking-wide">
-                  Tesla FSD / Robotaxi Deployment Progress
-                </p>
-              </div>
+            {/* Left: Logo */}
+            <div className="flex items-center">
+              <Image
+                src="/shadowmode-logo.svg"
+                alt="SHADOWMODE"
+                width={200}
+                height={36}
+                className="h-9 w-auto object-contain"
+              />
             </div>
 
             {/* Center: Tesla Wordmark (desktop only) */}
@@ -174,9 +161,9 @@ export function RobotaxiDashboard({ data }: RobotaxiDashboardProps) {
               <Image
                 src="/tesla-wordmark.png"
                 alt="Tesla"
-                width={120}
-                height={20}
-                className="h-5 w-auto object-contain opacity-60"
+                width={150}
+                height={25}
+                className="h-6 w-auto object-contain opacity-60"
               />
             </div>
 
