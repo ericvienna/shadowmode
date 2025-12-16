@@ -55,7 +55,7 @@ export function CountdownWidget({ states }: CountdownWidgetProps) {
   if (!stats) return null;
 
   return (
-    <div className="grid grid-cols-2 lg:grid-cols-5 gap-3">
+    <div className="grid grid-cols-2 lg:grid-cols-6 gap-3">
       {/* Tesla Stock Price */}
       <div className="bg-neutral-950 border border-neutral-800 rounded-xl p-4">
         <div className="flex items-center gap-2 mb-2">
@@ -132,6 +132,28 @@ export function CountdownWidget({ states }: CountdownWidgetProps) {
         </div>
         <a
           href="https://x.com/elonmusk/status/2000302654837371181"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-[9px] text-blue-400 hover:underline mt-2 block"
+        >
+          View on X →
+        </a>
+      </div>
+
+      {/* Latest @robotaxi Tweet */}
+      <div className="bg-neutral-950 border border-neutral-800 rounded-xl p-4">
+        <div className="flex items-center gap-2 mb-2">
+          <svg className="w-4 h-4 text-white" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+          </svg>
+          <span className="text-[10px] text-neutral-500 uppercase">@robotaxi</span>
+          <span className="text-[8px] text-neutral-600 ml-auto">Sep 3</span>
+        </div>
+        <div className="text-[11px] text-white leading-relaxed">
+          Robotaxi app now available to all. Download to join waitlist
+        </div>
+        <a
+          href="https://x.com/robotaxi"
           target="_blank"
           rel="noopener noreferrer"
           className="text-[9px] text-blue-400 hover:underline mt-2 block"
