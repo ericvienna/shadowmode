@@ -155,17 +155,17 @@ export function RobotaxiDashboard({ data }: RobotaxiDashboardProps) {
                 className="h-9 w-auto object-contain"
               />
               <div className="flex flex-col">
+                <span className="text-neutral-500 text-[10px] sm:text-xs uppercase tracking-wide">
+                  Tesla FSD / Robotaxi
+                </span>
                 <div className="flex items-center gap-2">
                   <span className="text-neutral-500 text-[10px] sm:text-xs uppercase tracking-wide">
-                    Tesla FSD / Robotaxi
+                    Deployment Progress
                   </span>
                   <span className="px-1.5 py-0.5 text-[8px] font-semibold bg-red-500/20 text-red-400 rounded border border-red-500/30">
                     BETA
                   </span>
                 </div>
-                <span className="text-neutral-500 text-[10px] sm:text-xs uppercase tracking-wide">
-                  Deployment Progress
-                </span>
               </div>
             </div>
 
