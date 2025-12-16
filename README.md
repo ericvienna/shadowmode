@@ -21,7 +21,9 @@
 </p>
 
 <p align="center">
-  <img src="public/screenshot.png" alt="SHADOWMODE Dashboard" width="100%" />
+  <a href="https://shadowmode.us">
+    <img src="public/link-thumb.png" alt="SHADOWMODE Dashboard" width="100%" />
+  </a>
 </p>
 
 ---
