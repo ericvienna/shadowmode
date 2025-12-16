@@ -12,36 +12,37 @@ interface USMapProps {
 
 // City coordinates as percentages of the map image
 // Based on the provided dark map.webp showing US with city labels
+// Adjusted for better visibility with scaled map
 const CITY_COORDINATES: Record<string, { x: number; y: number }> = {
-  // California
-  'ca-sf': { x: 5, y: 45 },
-  'ca-oak': { x: 6, y: 46 },
-  'ca-sj': { x: 6, y: 50 },
-  'ca-la': { x: 12, y: 63 },
-  'ca-sd': { x: 15, y: 70 },
+  // California - shifted right for visibility
+  'ca-sf': { x: 10, y: 42 },
+  'ca-oak': { x: 11, y: 44 },
+  'ca-sj': { x: 11, y: 48 },
+  'ca-la': { x: 14, y: 58 },
+  'ca-sd': { x: 16, y: 64 },
   // Nevada
-  'nv-vegas': { x: 18, y: 55 },
+  'nv-vegas': { x: 20, y: 52 },
   // Arizona
-  'az-phoenix': { x: 24, y: 67 },
-  'az-mesa-tempe': { x: 25, y: 68 },
+  'az-phoenix': { x: 26, y: 62 },
+  'az-mesa-tempe': { x: 27, y: 64 },
   // Texas
-  'tx-austin': { x: 50, y: 78 },
-  'tx-dallas': { x: 52, y: 70 },
-  'tx-houston': { x: 58, y: 80 },
-  'tx-san-antonio': { x: 48, y: 82 },
+  'tx-austin': { x: 50, y: 72 },
+  'tx-dallas': { x: 52, y: 64 },
+  'tx-houston': { x: 56, y: 74 },
+  'tx-san-antonio': { x: 48, y: 76 },
   // Colorado
-  'co-denver': { x: 36, y: 43 },
+  'co-denver': { x: 36, y: 40 },
   // Illinois
-  'il-chicago': { x: 72, y: 32 },
+  'il-chicago': { x: 68, y: 32 },
   // Florida
-  'fl-miami': { x: 92, y: 95 },
-  'fl-tampa': { x: 86, y: 85 },
-  'fl-orlando': { x: 88, y: 82 },
-  'fl-jacksonville': { x: 86, y: 72 },
+  'fl-miami': { x: 88, y: 88 },
+  'fl-tampa': { x: 84, y: 80 },
+  'fl-orlando': { x: 85, y: 76 },
+  'fl-jacksonville': { x: 83, y: 68 },
   // Other cities
-  'ma-boston': { x: 98, y: 22 },
-  'ny-brooklyn': { x: 96, y: 30 },
-  'ny-queens': { x: 96, y: 29 },
+  'ma-boston': { x: 94, y: 22 },
+  'ny-brooklyn': { x: 92, y: 28 },
+  'ny-queens': { x: 92, y: 26 },
 };
 
 export function USMap({ states, onCityClick }: USMapProps) {
@@ -71,8 +72,8 @@ export function USMap({ states, onCityClick }: USMapProps) {
       <h3 className="text-white text-xs font-semibold mb-4">Deployment Map</h3>
 
       <div className="relative w-full aspect-[1.5/1] rounded-lg overflow-hidden">
-        {/* Map background image with expanded edges */}
-        <div className="absolute inset-0 scale-110 origin-center">
+        {/* Map background image */}
+        <div className="absolute inset-0 scale-100 origin-center">
           <Image
             src="/map.webp"
             alt="US Map"
