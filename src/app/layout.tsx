@@ -10,32 +10,69 @@ const ibmPlexMono = IBM_Plex_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "SHADOWMODE.US - Tesla Robotaxi Tracker",
-  description: "Track Tesla's Unsupervised FSD / Robotaxi deployment progress across US cities in real-time",
+  title: "SHADOWMODE | Tesla Robotaxi Deployment Tracker",
+  description: "Real-time tracking of Tesla FSD Robotaxi approvals, permits, and deployments across 21 cities and 9 US states. Live news, milestone tracking, and regulatory updates.",
+  keywords: "Tesla Robotaxi, Tesla FSD, Full Self Driving, autonomous vehicles, Tesla Austin, driverless cars, Tesla permits, Robotaxi tracker, Tesla unsupervised FSD",
   icons: {
     icon: "/icon.png",
     apple: "/icon.png",
   },
   openGraph: {
-    title: "SHADOWMODE.US - Tesla Robotaxi Tracker",
-    description: "Track Tesla's Unsupervised FSD / Robotaxi deployment progress across US cities in real-time",
+    title: "SHADOWMODE | Tesla Robotaxi Deployment Tracker",
+    description: "Real-time intelligence on Tesla's autonomous future. Track every city, every milestone, every approval.",
     url: "https://shadowmode.us",
     siteName: "SHADOWMODE",
     images: [
       {
-        url: "/link-thumb.png",
+        url: "https://shadowmode.us/link-thumb.png",
         width: 1200,
         height: 630,
+        alt: "SHADOWMODE - Tesla Robotaxi Deployment Tracker Dashboard",
       },
     ],
+    locale: "en_US",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "SHADOWMODE.US - Tesla Robotaxi Tracker",
-    description: "Track Tesla's Unsupervised FSD / Robotaxi deployment progress across US cities in real-time",
-    images: ["/link-thumb.png"],
+    title: "SHADOWMODE | Tesla Robotaxi Tracker",
+    description: "Real-time tracking of Tesla Robotaxi deployments across the US. 21 cities, 9 states, live updates.",
+    images: ["https://shadowmode.us/link-thumb.png"],
+    creator: "@shadowabordeaux",
   },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
+  alternates: {
+    canonical: "https://shadowmode.us",
+  },
+};
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "SHADOWMODE",
+  "description": "Real-time Tesla Robotaxi deployment tracker covering permits, approvals, and milestones across US cities",
+  "url": "https://shadowmode.us",
+  "applicationCategory": "BusinessApplication",
+  "operatingSystem": "Web",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "creator": {
+    "@type": "Organization",
+    "name": "SHADOWMODE"
+  }
 };
 
 export default function RootLayout({
@@ -45,6 +82,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+      </head>
       <body className={`${ibmPlexMono.variable} antialiased`}>
         {children}
         <Analytics />
