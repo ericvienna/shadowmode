@@ -14,34 +14,34 @@ interface USMapProps {
 // Adjusted to align dots with map city labels
 const CITY_COORDINATES: Record<string, { x: number; y: number }> = {
   // California - on the coast
-  'ca-sf': { x: 8, y: 50 },
-  'ca-oak': { x: 9, y: 52 },
-  'ca-sj': { x: 9, y: 55 },
-  'ca-la': { x: 12, y: 65 },
-  'ca-sd': { x: 14, y: 72 },
+  'ca-sf': { x: 8, y: 53 },
+  'ca-oak': { x: 9, y: 55 },
+  'ca-sj': { x: 9, y: 58 },
+  'ca-la': { x: 12, y: 68 },
+  'ca-sd': { x: 14, y: 75 },
   // Nevada
-  'nv-vegas': { x: 18, y: 60 },
+  'nv-vegas': { x: 18, y: 63 },
   // Arizona
-  'az-phoenix': { x: 24, y: 68 },
-  'az-mesa-tempe': { x: 25, y: 70 },
+  'az-phoenix': { x: 24, y: 71 },
+  'az-mesa-tempe': { x: 25, y: 73 },
   // Texas
-  'tx-austin': { x: 50, y: 76 },
-  'tx-dallas': { x: 53, y: 70 },
-  'tx-houston': { x: 57, y: 80 },
-  'tx-san-antonio': { x: 48, y: 82 },
+  'tx-austin': { x: 50, y: 79 },
+  'tx-dallas': { x: 53, y: 73 },
+  'tx-houston': { x: 57, y: 83 },
+  'tx-san-antonio': { x: 48, y: 85 },
   // Colorado
-  'co-denver': { x: 36, y: 48 },
+  'co-denver': { x: 36, y: 51 },
   // Illinois
-  'il-chicago': { x: 68, y: 42 },
+  'il-chicago': { x: 68, y: 45 },
   // Florida
-  'fl-miami': { x: 87, y: 92 },
-  'fl-tampa': { x: 84, y: 86 },
-  'fl-orlando': { x: 85, y: 82 },
-  'fl-jacksonville': { x: 83, y: 74 },
+  'fl-miami': { x: 87, y: 95 },
+  'fl-tampa': { x: 84, y: 89 },
+  'fl-orlando': { x: 85, y: 85 },
+  'fl-jacksonville': { x: 83, y: 77 },
   // East coast cities
-  'ma-boston': { x: 94, y: 40 },
-  'ny-brooklyn': { x: 92, y: 46 },
-  'ny-queens': { x: 92, y: 44 },
+  'ma-boston': { x: 94, y: 43 },
+  'ny-brooklyn': { x: 92, y: 49 },
+  'ny-queens': { x: 92, y: 47 },
 };
 
 export function USMap({ states, onCityClick }: USMapProps) {
