@@ -11,37 +11,37 @@ interface USMapProps {
 }
 
 // City coordinates as percentages of the map image
-// Based on the provided dark map.webp showing US with city labels
+// Shifted right ~5% to align with actual city locations
 const CITY_COORDINATES: Record<string, { x: number; y: number }> = {
   // California - on the coast
-  'ca-sf': { x: 4, y: 46 },
-  'ca-oak': { x: 5, y: 48 },
-  'ca-sj': { x: 5, y: 51 },
-  'ca-la': { x: 8, y: 64 },
-  'ca-sd': { x: 10, y: 70 },
+  'ca-sf': { x: 8, y: 38 },
+  'ca-oak': { x: 9, y: 40 },
+  'ca-sj': { x: 9, y: 44 },
+  'ca-la': { x: 12, y: 56 },
+  'ca-sd': { x: 14, y: 62 },
   // Nevada
-  'nv-vegas': { x: 14, y: 58 },
+  'nv-vegas': { x: 18, y: 50 },
   // Arizona
-  'az-phoenix': { x: 20, y: 66 },
-  'az-mesa-tempe': { x: 21, y: 68 },
+  'az-phoenix': { x: 24, y: 58 },
+  'az-mesa-tempe': { x: 25, y: 60 },
   // Texas
-  'tx-austin': { x: 47, y: 76 },
-  'tx-dallas': { x: 50, y: 68 },
-  'tx-houston': { x: 54, y: 78 },
-  'tx-san-antonio': { x: 45, y: 80 },
+  'tx-austin': { x: 50, y: 68 },
+  'tx-dallas': { x: 53, y: 60 },
+  'tx-houston': { x: 57, y: 70 },
+  'tx-san-antonio': { x: 48, y: 72 },
   // Colorado
-  'co-denver': { x: 32, y: 44 },
+  'co-denver': { x: 36, y: 36 },
   // Illinois
-  'il-chicago': { x: 65, y: 36 },
+  'il-chicago': { x: 68, y: 30 },
   // Florida
-  'fl-miami': { x: 85, y: 92 },
-  'fl-tampa': { x: 82, y: 84 },
-  'fl-orlando': { x: 83, y: 80 },
-  'fl-jacksonville': { x: 81, y: 72 },
-  // Other cities
-  'ma-boston': { x: 92, y: 26 },
-  'ny-brooklyn': { x: 90, y: 32 },
-  'ny-queens': { x: 90, y: 30 },
+  'fl-miami': { x: 87, y: 84 },
+  'fl-tampa': { x: 84, y: 76 },
+  'fl-orlando': { x: 85, y: 72 },
+  'fl-jacksonville': { x: 83, y: 64 },
+  // Other cities - shifted down from Canada
+  'ma-boston': { x: 94, y: 28 },
+  'ny-brooklyn': { x: 92, y: 34 },
+  'ny-queens': { x: 92, y: 32 },
 };
 
 export function USMap({ states, onCityClick }: USMapProps) {
@@ -70,7 +70,7 @@ export function USMap({ states, onCityClick }: USMapProps) {
     <div className="bg-neutral-950 border border-neutral-800 rounded-xl p-4 overflow-hidden">
       <h3 className="text-white text-xs font-semibold mb-4">Deployment Map</h3>
 
-      <div className="relative w-full aspect-[1.5/1] rounded-lg overflow-hidden">
+      <div className="relative w-full aspect-[1.8/1] rounded-lg overflow-hidden">
         {/* Map background image */}
         <div className="absolute inset-0 scale-100 origin-center">
           <Image
