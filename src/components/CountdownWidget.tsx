@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import type { State } from '@/types/robotaxi';
 import { getCountdownStats } from '@/lib/utils';
-import { Timer, TrendingUp, Calendar } from 'lucide-react';
+import { Timer, TrendingUp, Calendar, DollarSign } from 'lucide-react';
 
 interface CountdownWidgetProps {
   states: State[];
@@ -15,17 +15,78 @@ interface CountdownStatsType {
   milestonesThisMonth: number;
 }
 
+interface StockData {
+  price: number;
+  change: number;
+  changePercent: number;
+  isMarketOpen: boolean;
+}
+
 export function CountdownWidget({ states }: CountdownWidgetProps) {
   const [stats, setStats] = useState<CountdownStatsType | null>(null);
+  const [stockData, setStockData] = useState<StockData | null>(null);
+  const [stockLoading, setStockLoading] = useState(true);
 
   useEffect(() => {
     setStats(getCountdownStats(states));
   }, [states]);
 
+  useEffect(() => {
+    async function fetchStockPrice() {
+      try {
+        const response = await fetch('/api/stock');
+        if (response.ok) {
+          const data = await response.json();
+          setStockData(data);
+        }
+      } catch (error) {
+        console.error('Failed to fetch stock price:', error);
+      } finally {
+        setStockLoading(false);
+      }
+    }
+
+    fetchStockPrice();
+    // Refresh every 60 seconds during market hours
+    const interval = setInterval(fetchStockPrice, 60000);
+    return () => clearInterval(interval);
+  }, []);
+
   if (!stats) return null;
 
   return (
-    <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+    <div className="grid grid-cols-2 lg:grid-cols-5 gap-3">
+      {/* Tesla Stock Price */}
+      <div className="bg-neutral-950 border border-neutral-800 rounded-xl p-4">
+        <div className="flex items-center gap-2 mb-2">
+          <DollarSign className="w-4 h-4 text-green-500" />
+          <span className="text-[10px] text-neutral-500 uppercase">TSLA</span>
+          {stockData && !stockData.isMarketOpen && (
+            <span className="text-[8px] text-neutral-600 ml-auto">Closed</span>
+          )}
+          {stockData?.isMarketOpen && (
+            <span className="text-[8px] text-green-500 ml-auto animate-pulse">Live</span>
+          )}
+        </div>
+        {stockLoading ? (
+          <div className="text-2xl font-bold text-neutral-600 animate-pulse">...</div>
+        ) : stockData ? (
+          <>
+            <div className="text-2xl font-bold text-white">
+              ${stockData.price.toFixed(2)}
+            </div>
+            <div className={`text-[10px] mt-1 ${stockData.change >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+              {stockData.change >= 0 ? '+' : ''}{stockData.change.toFixed(2)} ({stockData.changePercent >= 0 ? '+' : ''}{stockData.changePercent.toFixed(2)}%)
+            </div>
+          </>
+        ) : (
+          <>
+            <div className="text-2xl font-bold text-neutral-500">—</div>
+            <div className="text-[10px] text-neutral-500 mt-1">Unable to load</div>
+          </>
+        )}
+      </div>
+
       {/* Days Since Last Milestone */}
       <div className="bg-neutral-950 border border-neutral-800 rounded-xl p-4">
         <div className="flex items-center gap-2 mb-2">
