@@ -233,9 +233,9 @@ export default async function CityPage({ params }: { params: Promise<{ slug: str
             </div>
 
             {/* Progress Circle */}
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-4 flex-shrink-0">
               <div className="relative w-24 h-24">
-                <svg className="w-24 h-24 transform -rotate-90">
+                <svg className="w-24 h-24 transform -rotate-90" viewBox="0 0 96 96">
                   <circle
                     cx="48"
                     cy="48"
