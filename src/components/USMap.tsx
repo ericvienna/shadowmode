@@ -14,34 +14,34 @@ interface USMapProps {
 // Adjusted to align dots with map city labels
 const CITY_COORDINATES: Record<string, { x: number; y: number }> = {
   // California - on the coast
-  'ca-sf': { x: 8, y: 44 },
-  'ca-oak': { x: 9, y: 46 },
-  'ca-sj': { x: 9, y: 50 },
-  'ca-la': { x: 12, y: 62 },
-  'ca-sd': { x: 14, y: 68 },
+  'ca-sf': { x: 8, y: 52 },
+  'ca-oak': { x: 9, y: 54 },
+  'ca-sj': { x: 9, y: 58 },
+  'ca-la': { x: 12, y: 70 },
+  'ca-sd': { x: 14, y: 78 },
   // Nevada
-  'nv-vegas': { x: 18, y: 56 },
+  'nv-vegas': { x: 18, y: 64 },
   // Arizona
-  'az-phoenix': { x: 24, y: 64 },
-  'az-mesa-tempe': { x: 25, y: 66 },
+  'az-phoenix': { x: 24, y: 74 },
+  'az-mesa-tempe': { x: 25, y: 76 },
   // Texas
-  'tx-austin': { x: 50, y: 74 },
-  'tx-dallas': { x: 53, y: 66 },
-  'tx-houston': { x: 57, y: 76 },
-  'tx-san-antonio': { x: 48, y: 78 },
+  'tx-austin': { x: 50, y: 82 },
+  'tx-dallas': { x: 53, y: 76 },
+  'tx-houston': { x: 57, y: 86 },
+  'tx-san-antonio': { x: 48, y: 88 },
   // Colorado
-  'co-denver': { x: 36, y: 42 },
+  'co-denver': { x: 36, y: 48 },
   // Illinois
-  'il-chicago': { x: 68, y: 36 },
+  'il-chicago': { x: 68, y: 42 },
   // Florida
-  'fl-miami': { x: 87, y: 90 },
-  'fl-tampa': { x: 84, y: 82 },
-  'fl-orlando': { x: 85, y: 78 },
-  'fl-jacksonville': { x: 83, y: 70 },
+  'fl-miami': { x: 87, y: 98 },
+  'fl-tampa': { x: 84, y: 92 },
+  'fl-orlando': { x: 85, y: 88 },
+  'fl-jacksonville': { x: 83, y: 80 },
   // East coast cities
-  'ma-boston': { x: 94, y: 34 },
-  'ny-brooklyn': { x: 92, y: 40 },
-  'ny-queens': { x: 92, y: 38 },
+  'ma-boston': { x: 94, y: 40 },
+  'ny-brooklyn': { x: 92, y: 48 },
+  'ny-queens': { x: 92, y: 46 },
 };
 
 export function USMap({ states, onCityClick }: USMapProps) {
@@ -70,7 +70,7 @@ export function USMap({ states, onCityClick }: USMapProps) {
     <div className="bg-neutral-950 border border-neutral-800 rounded-xl p-4 overflow-hidden">
       <h3 className="text-white text-xs font-semibold mb-4">Deployment Map</h3>
 
-      <div className="relative w-full aspect-[1.8/1] rounded-lg overflow-hidden">
+      <div className="relative w-full aspect-[2.2/1] rounded-lg overflow-hidden">
         {/* Map background image */}
         <div className="absolute inset-0 scale-100 origin-center">
           <Image
