@@ -95,7 +95,7 @@ export function ProgressMatrix({ states }: ProgressMatrixProps) {
                   onMouseLeave={() => setHoveredRow(null)}
                 >
                   <td
-                    className="px-2 sm:px-3 py-2 border-b border-r border-neutral-800 sticky left-0 bg-neutral-900/90 z-10 w-[140px] sm:w-[180px] lg:w-[280px] min-w-[140px] sm:min-w-[180px] lg:min-w-[280px] max-w-[140px] sm:max-w-[180px] lg:max-w-[280px] group relative"
+                    className={`px-2 sm:px-3 py-2 border-b border-r border-neutral-800 sticky left-0 bg-neutral-900/90 w-[140px] sm:w-[180px] lg:w-[280px] min-w-[140px] sm:min-w-[180px] lg:min-w-[280px] max-w-[140px] sm:max-w-[180px] lg:max-w-[280px] group relative ${hoveredRow === state.id ? 'z-[150]' : 'z-10'}`}
                   >
                     <div className="flex items-center gap-1 sm:gap-2 overflow-hidden">
                       {expandedStates.has(state.id) ? (
@@ -121,7 +121,7 @@ export function ProgressMatrix({ states }: ProgressMatrixProps) {
                         {/* Tooltip on hover */}
                         <div className="absolute left-full ml-2 top-1/2 -translate-y-1/2 px-3 py-2 bg-black/95 border border-neutral-700 rounded-lg text-[10px] text-neutral-300 whitespace-nowrap z-[200] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all shadow-xl pointer-events-none">
                           <div className="font-semibold text-white mb-1">{state.name} ({state.abbreviation})</div>
-                          <div className="max-w-[300px] whitespace-normal">{state.notes}</div>
+                          <div className="max-w-[600px] whitespace-normal">{state.notes}</div>
                         </div>
                       </>
                     )}
