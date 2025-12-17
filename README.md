@@ -124,6 +124,15 @@ Estimated timeline projections for each city to achieve fully driverless status 
 ### 📈 Rollout Velocity
 Month-over-month deployment acceleration tracking with trend indicators (Accelerating / Stable / Slowing).
 
+### 📊 Narrative Pressure Index
+Market patience and execution momentum tracker featuring:
+- **Proof Velocity**: Milestones achieved per month
+- **Narrative Half-Life**: Catalyst freshness (Fresh/Active/Fading/Stale)
+- **Regulatory Surface Area**: Exposure to restrictive states
+- **Narrative Drift**: Story-led vs Execution-led positioning
+- **What Changes the Stock**: Dynamic catalyst checklist
+- **Last Catalyst Impact**: Historical price reaction data
+
 </td>
 <td width="50%">
 
@@ -138,6 +147,9 @@ TAM/SAM analysis for robotaxi markets including estimated revenue potential and 
 
 ### 🗣️ Public Trust Signal
 Weighted sentiment analysis from surveys, social media, and news coverage measuring public perception of autonomous vehicles.
+
+### 💹 Market Read
+Dynamic investor implications based on deployment velocity trend, with actionable insights derived from execution data.
 
 </td>
 </tr>
@@ -448,6 +460,8 @@ If you have verified information about Tesla Robotaxi deployments:
   - [x] Safety Signals monitoring
   - [x] Economic Impact (TAM/SAM)
   - [x] Public Trust Signal
+  - [x] Narrative Pressure Index
+  - [x] Market Read (dynamic implications)
 - [ ] Predictive model for next cities
 - [ ] Competitor tracking (Waymo, Cruise, Zoox)
 - [ ] Embeddable widgets
