@@ -125,8 +125,9 @@ export function TimeToDriverless({ states }: TimeToDriverlessProps) {
                   <div key={p.cityId} className="bg-neutral-800/50 rounded px-2 py-1.5">
                     <div className="flex items-center justify-between">
                       <span className="text-xs text-neutral-200">{p.cityName}</span>
-                      <span className={`text-[10px] ${confidenceColors[p.confidenceLevel]}`}>
-                        {p.confidenceLevel} conf.
+                      <span className={`text-[10px] text-right leading-tight ${confidenceColors[p.confidenceLevel]}`}>
+                        <span className="block uppercase">{p.confidenceLevel}</span>
+                        <span className="block uppercase">Confidence</span>
                       </span>
                     </div>
                     <div className="flex flex-wrap gap-1 mt-1">
@@ -153,8 +154,9 @@ export function TimeToDriverless({ states }: TimeToDriverlessProps) {
                 {groupedByRange['6-9 months'].slice(0, 5).map(p => (
                   <div key={p.cityId} className="flex items-center justify-between text-xs bg-neutral-800/30 rounded px-2 py-1.5">
                     <span className="text-neutral-300">{p.cityName}</span>
-                    <span className={`text-[10px] ${confidenceColors[p.confidenceLevel]}`}>
-                      {p.confidenceLevel}
+                    <span className={`text-[10px] text-right leading-tight ${confidenceColors[p.confidenceLevel]}`}>
+                      <span className="block uppercase">{p.confidenceLevel}</span>
+                      <span className="block uppercase">Confidence</span>
                     </span>
                   </div>
                 ))}

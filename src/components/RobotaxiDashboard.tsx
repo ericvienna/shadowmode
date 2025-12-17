@@ -16,6 +16,7 @@ import { CompareModal } from './CompareModal';
 import { FilterSort, type SortOption, type SortDirection, type FilterOption } from './FilterSort';
 import { ExecutiveSummary } from './ExecutiveSummary';
 import { ReadinessIndex } from './ReadinessIndex';
+import { NarrativePressure } from './NarrativePressure';
 import { TimeToDriverless } from './TimeToDriverless';
 import { RolloutVelocity } from './RolloutVelocity';
 import { RegulatoryFriction } from './RegulatoryFriction';
@@ -363,9 +364,12 @@ export function RobotaxiDashboard({ data }: RobotaxiDashboardProps) {
             </span>
           </div>
 
-          {/* Row 1: Readiness & Time-to-Driverless */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
-            <ReadinessIndex states={data.states} />
+          {/* Row 1: Readiness + Narrative Pressure & Time-to-Driverless */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4 items-stretch">
+            <div className="flex flex-col gap-4">
+              <ReadinessIndex states={data.states} />
+              <NarrativePressure states={data.states} />
+            </div>
             <TimeToDriverless states={data.states} />
           </div>
 

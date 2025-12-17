@@ -1,7 +1,7 @@
 'use client';
 
 import { useMemo, useState } from 'react';
-import { Gauge, TrendingUp, Building2, ChevronDown, ChevronUp } from 'lucide-react';
+import { Gauge, TrendingUp, ChevronDown, ChevronUp } from 'lucide-react';
 import type { State } from '@/types/robotaxi';
 import {
   calculateAllReadinessScores,
@@ -155,6 +155,7 @@ export function ReadinessIndex({ states }: ReadinessIndexProps) {
             Score weights: Regulatory (30%) + Insurance (20%) + App Access (15%) + Fleet (15%) + Driverless (20%)
           </p>
         </div>
+
       </div>
     </div>
   );
