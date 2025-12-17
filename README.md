@@ -74,7 +74,7 @@ While Tesla operates in the shadows collecting billions of miles of training dat
 ### 📊 Matrix View
 Progress grid showing every city across 13 regulatory milestones. Sort by progress, name, activity, or fleet size.
 
-### 🗺️ Map View  
+### 🗺️ Map View
 Geographic visualization of Tesla's autonomous expansion. Watch the network grow.
 
 ### ⏱️ Timeline View
@@ -87,7 +87,7 @@ Side-by-side city comparisons. Who's ahead?
 <td width="50%">
 
 ### 📰 Live News Feed
-Aggregated coverage from TechCrunch, Electrek, Teslarati, InsideEVs, and more. 62+ articles tracked.
+Real-time aggregation from Google News RSS covering Tesla robotaxi developments.
 
 ### 𝕏 Elon Tweet Integration
 Latest robotaxi-related tweets from @elonmusk displayed in real-time.
@@ -101,6 +101,57 @@ Track days since last major milestone (currently: 1 day since driverless Austin)
 </td>
 </tr>
 </table>
+
+<br />
+
+## Investor Intelligence
+
+A suite of leading indicators and risk analysis tools for tracking Tesla's autonomous rollout:
+
+<table>
+<tr>
+<td width="50%">
+
+### 📋 Executive Summary
+At-a-glance overview of key metrics: driverless markets, cities in progress, public test programs, and deployment velocity status.
+
+### 🎯 Readiness Index
+Weighted scoring algorithm measuring how close each market is to full autonomous deployment based on regulatory, operational, and infrastructure factors.
+
+### ⏳ Time To Driverless
+Estimated timeline projections for each city to achieve fully driverless status based on current milestone velocity.
+
+### 📈 Rollout Velocity
+Month-over-month deployment acceleration tracking with trend indicators (Accelerating / Stable / Slowing).
+
+</td>
+<td width="50%">
+
+### ⚖️ Regulatory Friction
+Analysis of regulatory complexity by state, including permit requirements, insurance mandates, and approval timelines.
+
+### 🛡️ Safety Signals
+Tracking of safety-related metrics including disengagement reports, incident data, and regulatory compliance status.
+
+### 💰 Economic Impact
+TAM/SAM analysis for robotaxi markets including estimated revenue potential and ride volume projections.
+
+### 🗣️ Public Trust Signal
+Weighted sentiment analysis from surveys, social media, and news coverage measuring public perception of autonomous vehicles.
+
+</td>
+</tr>
+</table>
+
+<br />
+
+## Email Alerts
+
+Subscribe to get notified when new cities launch driverless robotaxi service:
+
+- Real-time alerts for driverless milestones
+- Powered by Supabase for reliable email delivery
+- No spam, just milestone updates
 
 <br />
 
@@ -242,19 +293,12 @@ Open [http://localhost:3000](http://localhost:3000) and you're tracking.
 ## Environment Variables
 
 ```bash
-# Supabase
-NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_key
-SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
+# Supabase (for email subscriptions)
+SUPABASE_URL=your_supabase_url
+SUPABASE_SERVICE_KEY=your_service_key
 
 # Twitter/X API (for Elon tweets)
 TWITTER_BEARER_TOKEN=your_twitter_bearer_token
-
-# News APIs
-NEWS_API_KEY=your_newsapi_key
-
-# Optional: Scraping
-BROWSERLESS_API_KEY=your_browserless_key
 ```
 
 <br />
@@ -276,46 +320,49 @@ Playwright          Headless scraping for job postings
 
 ## API
 
-All data is available via public API endpoints.
+Available API endpoints:
 
 ```bash
-# Get all cities and their current status
-GET /api/v1/cities
+# Get live news feed (Google News RSS)
+GET /api/news
 
-# Get specific city progress
-GET /api/v1/cities/austin-tx
+# Get Tesla stock price
+GET /api/stock
 
-# Get all milestones for a state
-GET /api/v1/states/california
+# Subscribe to email alerts
+POST /api/subscribe
+Content-Type: application/json
+{ "email": "your@email.com" }
 
-# Get recent changes
-GET /api/v1/changelog
-
-# Get momentum/activity metrics
-GET /api/v1/momentum
-
-# Get latest Elon robotaxi tweets
-GET /api/v1/tweets
-
-# Get news feed
-GET /api/v1/news?limit=20
+# Get subscriber count
+GET /api/subscribe
 ```
 
-**Response format:**
+**Example responses:**
 
 ```json
+// POST /api/subscribe
 {
-  "city": "Austin",
-  "state": "TX",
-  "status": "driverless",
-  "progress": 88,
-  "milestones": {
-    "insurance": { "status": "completed", "date": "2021" },
-    "permit": { "status": "completed", "date": "2024-08-06" },
-    "driverless": { "status": "completed", "date": "2024-12-14" }
-  },
-  "vehicles_deployed": "30+",
-  "last_updated": "2024-12-15T00:00:00Z"
+  "message": "Subscribed successfully",
+  "email": "your@email.com"
+}
+
+// GET /api/subscribe
+{
+  "count": 42,
+  "message": "Subscriber count"
+}
+
+// GET /api/news
+{
+  "articles": [
+    {
+      "title": "Tesla Starts Testing Robotaxis in Austin",
+      "source": "TechCrunch",
+      "date": "2024-12-14",
+      "url": "https://..."
+    }
+  ]
 }
 ```
 
@@ -380,7 +427,7 @@ If you have verified information about Tesla Robotaxi deployments:
 - [x] Core matrix dashboard
 - [x] Real-time Supabase sync
 - [x] Mobile responsive
-- [x] Live news feed aggregation
+- [x] Live news feed aggregation (Google News RSS)
 - [x] Elon tweet integration
 - [x] Momentum indicator
 - [x] Days since counter
@@ -388,10 +435,19 @@ If you have verified information about Tesla Robotaxi deployments:
 - [x] Vehicle fleet visualization
 - [x] State-level notes/context
 - [x] Activity log (62+ events)
-- [ ] Interactive US map
-- [ ] Timeline/Gantt view (in progress)
-- [ ] Compare view (in progress)
-- [ ] Email alerts for specific cities
+- [x] Interactive US map
+- [x] Timeline view
+- [x] Compare view
+- [x] Email alerts signup (Supabase)
+- [x] Executive Summary dashboard
+- [x] Investor Intelligence suite
+  - [x] Readiness Index
+  - [x] Time To Driverless projections
+  - [x] Rollout Velocity tracking
+  - [x] Regulatory Friction analysis
+  - [x] Safety Signals monitoring
+  - [x] Economic Impact (TAM/SAM)
+  - [x] Public Trust Signal
 - [ ] Predictive model for next cities
 - [ ] Competitor tracking (Waymo, Cruise, Zoox)
 - [ ] Embeddable widgets
