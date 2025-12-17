@@ -174,32 +174,50 @@ export function SidebarTabs({ states }: SidebarTabsProps) {
   const [news, setNews] = useState<NewsItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [visibleActivityCount, setVisibleActivityCount] = useState(10);
+  const [visibleNewsCount, setVisibleNewsCount] = useState(8);
   const [mounted, setMounted] = useState(false);
   const [lastRefresh, setLastRefresh] = useState<Date | null>(null);
 
-  useEffect(() => {
-    setMounted(true);
-    setActivities(getRecentActivity(states, 365));
-
-    // Load news - all items
-    const sortedNews = [...REAL_NEWS].sort((a, b) =>
-      new Date(b.date).getTime() - new Date(a.date).getTime()
-    );
-    setNews(sortedNews);
-    setIsLoading(false);
-    setLastRefresh(new Date());
-  }, [states]);
-
-  const refreshNews = () => {
+  const fetchNews = async () => {
     setIsLoading(true);
-    setTimeout(() => {
+    try {
+      const response = await fetch('/api/news');
+      const data = await response.json();
+
+      if (data.articles && data.articles.length > 0) {
+        // Sort by date, most recent first
+        const sortedNews = [...data.articles].sort((a: NewsItem, b: NewsItem) =>
+          new Date(b.date).getTime() - new Date(a.date).getTime()
+        );
+        setNews(sortedNews);
+      } else {
+        // Fallback to static news if API fails
+        const sortedNews = [...REAL_NEWS].sort((a, b) =>
+          new Date(b.date).getTime() - new Date(a.date).getTime()
+        );
+        setNews(sortedNews);
+      }
+    } catch (error) {
+      console.error('Failed to fetch news:', error);
+      // Fallback to static news
       const sortedNews = [...REAL_NEWS].sort((a, b) =>
         new Date(b.date).getTime() - new Date(a.date).getTime()
       );
       setNews(sortedNews);
+    } finally {
       setIsLoading(false);
       setLastRefresh(new Date());
-    }, 300);
+    }
+  };
+
+  useEffect(() => {
+    setMounted(true);
+    setActivities(getRecentActivity(states, 365));
+    fetchNews();
+  }, [states]);
+
+  const refreshNews = () => {
+    fetchNews();
   };
 
   const getActivityIcon = (milestoneType: string) => {
@@ -245,7 +263,7 @@ export function SidebarTabs({ states }: SidebarTabsProps) {
   };
 
   return (
-    <div className="bg-neutral-950 border border-neutral-800 rounded-xl overflow-hidden h-full flex flex-col">
+    <div className="bg-neutral-950 border border-neutral-800 rounded-xl overflow-hidden flex flex-col">
       {/* Tab Header */}
       <div className="flex border-b border-neutral-800">
         <button
@@ -285,38 +303,48 @@ export function SidebarTabs({ states }: SidebarTabsProps) {
                   <span className="text-neutral-500 text-[10px]">Loading news...</span>
                 </div>
               ) : (
-                news.map((item, index) => (
-                  <a
-                    key={item.id}
-                    href={item.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="block px-4 py-3 hover:bg-neutral-900/50 transition-colors animate-fade-in"
-                    style={{ animationDelay: `${index * 50}ms` }}
-                  >
-                    <div className="flex items-start justify-between gap-3">
-                      <div className="flex-1 min-w-0">
-                        <h4 className="text-neutral-200 text-xs font-medium mb-1 line-clamp-2 hover:text-white transition-colors">
-                          {item.title}
-                        </h4>
-                        {item.snippet && (
-                          <p className="text-neutral-500 text-[10px] line-clamp-2 mb-2">
-                            {item.snippet}
-                          </p>
-                        )}
-                        <div className="flex items-center gap-2">
-                          <span className={`px-1.5 py-0.5 rounded text-[9px] font-medium ${getSourceColor(item.source)}`}>
-                            {item.source}
-                          </span>
-                          <span className="text-neutral-600 text-[9px]">
-                            {formatNewsDate(item.date)}
-                          </span>
+                <>
+                  {news.slice(0, visibleNewsCount).map((item, index) => (
+                    <a
+                      key={item.id}
+                      href={item.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="block px-4 py-3 hover:bg-neutral-900/50 transition-colors animate-fade-in"
+                      style={{ animationDelay: `${index * 50}ms` }}
+                    >
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="flex-1 min-w-0">
+                          <h4 className="text-neutral-200 text-xs font-medium mb-1 line-clamp-2 hover:text-white transition-colors">
+                            {item.title}
+                          </h4>
+                          {item.snippet && (
+                            <p className="text-neutral-500 text-[10px] line-clamp-2 mb-2">
+                              {item.snippet}
+                            </p>
+                          )}
+                          <div className="flex items-center gap-2">
+                            <span className={`px-1.5 py-0.5 rounded text-[9px] font-medium ${getSourceColor(item.source)}`}>
+                              {item.source}
+                            </span>
+                            <span className="text-neutral-600 text-[9px]">
+                              {formatNewsDate(item.date)}
+                            </span>
+                          </div>
                         </div>
+                        <ExternalLink className="w-3 h-3 text-neutral-600 flex-shrink-0 mt-1" />
                       </div>
-                      <ExternalLink className="w-3 h-3 text-neutral-600 flex-shrink-0 mt-1" />
-                    </div>
-                  </a>
-                ))
+                    </a>
+                  ))}
+                  {visibleNewsCount < news.length && (
+                    <button
+                      onClick={() => setVisibleNewsCount(prev => prev + 8)}
+                      className="w-full px-4 py-2 text-[10px] text-neutral-400 hover:text-white hover:bg-neutral-900 transition-colors"
+                    >
+                      Show more ({news.length - visibleNewsCount} remaining)
+                    </button>
+                  )}
+                </>
               )}
             </div>
 

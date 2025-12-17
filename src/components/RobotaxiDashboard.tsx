@@ -14,7 +14,17 @@ import { TimelineView } from './TimelineView';
 import { CityModal } from './CityModal';
 import { CompareModal } from './CompareModal';
 import { FilterSort, type SortOption, type SortDirection, type FilterOption } from './FilterSort';
+import { ExecutiveSummary } from './ExecutiveSummary';
+import { ReadinessIndex } from './ReadinessIndex';
+import { TimeToDriverless } from './TimeToDriverless';
+import { RolloutVelocity } from './RolloutVelocity';
+import { RegulatoryFriction } from './RegulatoryFriction';
+import { SafetySignals } from './SafetySignals';
+import { EconomicImpact } from './EconomicImpact';
+import { PublicTrustSignalCard } from './PublicTrustSignalCard';
+import { EmailSignup } from './EmailSignup';
 import { getCityProgress } from '@/lib/utils';
+import { mockTrustData } from '@/lib/mockTrustData';
 import {
   Car,
   ExternalLink,
@@ -224,6 +234,11 @@ export function RobotaxiDashboard({ data }: RobotaxiDashboardProps) {
       )}
 
       <main className="w-full px-3 sm:px-4 lg:px-6 py-4 lg:py-6">
+        {/* Executive Summary - Above the Fold */}
+        <section className="mb-6">
+          <ExecutiveSummary states={data.states} />
+        </section>
+
         {/* Countdown Widgets */}
         <section className="mb-6">
           <CountdownWidget states={data.states} />
@@ -232,6 +247,11 @@ export function RobotaxiDashboard({ data }: RobotaxiDashboardProps) {
         {/* Stats Cards */}
         <section className="mb-6">
           <StatsCards states={data.states} />
+        </section>
+
+        {/* Email Signup */}
+        <section className="mb-6">
+          <EmailSignup />
         </section>
 
         {/* Legend */}
@@ -299,9 +319,9 @@ export function RobotaxiDashboard({ data }: RobotaxiDashboardProps) {
         </section>
 
         {/* Main Content Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 items-stretch">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 items-start">
           {/* Main View Area */}
-          <div className="lg:col-span-3" id="main-content">
+          <div className="lg:col-span-3 order-2 lg:order-1" id="main-content">
             {viewMode === 'matrix' && (
               <section>
                 <div className="flex items-center justify-between mb-3">
@@ -328,10 +348,44 @@ export function RobotaxiDashboard({ data }: RobotaxiDashboardProps) {
           </div>
 
           {/* Sidebar - matches left column height */}
-          <div className="lg:self-stretch">
+          <div className="lg:self-stretch order-1 lg:order-2">
             <SidebarTabs states={data.states} />
           </div>
         </div>
+
+        {/* Investor Intelligence Section */}
+        <section className="mt-8">
+          <div className="flex items-center gap-2 mb-4">
+            <div className="w-1 h-5 bg-gradient-to-b from-blue-500 to-purple-500 rounded-full" />
+            <h2 className="text-white text-sm font-semibold">Investor Intelligence</h2>
+            <span className="text-[10px] text-neutral-500 px-2 py-0.5 bg-neutral-900 border border-neutral-800 rounded">
+              Leading Indicators & Risk Analysis
+            </span>
+          </div>
+
+          {/* Row 1: Readiness & Time-to-Driverless */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
+            <ReadinessIndex states={data.states} />
+            <TimeToDriverless states={data.states} />
+          </div>
+
+          {/* Row 2: Safety + Trust */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
+            <SafetySignals states={data.states} />
+            <PublicTrustSignalCard data={mockTrustData} />
+          </div>
+
+          {/* Row 3: Economic Impact & Regulatory Friction */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
+            <EconomicImpact states={data.states} />
+            <RegulatoryFriction states={data.states} />
+          </div>
+
+          {/* Row 4: Rollout Velocity */}
+          <div className="grid grid-cols-1 gap-4">
+            <RolloutVelocity states={data.states} />
+          </div>
+        </section>
       </main>
 
       {/* Footer */}

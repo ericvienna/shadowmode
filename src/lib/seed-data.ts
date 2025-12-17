@@ -1,4 +1,4 @@
-import type { State, MilestoneType, Milestone } from '@/types/robotaxi';
+import type { State, MilestoneType, Milestone, RegulatoryDifficulty } from '@/types/robotaxi';
 
 /**
  * DATA SOURCE: @JonathanWStokes Robotaxi Progress Tracker (Dec 14, 2025)
@@ -75,6 +75,9 @@ export const SEED_DATA: State[] = [
     id: 'az',
     name: 'Arizona',
     abbreviation: 'AZ',
+    regulatoryDifficulty: 'friendly',
+    avgPermitDays: 85,
+    bottleneckStage: 'final_regulatory_approval',
     cities: [
       {
         id: 'az-phoenix',
@@ -108,6 +111,9 @@ export const SEED_DATA: State[] = [
     id: 'ca',
     name: 'California',
     abbreviation: 'CA',
+    regulatoryDifficulty: 'mixed',
+    avgPermitDays: 180,
+    bottleneckStage: 'final_regulatory_approval',
     notes: 'To remove safety monitors, Tesla needs Driverless Tester Permit and CPUC enrollment.',
     cities: [
       {
@@ -182,6 +188,8 @@ export const SEED_DATA: State[] = [
     id: 'co',
     name: 'Colorado',
     abbreviation: 'CO',
+    regulatoryDifficulty: 'friendly',
+    notes: 'No AV permit required in Colorado.',
     cities: [
       {
         id: 'co-denver',
@@ -200,7 +208,9 @@ export const SEED_DATA: State[] = [
     id: 'fl',
     name: 'Florida',
     abbreviation: 'FL',
-    notes: 'Tesla Insurance not yet available in Florida.',
+    regulatoryDifficulty: 'friendly',
+    bottleneckStage: 'tesla_insurance_available',
+    notes: 'No AV permit required. Tesla Insurance not yet available in Florida.',
     cities: [
       {
         id: 'fl-jacksonville',
@@ -255,6 +265,8 @@ export const SEED_DATA: State[] = [
     id: 'il',
     name: 'Illinois',
     abbreviation: 'IL',
+    regulatoryDifficulty: 'mixed',
+    notes: 'No state-level AV permit required, but local regulations may apply.',
     cities: [
       {
         id: 'il-chicago',
@@ -273,6 +285,10 @@ export const SEED_DATA: State[] = [
     id: 'ma',
     name: 'Massachusetts',
     abbreviation: 'MA',
+    regulatoryDifficulty: 'restrictive',
+    avgPermitDays: 240,
+    bottleneckStage: 'permit_received',
+    notes: 'Requires local approval and state coordination for AV testing.',
     cities: [
       {
         id: 'ma-boston',
@@ -292,6 +308,9 @@ export const SEED_DATA: State[] = [
     id: 'nv',
     name: 'Nevada',
     abbreviation: 'NV',
+    regulatoryDifficulty: 'friendly',
+    avgPermitDays: 8,
+    notes: 'Pro-AV state with streamlined permit process.',
     cities: [
       {
         id: 'nv-vegas',
@@ -312,7 +331,10 @@ export const SEED_DATA: State[] = [
     id: 'ny',
     name: 'New York',
     abbreviation: 'NY',
-    notes: 'Tesla Insurance not yet available in New York.',
+    regulatoryDifficulty: 'restrictive',
+    avgPermitDays: 365,
+    bottleneckStage: 'permit_applied',
+    notes: 'Strict AV regulations. Tesla Insurance not yet available in New York.',
     cities: [
       {
         id: 'ny-brooklyn',
@@ -342,7 +364,10 @@ export const SEED_DATA: State[] = [
     id: 'tx',
     name: 'Texas',
     abbreviation: 'TX',
-    notes: 'In 2026, Tesla needs final TxDMV authorization per Senate Bill 2807.',
+    regulatoryDifficulty: 'friendly',
+    avgPermitDays: 60,
+    bottleneckStage: 'final_regulatory_approval',
+    notes: 'Pro-AV state. In 2026, Tesla needs final TxDMV authorization per Senate Bill 2807.',
     cities: [
       {
         id: 'tx-austin',

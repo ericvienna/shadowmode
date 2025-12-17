@@ -14,12 +14,116 @@ export type MilestoneType =
 
 export type MilestoneStatus = 'not_started' | 'in_progress' | 'completed' | 'unknown' | 'n/a';
 
+// Source and confidence scoring for milestones
+export type MilestoneSource = 'tesla_official' | 'regulator' | 'media' | 'inferred';
+export type ConfidenceLevel = 'high' | 'medium' | 'low';
+
 export interface Milestone {
   type: MilestoneType;
   status: MilestoneStatus;
   date?: string;
   value?: string; // For things like vehicle count "30+"
   notes?: string;
+  source?: MilestoneSource;
+  confidence?: ConfidenceLevel;
+}
+
+// Regulatory friction scoring
+export type RegulatoryDifficulty = 'friendly' | 'mixed' | 'restrictive';
+
+// Readiness Index weights (0-100 scale)
+export interface ReadinessWeights {
+  regulatory_approval: number;      // 30%
+  insurance_live: number;           // 20%
+  app_access_onboarding: number;    // 15%
+  fleet_deployed: number;           // 15%
+  driverless_achieved: number;      // 20%
+}
+
+export interface ReadinessScore {
+  cityId: string;
+  cityName: string;
+  score: number;          // 0-100
+  breakdown: {
+    regulatory: number;
+    insurance: number;
+    appAccess: number;
+    fleet: number;
+    driverless: number;
+  };
+  trend: 'rising' | 'stable' | 'new';
+}
+
+// Time-to-Driverless Projection
+export type ProjectionRange = '3-5 months' | '6-9 months' | '9-12 months' | '>12 months' | 'achieved';
+
+export interface TimeToDriverlessProjection {
+  cityId: string;
+  cityName: string;
+  currentProgress: number;          // 0-100%
+  estimatedRange: ProjectionRange;
+  basedOn: string;                  // "Austin baseline" or custom
+  confidenceLevel: ConfidenceLevel;
+  factors: string[];                // ["Strong regulatory environment", "Fleet already deployed"]
+}
+
+// Rollout Velocity Metrics
+export type VelocityTrend = 'accelerating' | 'stable' | 'slowing';
+
+export interface VelocityMetrics {
+  newCitiesThisMonth: number;
+  newCitiesLastMonth: number;
+  testLaunchesThisQuarter: number;
+  testLaunchesLastQuarter: number;
+  driverlessEventsThisYear: number;
+  overallTrend: VelocityTrend;
+  monthlyTrend: number[];           // Last 6 months of new city entries
+}
+
+// Safety Signal Metrics
+export interface SafetyMetrics {
+  estimatedMilesDriven: number;
+  incidentHeadlinesLast90Days: number;
+  daysSinceLastIncident: number | null;
+  safetyRating: 'excellent' | 'good' | 'monitoring';
+  lastUpdated: string;
+}
+
+// Economic Impact Estimates
+export interface EconomicImpact {
+  cityId: string;
+  cityName: string;
+  estimatedFleetSize: number;
+  estimatedRidesPerDay: { low: number; high: number };
+  estimatedAnnualRevenue: { low: number; high: number };
+  confidenceLevel: ConfidenceLevel;
+}
+
+export interface NationalEconomicSummary {
+  trackedCities: number;
+  totalEstimatedFleet: number;
+  totalAnnualTAM: { low: number; high: number };
+  activeMarketRevenue: { low: number; high: number };
+}
+
+// News-Milestone Causality
+export interface NewsImpact {
+  newsId: string;
+  headline: string;
+  date: string;
+  affectedCities: string[];
+  affectedMilestones: MilestoneType[];
+  impactDescription: string;
+}
+
+// Executive Summary (algorithmically generated)
+export interface ExecutiveSummary {
+  headline: string;
+  newCitiesLast60Days: number;
+  projectedDriverlessNext6Months: number;
+  velocityStatus: VelocityTrend;
+  keyHighlights: string[];
+  generatedAt: string;
 }
 
 export interface City {
@@ -34,6 +138,9 @@ export interface State {
   abbreviation: string;
   cities: City[];
   notes?: string;
+  regulatoryDifficulty?: RegulatoryDifficulty;
+  avgPermitDays?: number;           // Average days in permit stage
+  bottleneckStage?: MilestoneType;  // Which stage takes longest
 }
 
 export interface DashboardData {
