@@ -40,11 +40,6 @@ export function RolloutVelocity({ states }: RolloutVelocityProps) {
   };
 
   const trend = trendConfig[velocity.overallTrend];
-  const maxTrend = Math.max(...velocity.monthlyTrend, 1);
-
-  // Calculate what Q2 momentum would have projected
-  const q2Avg = velocity.monthlyTrend.slice(0, 3).reduce((a, b) => a + b, 0) / 3;
-  const projectedIfQ2Continued = Math.round(q2Avg * 1.15); // 15% growth trajectory
 
   // Institutional interpretations based on trend
   const institutionalReads = useMemo(() => {
@@ -94,36 +89,33 @@ export function RolloutVelocity({ states }: RolloutVelocityProps) {
       </div>
 
       <div className="p-4">
-        {/* Trend Chart with Counterfactual */}
+        {/* Month-over-Month Comparison */}
         <div className="mb-4">
-          <div className="flex items-center justify-between mb-2">
-            <p className="text-[10px] text-neutral-500 uppercase">Monthly Activity (6mo)</p>
-            <p className="text-[9px] text-neutral-600">
-              <span className="text-neutral-500">Projected if Q2 continued:</span>{' '}
-              <span className="text-cyan-400/50">{projectedIfQ2Continued}</span>
-            </p>
-          </div>
-          <div className="flex items-end gap-1 h-16 relative">
-            {/* Ghost projection line */}
-            <div
-              className="absolute right-0 w-px bg-cyan-400/20 border-l border-dashed border-cyan-400/30"
-              style={{ height: `${Math.max((projectedIfQ2Continued / maxTrend) * 100, 10)}%`, bottom: 0 }}
-            />
-            {velocity.monthlyTrend.map((value, idx) => (
-              <div key={idx} className="flex-1 flex flex-col items-center">
-                <div
-                  className={`w-full rounded-t transition-all ${
-                    idx >= 4 ? 'bg-cyan-500' : 'bg-neutral-700'
-                  }`}
-                  style={{ height: `${Math.max((value / maxTrend) * 100, 10)}%` }}
-                />
-                <span className="text-[9px] text-neutral-600 mt-1">{value}</span>
+          <p className="text-[10px] text-neutral-500 uppercase mb-3">Month-over-Month Change</p>
+          <div className="flex items-center justify-between bg-neutral-800/50 rounded-lg p-3">
+            <div className="text-center">
+              <p className="text-[9px] text-neutral-500 uppercase mb-1">Last Month</p>
+              <p className="text-xl font-bold text-neutral-400">{velocity.newCitiesLastMonth}</p>
+              <p className="text-[9px] text-neutral-600">milestones</p>
+            </div>
+            <div className="flex flex-col items-center px-4">
+              <div className={`text-2xl ${trend.color}`}>
+                {velocity.newCitiesThisMonth > velocity.newCitiesLastMonth ? '↑' :
+                 velocity.newCitiesThisMonth < velocity.newCitiesLastMonth ? '↓' : '→'}
               </div>
-            ))}
-          </div>
-          <div className="flex justify-between mt-1">
-            <span className="text-[9px] text-neutral-600">6mo ago</span>
-            <span className="text-[9px] text-neutral-600">This month</span>
+              <p className={`text-[10px] font-medium ${trend.color}`}>
+                {velocity.newCitiesThisMonth > velocity.newCitiesLastMonth
+                  ? `+${velocity.newCitiesThisMonth - velocity.newCitiesLastMonth}`
+                  : velocity.newCitiesThisMonth < velocity.newCitiesLastMonth
+                    ? `${velocity.newCitiesThisMonth - velocity.newCitiesLastMonth}`
+                    : 'No change'}
+              </p>
+            </div>
+            <div className="text-center">
+              <p className="text-[9px] text-neutral-500 uppercase mb-1">This Month</p>
+              <p className={`text-xl font-bold ${trend.color}`}>{velocity.newCitiesThisMonth}</p>
+              <p className="text-[9px] text-neutral-600">milestones</p>
+            </div>
           </div>
         </div>
 
