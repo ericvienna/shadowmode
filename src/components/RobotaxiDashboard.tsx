@@ -19,6 +19,7 @@ import { ReadinessIndex } from './ReadinessIndex';
 import { NarrativePressure } from './NarrativePressure';
 import { TimeToDriverless } from './TimeToDriverless';
 import { RolloutVelocity } from './RolloutVelocity';
+import { IrreversibilityIndex } from './IrreversibilityIndex';
 import { RegulatoryFriction } from './RegulatoryFriction';
 import { SafetySignals } from './SafetySignals';
 import { EconomicImpact } from './EconomicImpact';
@@ -385,9 +386,10 @@ export function RobotaxiDashboard({ data }: RobotaxiDashboardProps) {
             <RegulatoryFriction states={data.states} />
           </div>
 
-          {/* Row 4: Rollout Velocity */}
-          <div className="grid grid-cols-1 gap-4">
+          {/* Row 4: Rollout Velocity + Irreversibility */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
             <RolloutVelocity states={data.states} />
+            <IrreversibilityIndex states={data.states} />
           </div>
         </section>
       </main>
