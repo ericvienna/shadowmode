@@ -95,8 +95,8 @@ export function SafetySignals({ states }: SafetySignalsProps) {
         <div className="bg-gradient-to-r from-emerald-500/10 to-transparent border border-emerald-500/20 rounded-lg p-3 mb-4">
           <p className="text-[11px] text-neutral-300 leading-relaxed">
             <span className="font-semibold text-emerald-400">No major safety incidents reported</span>{' '}
-            in Tesla robotaxi testing. The driverless operation in Austin began Dec 14, 2025 with
-            third-party LiDAR validation completed prior to launch.
+            in Tesla robotaxi testing. The driverless operation in Austin began Dec 14, 2024 with
+            third-party route and safety validation completed prior to launch.
           </p>
         </div>
 

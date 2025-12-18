@@ -5,7 +5,7 @@ export type MilestoneType =
   | 'vehicle_operator_ads'
   | 'robotaxi_fleet_support_ads'
   | 'final_regulatory_approval'
-  | 'lidar_validation_tests'
+  | 'route_validation_tests'
   | 'robotaxi_app_access_opens'
   | 'public_test_program_launched'
   | 'geofence_expanded'
@@ -193,10 +193,10 @@ export const MILESTONE_DEFINITIONS: MilestoneDefinition[] = [
     description: 'Full regulatory approval received for autonomous operation',
   },
   {
-    type: 'lidar_validation_tests',
-    label: 'LiDAR Validation Tests',
-    shortLabel: 'LiDAR Tests',
-    description: 'Third-party LiDAR validation testing completed',
+    type: 'route_validation_tests',
+    label: 'Route Validation Tests',
+    shortLabel: 'Route Val',
+    description: 'Route mapping and safety validation testing completed',
   },
   {
     type: 'robotaxi_app_access_opens',

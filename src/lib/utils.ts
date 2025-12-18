@@ -293,7 +293,7 @@ export function getCitySparklineData(city: City): number[] {
     'vehicle_operator_ads',
     'robotaxi_fleet_support_ads',
     'final_regulatory_approval',
-    'lidar_validation_tests',
+    'route_validation_tests',
     'robotaxi_app_access_opens',
     'public_test_program_launched',
     'geofence_expanded',
@@ -339,7 +339,7 @@ export function calculateReadinessScore(city: City, stateName: string): Readines
   else if (m.permit_applied.status === 'completed' || m.permit_applied.status === 'in_progress') regulatoryScore += 5;
   if (m.final_regulatory_approval.status === 'completed') regulatoryScore += 15;
   else if (m.final_regulatory_approval.status === 'in_progress') regulatoryScore += 7;
-  if (m.lidar_validation_tests.status === 'completed') regulatoryScore += 5;
+  if (m.route_validation_tests.status === 'completed') regulatoryScore += 5;
   regulatoryScore = Math.min(regulatoryScore, READINESS_WEIGHTS.regulatory);
 
   // Insurance component (20%)
