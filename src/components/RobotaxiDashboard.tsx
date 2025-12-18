@@ -236,8 +236,8 @@ export function RobotaxiDashboard({ data }: RobotaxiDashboardProps) {
       )}
 
       <main className="w-full px-3 sm:px-4 lg:px-6 py-4 lg:py-6">
-        {/* Executive Summary - Above the Fold */}
-        <section className="mb-6">
+        {/* Executive Summary - Desktop: Above the Fold, Mobile: After Stats */}
+        <section className="mb-6 hidden lg:block">
           <ExecutiveSummary states={data.states} />
         </section>
 
@@ -251,18 +251,23 @@ export function RobotaxiDashboard({ data }: RobotaxiDashboardProps) {
           <StatsCards states={data.states} />
         </section>
 
+        {/* Executive Summary - Mobile only: After Stats, Before Email */}
+        <section className="mb-6 lg:hidden">
+          <ExecutiveSummary states={data.states} />
+        </section>
+
         {/* Email Signup */}
         <section className="mb-6">
           <EmailSignup />
         </section>
 
-        {/* Legend */}
-        <section className="mb-4">
+        {/* Desktop: Legend before main grid */}
+        <section className="mb-4 hidden lg:block">
           <MilestoneLegend />
         </section>
 
-        {/* View Toggle and Filter/Sort */}
-        <section className="mb-4 flex flex-wrap items-center justify-between gap-3">
+        {/* Desktop: View Toggle and Filter/Sort before main grid */}
+        <section className="mb-4 hidden lg:flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-2">
             {/* View Mode Toggle */}
             <div className="flex items-center bg-neutral-900 border border-neutral-800 rounded-lg p-1">
@@ -322,8 +327,77 @@ export function RobotaxiDashboard({ data }: RobotaxiDashboardProps) {
 
         {/* Main Content Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 items-start">
+          {/* Sidebar - Mobile: First (News), Desktop: Right side */}
+          <div className="lg:self-stretch order-1 lg:order-2">
+            <SidebarTabs states={data.states} />
+          </div>
+
+          {/* Mobile: Legend after Sidebar/News */}
+          <div className="order-2 lg:hidden">
+            <MilestoneLegend />
+          </div>
+
+          {/* Mobile: View Toggle and Filter/Sort after Legend */}
+          <section className="order-3 lg:hidden flex flex-wrap items-center justify-between gap-3 mb-2">
+            <div className="flex items-center gap-2">
+              {/* View Mode Toggle */}
+              <div className="flex items-center bg-neutral-900 border border-neutral-800 rounded-lg p-1">
+                <button
+                  onClick={() => setViewMode('matrix')}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 text-[10px] rounded transition-colors ${
+                    viewMode === 'matrix' ? 'bg-neutral-800 text-white' : 'text-neutral-500 hover:text-white'
+                  }`}
+                >
+                  <LayoutGrid className="w-3 h-3" />
+                  Matrix
+                </button>
+                <button
+                  onClick={() => setViewMode('timeline')}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 text-[10px] rounded transition-colors ${
+                    viewMode === 'timeline' ? 'bg-neutral-800 text-white' : 'text-neutral-500 hover:text-white'
+                  }`}
+                >
+                  <Clock className="w-3 h-3" />
+                  Timeline
+                </button>
+                <button
+                  onClick={() => setViewMode('map')}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 text-[10px] rounded transition-colors ${
+                    viewMode === 'map' ? 'bg-neutral-800 text-white' : 'text-neutral-500 hover:text-white'
+                  }`}
+                >
+                  <Map className="w-3 h-3" />
+                  Map
+                </button>
+              </div>
+
+              {/* Compare Button */}
+              <button
+                onClick={() => setShowCompare(true)}
+                className="flex items-center gap-1.5 px-3 py-1.5 text-[10px] bg-neutral-900 border border-neutral-800 rounded-lg text-neutral-400 hover:text-white hover:bg-neutral-800 transition-colors"
+              >
+                <GitCompare className="w-3 h-3" />
+                Compare
+              </button>
+            </div>
+
+            {/* Filter/Sort - only show for matrix view */}
+            {viewMode === 'matrix' && (
+              <FilterSort
+                onSortChange={(sort, dir) => {
+                  setSortOption(sort);
+                  setSortDirection(dir);
+                }}
+                onFilterChange={setFilterOption}
+                currentSort={sortOption}
+                currentDirection={sortDirection}
+                currentFilter={filterOption}
+              />
+            )}
+          </section>
+
           {/* Main View Area */}
-          <div className="lg:col-span-3 order-2 lg:order-1" id="main-content">
+          <div className="lg:col-span-3 order-4 lg:order-1" id="main-content">
             {viewMode === 'matrix' && (
               <section>
                 <div className="flex items-center justify-between mb-3">
@@ -331,7 +405,7 @@ export function RobotaxiDashboard({ data }: RobotaxiDashboardProps) {
                     <Car className="w-4 h-4 text-red-500" />
                     Deployment Progress by City
                   </h2>
-                  <span className="text-[10px] text-neutral-500">
+                  <span className="text-[10px] text-neutral-500 hidden sm:inline">
                     {filterOption !== 'all' && `Filtered • `}
                     Scroll horizontally to see all milestones →
                   </span>
@@ -347,11 +421,6 @@ export function RobotaxiDashboard({ data }: RobotaxiDashboardProps) {
             {viewMode === 'map' && (
               <USMap states={data.states} onCityClick={handleCityClick} />
             )}
-          </div>
-
-          {/* Sidebar - matches left column height */}
-          <div className="lg:self-stretch order-1 lg:order-2">
-            <SidebarTabs states={data.states} />
           </div>
         </div>
 

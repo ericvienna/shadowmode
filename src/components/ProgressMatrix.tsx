@@ -62,7 +62,10 @@ export function ProgressMatrix({ states }: ProgressMatrixProps) {
 
   return (
     <div className="bg-neutral-950 border border-neutral-800 rounded-xl overflow-hidden">
-      <div className="overflow-x-auto touch-pan-x touch-pan-y">
+      <div
+        className="overflow-x-auto overscroll-x-contain"
+        style={{ WebkitOverflowScrolling: 'touch' }}
+      >
         <table className="w-full border-collapse">
           <thead className="bg-black sticky top-0 z-30">
             <tr>
