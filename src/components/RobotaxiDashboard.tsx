@@ -25,6 +25,8 @@ import { SafetySignals } from './SafetySignals';
 import { EconomicImpact } from './EconomicImpact';
 import { PublicTrustSignalCard } from './PublicTrustSignalCard';
 import { EmailSignup } from './EmailSignup';
+import { FleetInsights } from './FleetInsights';
+import { AVLandscape } from './AVLandscape';
 import { getCityProgress } from '@/lib/utils';
 import { mockTrustData } from '@/lib/mockTrustData';
 import {
@@ -423,6 +425,14 @@ export function RobotaxiDashboard({ data }: RobotaxiDashboardProps) {
             )}
           </div>
         </div>
+
+        {/* Live Fleet Tracking Section */}
+        <section className="mt-8">
+          <FleetInsights />
+        </section>
+
+        {/* Competitive Landscape */}
+        <AVLandscape />
 
         {/* Investor Intelligence Section */}
         <section className="mt-8">
