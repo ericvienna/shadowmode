@@ -179,7 +179,7 @@ export function CountdownWidget({ states }: CountdownWidgetProps) {
             </a>
           </>
         ) : (
-          <div className="text-[11px] text-neutral-600 animate-pulse">Loading...</div>
+          <div className="text-[11px] text-neutral-600">No recent tweets</div>
         )}
       </div>
 
@@ -205,7 +205,7 @@ export function CountdownWidget({ states }: CountdownWidgetProps) {
             </a>
           </>
         ) : (
-          <div className="text-[11px] text-neutral-600 animate-pulse">Loading...</div>
+          <div className="text-[11px] text-neutral-600">No recent tweets</div>
         )}
       </div>
     </div>
