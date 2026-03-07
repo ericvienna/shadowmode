@@ -14,8 +14,32 @@ interface NewsItem {
   snippet?: string;
 }
 
-// Real news data with verified article links
+// Kept as minimal emergency fallback only — live feed from /api/news is primary
 const REAL_NEWS: NewsItem[] = [
+  {
+    id: '0a',
+    title: 'Elon Musk and Tesla AI Director Share Insights After Empty Driver Seat Robotaxi Rides',
+    source: 'Teslarati',
+    url: 'https://www.teslarati.com/elon-musk-tesla-ai-director-share-insights-after-empty-driver-seat-robotaxi-rides/',
+    date: '2025-12-25',
+    snippet: 'Musk and Ashok Elluswamy celebrated Christmas Eve sharing experiences with robotaxis with no safety monitor...',
+  },
+  {
+    id: '0b',
+    title: 'Tesla Robotaxi Project in Austin Much Smaller Than Musk Claims',
+    source: 'Electrek',
+    url: 'https://electrek.co/2025/12/22/tesla-robotaxi-project-austin-much-smaller-than-musk-claims/',
+    date: '2025-12-22',
+    snippet: 'Independent tracking reveals ~135 robotaxis in Austin fleet, far from the 500 promised...',
+  },
+  {
+    id: '0c',
+    title: 'Tesla Stock Closes at 2025 High After Musk Confirms Driverless Tests',
+    source: 'CNBC',
+    url: 'https://www.cnbc.com/2025/12/15/tesla-tests-driverless-cars-in-austin-without-humans-on-board.html',
+    date: '2025-12-15',
+    snippet: 'Two Model Y vehicles spotted driving with no occupants, marking first real-world driverless tests...',
+  },
   {
     id: '1',
     title: 'Tesla Starts Testing Robotaxis in Austin With No Safety Driver',
@@ -247,6 +271,7 @@ export function SidebarTabs({ states }: SidebarTabsProps) {
       'Car and Driver': 'bg-red-500/20 text-red-400',
       'MotorTrend': 'bg-cyan-500/20 text-cyan-400',
       'KVUE': 'bg-sky-500/20 text-sky-400',
+      'CNBC': 'bg-blue-600/20 text-blue-300',
     };
     return colors[source] || 'bg-neutral-800 text-neutral-400';
   };

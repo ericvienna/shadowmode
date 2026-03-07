@@ -1,10 +1,10 @@
 import { RobotaxiDashboard } from '@/components/RobotaxiDashboard';
-import { getDashboardData } from '@/lib/seed-data';
+import { getDashboardDataFromDB } from '@/lib/db';
 
-// Revalidate page every 5 minutes (300 seconds)
-export const revalidate = 300;
+// Revalidate every 60 seconds — data now lives in Supabase
+export const revalidate = 60;
 
-export default function Home() {
-  const data = getDashboardData();
+export default async function Home() {
+  const data = await getDashboardDataFromDB();
   return <RobotaxiDashboard data={data} />;
 }

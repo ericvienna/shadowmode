@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import type { State } from '@/types/robotaxi';
 import { getCountdownStats } from '@/lib/utils';
 import { Timer, TrendingUp, Calendar, DollarSign } from 'lucide-react';
+import type { TweetData } from '@/app/api/tweets/route';
 
 interface CountdownWidgetProps {
   states: State[];
@@ -26,6 +27,8 @@ export function CountdownWidget({ states }: CountdownWidgetProps) {
   const [stats, setStats] = useState<CountdownStatsType | null>(null);
   const [stockData, setStockData] = useState<StockData | null>(null);
   const [stockLoading, setStockLoading] = useState(true);
+  const [elonTweet, setElonTweet] = useState<TweetData | null>(null);
+  const [robotaxiTweet, setRobotaxiTweet] = useState<TweetData | null>(null);
 
   useEffect(() => {
     setStats(getCountdownStats(states));
@@ -47,8 +50,26 @@ export function CountdownWidget({ states }: CountdownWidgetProps) {
     }
 
     fetchStockPrice();
-    // Refresh every 60 seconds during market hours
     const interval = setInterval(fetchStockPrice, 60000);
+    return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    async function fetchTweets() {
+      try {
+        const res = await fetch('/api/tweets');
+        if (res.ok) {
+          const data = await res.json();
+          if (data.elon) setElonTweet(data.elon);
+          if (data.robotaxi) setRobotaxiTweet(data.robotaxi);
+        }
+      } catch (err) {
+        console.error('Failed to fetch tweets:', err);
+      }
+    }
+    fetchTweets();
+    // Refresh tweets every 30 minutes
+    const interval = setInterval(fetchTweets, 30 * 60 * 1000);
     return () => clearInterval(interval);
   }, []);
 
@@ -143,19 +164,23 @@ export function CountdownWidget({ states }: CountdownWidgetProps) {
             <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
           </svg>
           <span className="text-[10px] text-neutral-500 uppercase">@robotaxi</span>
-          <span className="text-[8px] text-neutral-600 ml-auto">Sep 3</span>
+          {robotaxiTweet && (
+            <span className="text-[8px] text-neutral-600 ml-auto">{robotaxiTweet.date}</span>
+          )}
         </div>
-        <div className="text-[11px] text-white leading-relaxed">
-          Robotaxi app now available to all. Download to join waitlist
-        </div>
-        <a
-          href="https://x.com/robotaxi"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-[9px] text-blue-400 hover:underline mt-2 block"
-        >
-          View on X →
-        </a>
+        {robotaxiTweet ? (
+          <>
+            <div className="text-[11px] text-white leading-relaxed line-clamp-3">
+              {robotaxiTweet.text}
+            </div>
+            <a href={robotaxiTweet.url} target="_blank" rel="noopener noreferrer"
+              className="text-[9px] text-blue-400 hover:underline mt-2 block">
+              View on X →
+            </a>
+          </>
+        ) : (
+          <div className="text-[11px] text-neutral-600 animate-pulse">Loading...</div>
+        )}
       </div>
 
       {/* Latest Elon Tweet */}
@@ -165,19 +190,23 @@ export function CountdownWidget({ states }: CountdownWidgetProps) {
             <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
           </svg>
           <span className="text-[10px] text-neutral-500 uppercase">Elon Musk</span>
-          <span className="text-[8px] text-neutral-600 ml-auto">Dec 14</span>
+          {elonTweet && (
+            <span className="text-[8px] text-neutral-600 ml-auto">{elonTweet.date}</span>
+          )}
         </div>
-        <div className="text-[11px] text-white leading-relaxed">
-          Testing is underway with no occupants in the car
-        </div>
-        <a
-          href="https://x.com/elonmusk/status/2000302654837371181"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-[9px] text-blue-400 hover:underline mt-2 block"
-        >
-          View on X →
-        </a>
+        {elonTweet ? (
+          <>
+            <div className="text-[11px] text-white leading-relaxed line-clamp-3">
+              {elonTweet.text}
+            </div>
+            <a href={elonTweet.url} target="_blank" rel="noopener noreferrer"
+              className="text-[9px] text-blue-400 hover:underline mt-2 block">
+              View on X →
+            </a>
+          </>
+        ) : (
+          <div className="text-[11px] text-neutral-600 animate-pulse">Loading...</div>
+        )}
       </div>
     </div>
   );
