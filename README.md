@@ -60,8 +60,8 @@ While Tesla operates in the shadows collecting billions of miles of training dat
 | 🏙️ **Cities** | 21 | Being tracked |
 | ⚡ **Active** | 21 | With any progress |
 | 🚀 **Public Programs** | 4 | Test programs launched |
-| 🚗 **Vehicles** | 30+ | Estimated deployed |
-| 🤖 **Driverless** | 1 | No safety monitor (Austin) |
+| 🚗 **Vehicles** | 135+ | Austin fleet alone |
+| 🤖 **Driverless** | In Progress | Internal testing in Austin (public rides still have safety monitors) |
 
 <br />
 
@@ -72,7 +72,7 @@ While Tesla operates in the shadows collecting billions of miles of training dat
 <td width="50%">
 
 ### 📊 Matrix View
-Progress grid showing every city across 13 regulatory milestones. Sort by progress, name, activity, or fleet size.
+Progress grid showing every city across 13 regulatory milestones. Sort by progress, name, activity, or fleet size. Hover tooltips on each column header.
 
 ### 🗺️ Map View
 Geographic visualization of Tesla's autonomous expansion. Watch the network grow.
@@ -83,20 +83,29 @@ Chronological progression of milestones. See the velocity of approvals.
 ### 📈 Compare View
 Side-by-side city comparisons. Who's ahead?
 
+### 🏎️ AV Landscape
+Competitive landscape panel tracking all major autonomous vehicle companies (Tesla, Waymo, Zoox, WeRide, Apollo Go, May Mobility, Avride).
+
 </td>
 <td width="50%">
 
+### 📡 Hero Signal Ticker
+Scrolling live ticker showing TSLA stock price, latest Elon tweets, @robotaxi tweets, fleet signals, and market status.
+
+### ⏱️ Mission Clock
+Large-format "Days Driverless" counter since Austin went fully driverless, with city deployment pills.
+
+### 🌐 Deployment Pulse Map
+Animated SVG map of all US AV deployments. Pulsing dots for autonomous services, color-coded by company.
+
 ### 📰 Live News Feed
-Real-time aggregation from Google News RSS covering Tesla robotaxi developments.
+Real-time aggregation from Google News RSS covering Tesla robotaxi developments. Auto-refreshes every 10 minutes.
 
 ### 𝕏 Elon Tweet Integration
-Latest robotaxi-related tweets from @elonmusk displayed in real-time.
+Latest robotaxi-related tweets from @elonmusk displayed in real-time via Twitter syndication API.
 
-### 🎯 Momentum Indicator
-Algorithmic activity level tracking: LOW / MEDIUM / HIGH based on recent milestone velocity.
-
-### 🔔 Days Since Counter
-Track days since last major milestone (currently: 1 day since driverless Austin).
+### 🚗 Fleet Insights
+Live fleet tracking: total vehicles, trips, miles, Tesla vs Waymo split, and per-city service area breakdowns.
 
 </td>
 </tr>
@@ -211,7 +220,7 @@ ILLINOIS ───────────── Chicago (20%)
 MASSACHUSETTS ──────── Boston
 NEVADA ─────────────── Las Vegas (50%)
 NEW YORK ───────────── Brooklyn • Queens
-TEXAS ──────────────── Austin (88% 🏆 DRIVERLESS) • Dallas • Houston • San Antonio
+TEXAS ──────────────── Austin (88% ◐ DRIVERLESS IN PROGRESS) • Dallas • Houston • San Antonio
 ```
 
 **Notes displayed in dashboard:**
@@ -318,14 +327,15 @@ TWITTER_BEARER_TOKEN=your_twitter_bearer_token
 ## Tech Stack
 
 ```
-Next.js 14          App Router, Server Actions, Edge Runtime
-Supabase            Postgres + Realtime subscriptions  
-Tailwind CSS        Dark mode everything
-Recharts            Data visualization
+Next.js 16          App Router, React 19, Edge Runtime
+React 19            Latest concurrent features
+Supabase            Postgres + Realtime subscriptions
+Tailwind CSS 4      Dark mode everything
+Lucide React        Icon system
 Vercel              Deployment + Cron jobs
-Twitter API v2      @elonmusk tweet integration
-NewsAPI             News aggregation
-Playwright          Headless scraping for job postings
+Twitter Syndication @elonmusk tweet integration (15 parallel Nitter instances)
+Google News RSS     News aggregation
+Resend              Email notifications
 ```
 
 <br />
@@ -341,6 +351,15 @@ GET /api/news
 # Get Tesla stock price
 GET /api/stock
 
+# Get latest Elon / @robotaxi tweets
+GET /api/tweets
+
+# Get AV deployment data (all companies)
+GET /api/av-data
+
+# Get live fleet tracking data
+GET /api/fleet
+
 # Subscribe to email alerts
 POST /api/subscribe
 Content-Type: application/json
@@ -348,34 +367,13 @@ Content-Type: application/json
 
 # Get subscriber count
 GET /api/subscribe
-```
 
-**Example responses:**
+# Send milestone update email to subscribers
+POST /api/send-update
 
-```json
-// POST /api/subscribe
-{
-  "message": "Subscribed successfully",
-  "email": "your@email.com"
-}
-
-// GET /api/subscribe
-{
-  "count": 42,
-  "message": "Subscriber count"
-}
-
-// GET /api/news
-{
-  "articles": [
-    {
-      "title": "Tesla Starts Testing Robotaxis in Austin",
-      "source": "TechCrunch",
-      "date": "2024-12-14",
-      "url": "https://..."
-    }
-  ]
-}
+# Admin: manage milestone data
+POST /api/admin/milestones
+POST /api/admin/seed
 ```
 
 <br />
@@ -384,27 +382,42 @@ GET /api/subscribe
 
 ```
 shadowmode/
-├── app/
-│   ├── page.tsx              # Matrix view (home)
-│   ├── timeline/              # Timeline view
-│   ├── map/                   # Geographic view
-│   ├── compare/               # Comparison view
-│   ├── city/[slug]/           # City detail pages
-│   └── api/                   # Public API routes
-├── components/
-│   ├── matrix/                # Progress matrix + cells
-│   ├── stats/                 # Stat cards, momentum indicator
-│   ├── news/                  # News feed, tweet card
-│   ├── map/                   # US map visualization
-│   └── charts/                # Progress bars, fleet icons
-├── lib/
-│   ├── supabase/              # Database client & types
-│   ├── twitter/               # Tweet fetching
-│   ├── scrapers/              # Data collection scripts
-│   └── utils/                 # Helpers, momentum calc
-└── supabase/
-    ├── migrations/            # SQL schema
-    └── seed.sql               # Initial data
+├── src/
+│   ├── app/
+│   │   ├── layout.tsx            # Root layout + metadata
+│   │   ├── globals.css           # Tailwind + custom animations
+│   │   ├── city/[slug]/          # City detail pages
+│   │   └── api/
+│   │       ├── news/             # Google News RSS feed
+│   │       ├── stock/            # Tesla stock price
+│   │       ├── tweets/           # Elon + @robotaxi tweets
+│   │       ├── av-data/          # AV deployment data (all companies)
+│   │       ├── fleet/            # Live fleet tracking
+│   │       ├── subscribe/        # Email signup
+│   │       ├── send-update/      # Milestone email notifications
+│   │       ├── og/               # Open Graph image generation
+│   │       └── admin/            # Milestone + seed management
+│   ├── components/
+│   │   ├── RobotaxiDashboard.tsx # Main dashboard orchestrator
+│   │   ├── ShadowmodeHero.tsx    # Hero: ticker + clock + pulse map
+│   │   ├── HeroTicker.tsx        # Scrolling live signal ticker
+│   │   ├── MissionClock.tsx      # Days driverless counter
+│   │   ├── DeploymentPulseMap.tsx # Animated AV deployment map
+│   │   ├── ProgressMatrix.tsx    # City × milestone grid
+│   │   ├── AVLandscape.tsx       # Competitor landscape panel
+│   │   ├── SidebarTabs.tsx       # Navigation sidebar
+│   │   ├── FleetInsights.tsx     # Live fleet stats
+│   │   ├── NewsFeed.tsx          # News aggregation
+│   │   ├── USMap.tsx             # Interactive US map
+│   │   └── ...                   # 20+ investor intelligence panels
+│   ├── lib/
+│   │   ├── seed-data.ts          # City/milestone seed data
+│   │   ├── mockTrustData.ts      # Trust signal mock data
+│   │   ├── trustScore.ts         # Trust score calculation
+│   │   └── utils.ts              # Helpers, progress calc
+│   └── types/
+│       └── robotaxi.ts           # TypeScript type definitions
+└── public/                       # Static assets + images
 ```
 
 <br />
@@ -463,7 +476,13 @@ If you have verified information about Tesla Robotaxi deployments:
   - [x] Narrative Pressure Index
   - [x] Market Read (dynamic implications)
 - [ ] Predictive model for next cities
-- [ ] Competitor tracking (Waymo, Cruise, Zoox)
+- [x] Competitor tracking (Waymo, Zoox, WeRide, Apollo Go, May Mobility, Avride)
+- [x] Hero signal ticker + Mission Clock
+- [x] Deployment Pulse Map (multi-company)
+- [x] Live fleet tracking
+- [x] Sidebar navigation with tabs
+- [x] Auto-refresh (10-minute page reload)
+- [x] Milestone column hover tooltips
 - [ ] Embeddable widgets
 - [ ] Discord bot
 - [ ] Push notifications

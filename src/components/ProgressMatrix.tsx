@@ -75,14 +75,22 @@ export function ProgressMatrix({ states }: ProgressMatrixProps) {
               {MILESTONE_DEFINITIONS.map(def => (
                 <th
                   key={def.type}
-                  className="px-1.5 py-2 text-center text-[9px] font-medium text-neutral-400 uppercase border-b border-r border-neutral-800/50 min-w-[70px] bg-black"
-                  title={def.description}
+                  className="px-1.5 py-2 text-center text-[9px] font-medium text-neutral-400 uppercase border-b border-r border-neutral-800/50 min-w-[70px] bg-black relative group"
                 >
-                  {def.shortLabel}
+                  <span className="cursor-help">{def.shortLabel}</span>
+                  {/* Styled tooltip */}
+                  <div className="absolute left-1/2 -translate-x-1/2 top-full mt-1 px-3 py-2 bg-black/95 border border-neutral-700 rounded-lg text-left z-[200] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all shadow-xl pointer-events-none min-w-[280px]">
+                    <div className="font-semibold text-white text-[10px] normal-case mb-1">{def.label}</div>
+                    <div className="text-[9px] text-neutral-400 normal-case">{def.description}</div>
+                  </div>
                 </th>
               ))}
-              <th className="px-2 py-2 text-center text-[10px] font-medium text-neutral-400 uppercase border-b border-neutral-800 min-w-[60px] bg-black">
-                Progress
+              <th className="px-2 py-2 text-center text-[10px] font-medium text-neutral-400 uppercase border-b border-neutral-800 min-w-[60px] bg-black relative group">
+                <span className="cursor-help">Progress</span>
+                <div className="absolute right-0 top-full mt-1 px-3 py-2 bg-black/95 border border-neutral-700 rounded-lg text-left whitespace-nowrap z-[200] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all shadow-xl pointer-events-none">
+                  <div className="font-semibold text-white text-[10px] normal-case mb-1">Rollout Progress</div>
+                  <div className="text-[9px] text-neutral-400 normal-case max-w-[200px] whitespace-normal">Overall completion percentage across all milestone stages for this city</div>
+                </div>
               </th>
             </tr>
           </thead>

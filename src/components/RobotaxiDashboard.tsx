@@ -27,6 +27,7 @@ import { PublicTrustSignalCard } from './PublicTrustSignalCard';
 import { EmailSignup } from './EmailSignup';
 import { FleetInsights } from './FleetInsights';
 import { AVLandscape } from './AVLandscape';
+import { ShadowmodeHero } from './ShadowmodeHero';
 import { getCityProgress } from '@/lib/utils';
 import { mockTrustData } from '@/lib/mockTrustData';
 import {
@@ -238,6 +239,9 @@ export function RobotaxiDashboard({ data }: RobotaxiDashboardProps) {
       )}
 
       <main className="w-full px-3 sm:px-4 lg:px-6 py-4 lg:py-6">
+        {/* Hero — Ticker + Mission Clock + Pulse Map */}
+        <ShadowmodeHero states={data.states} />
+
         {/* Executive Summary - Desktop: Above the Fold, Mobile: After Stats */}
         <section className="mb-6 hidden lg:block">
           <ExecutiveSummary states={data.states} />

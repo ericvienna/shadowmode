@@ -46,8 +46,8 @@ export function NewsFeed({ maxItems = 5 }: NewsFeedProps) {
     setMounted(true);
     fetchNews();
 
-    // Auto-refresh every 15 minutes
-    const interval = setInterval(fetchNews, 15 * 60 * 1000);
+    // Auto-refresh every 10 minutes
+    const interval = setInterval(fetchNews, 10 * 60 * 1000);
     return () => clearInterval(interval);
   }, [fetchNews]);
 

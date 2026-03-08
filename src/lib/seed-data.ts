@@ -1,7 +1,7 @@
 import type { State, MilestoneType, Milestone, RegulatoryDifficulty } from '@/types/robotaxi';
 
 /**
- * DATA SOURCE: @JonathanWStokes Robotaxi Progress Tracker (Dec 14, 2025)
+ * DATA SOURCE: @JonathanWStokes Robotaxi Progress Tracker (Dec 30, 2025)
  * https://x.com/JonathanWStokes
  *
  * Additional verification from:
@@ -9,6 +9,13 @@ import type { State, MilestoneType, Milestone, RegulatoryDifficulty } from '@/ty
  * - Tesla job postings for Vehicle Operator Ads dates
  * - CA DMV, AZ DOT, NV DMV for permit dates
  * - NotATeslaApp for Tesla Insurance availability
+ * - Ethan McKanna tracker for Austin fleet count (~135 vehicles)
+ *
+ * AUSTIN DRIVERLESS STATUS (Dec 30, 2025):
+ * - Internal/employee driverless testing began Dec 14
+ * - PUBLIC rides still have safety monitors present
+ * - ~2 vehicles confirmed testing fully driverless (empty driver seat)
+ * - 7 crashes reported since June (1 per ~40k miles)
  */
 
 function createMilestone(
@@ -384,8 +391,8 @@ export const SEED_DATA: State[] = [
           robotaxi_app_access_opens: createMilestone('robotaxi_app_access_opens', '2025-11-18'),
           public_test_program_launched: createMilestone('public_test_program_launched', '2025-06-22'),
           geofence_expanded: createMilestone('geofence_expanded', '2025-07-14'),
-          vehicles_deployed_20_plus: createMilestone('vehicles_deployed_20_plus', '30+'),
-          no_safety_monitor: createMilestone('no_safety_monitor', '2025-12-14'),
+          vehicles_deployed_20_plus: createMilestone('vehicles_deployed_20_plus', '135+'),
+          no_safety_monitor: createMilestone('no_safety_monitor', '2025-12-14', 'in_progress', 'Internal testing only - public rides still have safety monitors'),
         },
       },
       {
