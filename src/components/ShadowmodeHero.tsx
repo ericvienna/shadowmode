@@ -24,7 +24,7 @@ export function ShadowmodeHero({ states }: ShadowmodeHeroProps) {
 
         {/* Pulse Map — 3/5 */}
         <div className="lg:col-span-3">
-          <DeploymentPulseMap />
+          <DeploymentPulseMap states={states} />
         </div>
       </div>
     </section>
