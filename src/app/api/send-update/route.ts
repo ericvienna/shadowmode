@@ -4,6 +4,25 @@ import { createClient } from '@supabase/supabase-js';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
+function escapeHtml(str: string): string {
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
+function sanitizeUrl(url: string): string {
+  try {
+    const parsed = new URL(url);
+    if (parsed.protocol === 'https:' || parsed.protocol === 'http:') return url;
+    return '#';
+  } catch {
+    return '#';
+  }
+}
+
 function getSupabase() {
   const url = process.env.SUPABASE_URL;
   const key = process.env.SUPABASE_SERVICE_KEY;
@@ -81,7 +100,7 @@ export async function POST(request: Request) {
           <tr>
             <td style="padding-top: 20px;">
               <h1 style="margin: 0; color: #ffffff; font-size: 28px; font-weight: 700; line-height: 1.3;">
-                ${headline}
+                ${escapeHtml(headline)}
               </h1>
             </td>
           </tr>
@@ -90,7 +109,7 @@ export async function POST(request: Request) {
           <tr>
             <td style="padding-top: 20px;">
               <p style="margin: 0; color: #a3a3a3; font-size: 16px; line-height: 1.7;">
-                ${body.replace(/\n/g, '<br>')}
+                ${escapeHtml(body).replace(/\n/g, '<br>')}
               </p>
             </td>
           </tr>
@@ -99,8 +118,8 @@ export async function POST(request: Request) {
           ${ctaText && ctaUrl ? `
           <tr>
             <td style="padding-top: 30px;">
-              <a href="${ctaUrl}" style="display: inline-block; background-color: #22c55e; color: #000000; font-size: 14px; font-weight: 600; padding: 14px 28px; border-radius: 6px; text-decoration: none;">
-                ${ctaText} →
+              <a href="${sanitizeUrl(ctaUrl)}" style="display: inline-block; background-color: #22c55e; color: #000000; font-size: 14px; font-weight: 600; padding: 14px 28px; border-radius: 6px; text-decoration: none;">
+                ${escapeHtml(ctaText)} →
               </a>
             </td>
           </tr>

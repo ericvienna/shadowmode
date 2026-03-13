@@ -16,7 +16,7 @@ export function ShadowmodeHero({ states }: ShadowmodeHeroProps) {
       <HeroTicker />
 
       {/* 2-col hero panel */}
-      <div className="grid grid-cols-1 lg:grid-cols-5 gap-3 mt-3" style={{ minHeight: '280px' }}>
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-3 mt-3" style={{ minHeight: '420px' }}>
         {/* Mission Clock — 2/5 */}
         <div className="lg:col-span-2">
           <MissionClock states={states} />

@@ -355,7 +355,7 @@ export function DeploymentPulseMap({ states }: DeploymentPulseMapProps) {
         </div>
       </div>
 
-      <div className="relative min-h-[280px] flex-1">
+      <div className="relative min-h-[380px] flex-1">
         <div
           ref={mapRef}
           className={`absolute inset-0 h-full w-full ${mapStatus === 'ready' ? 'opacity-100' : 'opacity-0'}`}
