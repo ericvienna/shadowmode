@@ -2,7 +2,13 @@ import { NextResponse } from 'next/server';
 import { Resend } from 'resend';
 import { createClient } from '@supabase/supabase-js';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+function getResend() {
+  const key = process.env.RESEND_API_KEY;
+  if (!key) {
+    throw new Error('Resend API key not configured');
+  }
+  return new Resend(key);
+}
 
 function escapeHtml(str: string): string {
   return str
@@ -145,7 +151,7 @@ export async function POST(request: Request) {
     `;
 
     // Send emails via Resend (batch)
-    const { data, error } = await resend.batch.send(
+    const { error } = await getResend().batch.send(
       emails.map((email) => ({
         from: 'Shadowmode <updates@shadowmode.us>',
         to: email,
