@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { useState, useEffect, useCallback } from 'react';
 import { Send, Users, CheckCircle, AlertCircle, Lock, Map, ChevronRight, Save } from 'lucide-react';
 
@@ -433,7 +434,7 @@ export default function AdminPage() {
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <h1 className="text-2xl font-bold text-white">Admin</h1>
-          <a href="/" className="text-neutral-500 hover:text-white text-sm transition-colors">← Dashboard</a>
+          <Link href="/" className="text-neutral-500 hover:text-white text-sm transition-colors">← Dashboard</Link>
         </div>
 
         {/* Tabs */}

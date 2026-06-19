@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import type { City, State } from '@/types/robotaxi';
 import { MILESTONE_DEFINITIONS } from '@/types/robotaxi';
 import { getCityProgress, formatDate, getStatusColor, getCitySparklineData } from '@/lib/utils';
@@ -14,17 +14,9 @@ interface CityModalProps {
 }
 
 export function CityModal({ city, state, onClose }: CityModalProps) {
-  const [isVisible, setIsVisible] = useState(false);
-
   useEffect(() => {
-    if (city) {
-      setIsVisible(true);
-      document.body.style.overflow = 'hidden';
-    } else {
-      setIsVisible(false);
-      document.body.style.overflow = '';
-    }
-
+    if (!city) return;
+    document.body.style.overflow = 'hidden';
     return () => {
       document.body.style.overflow = '';
     };
@@ -53,9 +45,7 @@ export function CityModal({ city, state, onClose }: CityModalProps) {
 
   return (
     <div
-      className={`fixed inset-0 z-50 flex items-center justify-center p-4 transition-opacity duration-200 ${
-        isVisible ? 'opacity-100' : 'opacity-0 pointer-events-none'
-      }`}
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 opacity-100"
       onClick={onClose}
     >
       {/* Backdrop */}
@@ -63,9 +53,7 @@ export function CityModal({ city, state, onClose }: CityModalProps) {
 
       {/* Modal */}
       <div
-        className={`relative bg-neutral-950 border border-neutral-800 rounded-xl max-w-2xl w-full max-h-[90vh] overflow-hidden transform transition-transform duration-200 ${
-          isVisible ? 'scale-100' : 'scale-95'
-        }`}
+        className="relative bg-neutral-950 border border-neutral-800 rounded-xl max-w-2xl w-full max-h-[90vh] overflow-hidden scale-100"
         onClick={e => e.stopPropagation()}
       >
         {/* Header */}

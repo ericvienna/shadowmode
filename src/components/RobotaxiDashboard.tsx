@@ -203,7 +203,7 @@ export function RobotaxiDashboard({ data }: RobotaxiDashboardProps) {
               </button>
             </div>
             <p className="text-neutral-400 text-xs mb-3">
-              This dashboard tracks Tesla's Unsupervised Full Self-Driving (Robotaxi)
+              This dashboard tracks Tesla&apos;s Unsupervised Full Self-Driving (Robotaxi)
               regulatory approval progress across US cities and states. Data sourced from
               public regulatory filings, job postings, and news reports.
             </p>

@@ -8,17 +8,17 @@ interface LiveTimestampProps {
 }
 
 export function LiveTimestamp({ lastUpdated }: LiveTimestampProps) {
-  const [timeAgo, setTimeAgo] = useState('');
-  const [isLive, setIsLive] = useState(true);
   const [pageLoadTime] = useState(() => new Date());
+  const [timeAgo, setTimeAgo] = useState(() =>
+    formatDistanceToNow(pageLoadTime, { addSuffix: true })
+  );
+  const [isLive] = useState(true);
 
   const updateTime = useCallback(() => {
-    // Show time since page was loaded (client-side), not build time
     setTimeAgo(formatDistanceToNow(pageLoadTime, { addSuffix: true }));
   }, [pageLoadTime]);
 
   useEffect(() => {
-    updateTime();
     const interval = setInterval(updateTime, 60000); // Update display every minute
 
     // Auto-refresh page every 10 minutes to get fresh data
