@@ -1,7 +1,11 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Car, MapPin, Route, Activity, Loader2 } from 'lucide-react';
+import { Car, MapPin, Route, Activity, Loader2, ExternalLink } from 'lucide-react';
+import { useRobotaxiTracker } from '@/hooks/useRobotaxiTracker';
+import type { RxtArea } from '@/types/robotaxi-tracker';
+
+const FLEET_RXT_AREAS: RxtArea[] = ['austin', 'bay-area', 'dallas', 'houston'];
 
 interface ServiceAreaStats {
   id: string;
@@ -23,6 +27,7 @@ interface FleetData {
 }
 
 export function FleetInsights() {
+  const { data: rxtData, loading: rxtLoading } = useRobotaxiTracker(FLEET_RXT_AREAS);
   const [fleetData, setFleetData] = useState<FleetData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
@@ -83,16 +88,74 @@ export function FleetInsights() {
       <div className="flex items-center justify-between">
         <h2 className="text-sm font-medium text-white flex items-center gap-2">
           <Activity className="w-4 h-4 text-red-500" />
-          Live Fleet Tracking
+          Driverless Markets
         </h2>
         <a
-          href="https://www.teslarobotaxitracker.com"
+          href="https://github.com/path-avmap/av-map-data"
           target="_blank"
           rel="noopener noreferrer"
           className="text-[10px] text-neutral-500 hover:text-neutral-400 transition-colors"
         >
-          via teslarobotaxitracker.com
+          via av-map-data
         </a>
+      </div>
+
+      {/* Community fleet intel — robotaxitracker.com */}
+      <div className="bg-neutral-950 border border-emerald-500/20 rounded-xl p-4">
+        <div className="flex items-center justify-between mb-3">
+          <div>
+            <h3 className="text-white text-xs font-semibold">Community Fleet Intel</h3>
+            <p className="text-[10px] text-neutral-500 mt-0.5 normal-case">
+              Discovered vehicles via Ethan McKanna&apos;s tracker
+            </p>
+          </div>
+          <a
+            href="https://robotaxitracker.com/?provider=tesla&area=austin"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-1 text-[10px] text-emerald-500/80 hover:text-emerald-400"
+          >
+            robotaxitracker.com <ExternalLink className="w-3 h-3" />
+          </a>
+        </div>
+
+        {rxtLoading ? (
+          <div className="flex items-center gap-2 text-neutral-500 text-sm py-4 justify-center">
+            <Loader2 className="w-4 h-4 animate-spin" />
+            Loading community fleet…
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+            {(rxtData?.areas ?? []).map((area) => (
+              <a
+                key={area.area}
+                href={area.sourceUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="rounded-lg border border-neutral-800 bg-neutral-900/50 p-3 hover:border-emerald-500/30 transition-colors"
+              >
+                <p className="text-[10px] text-neutral-500 uppercase tracking-wider">{area.areaLabel}</p>
+                <p className="text-2xl font-bold text-white mt-1">{area.riderVehicles}</p>
+                <p className="text-[9px] text-neutral-600">rider vehicles discovered</p>
+                <div className="mt-2 flex flex-wrap gap-2 text-[9px]">
+                  {area.unsupervised30d !== null && (
+                    <span className="text-emerald-400">{area.unsupervised30d} unsupervised</span>
+                  )}
+                  {area.cybercabs !== null && (
+                    <span className="text-neutral-400">{area.cybercabs} cybercabs</span>
+                  )}
+                  {area.unsupervisedRides && (
+                    <span className="text-neutral-500">{area.unsupervisedRides.pct}% unsup. rides</span>
+                  )}
+                </div>
+              </a>
+            ))}
+          </div>
+        )}
+        <p className="text-[9px] text-neutral-700 mt-3 normal-case">
+          Community-discovered counts only — undercounts official fleet. Wait-time data loads client-side on
+          robotaxitracker.com.
+        </p>
       </div>
 
       {/* Stats Grid */}
@@ -107,7 +170,7 @@ export function FleetInsights() {
             {fleetData.totalVehicles.toLocaleString()}
           </div>
           <div className="text-[10px] text-neutral-400 mt-1">
-            Vehicles tracked
+            Cited in av-map notes
           </div>
         </div>
 
@@ -145,7 +208,7 @@ export function FleetInsights() {
             {fleetData.totalTrips.toLocaleString()}
           </div>
           <div className="text-[10px] text-neutral-400 mt-1">
-            Completed rides
+            Not live-sourced yet
           </div>
         </div>
 
@@ -159,7 +222,7 @@ export function FleetInsights() {
             {fleetData.totalMiles.toLocaleString(undefined, { maximumFractionDigits: 0 })}
           </div>
           <div className="text-[10px] text-neutral-400 mt-1">
-            Total distance
+            Not live-sourced yet
           </div>
         </div>
       </div>
@@ -217,7 +280,7 @@ export function FleetInsights() {
 
       {/* Footer */}
       <div className="text-[10px] text-neutral-600 text-center">
-        Data from community tracking • Updated {new Date(fleetData.lastUpdated).toLocaleTimeString()}
+        Deployment intel from av-map-data • Updated {new Date(fleetData.lastUpdated).toLocaleTimeString()}
       </div>
     </div>
   );

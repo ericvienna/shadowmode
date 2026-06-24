@@ -52,6 +52,19 @@ body {
   }
 }
 
+@keyframes radar-sweep {
+  from {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+  to {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}
+
+.animate-radar-sweep {
+  animation: radar-sweep 8s linear infinite;
+}
+
 @keyframes pulse-yellow {
   0%, 100% {
     box-shadow: 0 0 0 0 rgba(234, 179, 8, 0.4);

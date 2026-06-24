@@ -3,7 +3,8 @@
 import { useState, useEffect } from 'react';
 import type { State } from '@/types/robotaxi';
 import { getRecentActivity, formatDate, type ActivityItem } from '@/lib/utils';
-import { Check, Clock, Zap, Newspaper, ExternalLink, RefreshCw, Rss } from 'lucide-react';
+import { Check, Clock, Zap, Newspaper, ExternalLink, RefreshCw, Rss, Radio } from 'lucide-react';
+import type { XIntelPayload } from '@/types/x-intel';
 
 interface NewsItem {
   id: string;
@@ -188,11 +189,12 @@ const REAL_NEWS: NewsItem[] = [
 
 interface SidebarTabsProps {
   states: State[];
+  intel?: XIntelPayload | null;
 }
 
-type TabType = 'news' | 'activity';
+type TabType = 'news' | 'activity' | 'xsignals';
 
-export function SidebarTabs({ states }: SidebarTabsProps) {
+export function SidebarTabs({ states, intel }: SidebarTabsProps) {
   const [activeTab, setActiveTab] = useState<TabType>('news');
   const [activities, setActivities] = useState<ActivityItem[]>([]);
   const [news, setNews] = useState<NewsItem[]>([]);
@@ -288,37 +290,73 @@ export function SidebarTabs({ states }: SidebarTabsProps) {
   };
 
   return (
-    <div className="bg-neutral-950 border border-neutral-800 rounded-xl overflow-hidden flex flex-col">
+    <div className="bg-neutral-950 border border-neutral-800 rounded-xl overflow-hidden flex flex-col h-fit max-h-[min(80vh,900px)]">
       {/* Tab Header */}
       <div className="flex border-b border-neutral-800">
         <button
           onClick={() => setActiveTab('news')}
-          className={`flex-1 flex items-center justify-center gap-2 px-4 py-3 text-xs font-medium transition-colors ${
+          className={`flex-1 flex items-center justify-center gap-1.5 px-2 py-3 text-[10px] font-medium transition-colors ${
             activeTab === 'news'
               ? 'text-white bg-neutral-900 border-b-2 border-blue-500'
               : 'text-neutral-500 hover:text-white hover:bg-neutral-900/50'
           }`}
         >
-          <Newspaper className="w-4 h-4" />
-          Latest News
+          <Newspaper className="w-3.5 h-3.5" />
+          News
         </button>
         <button
           onClick={() => setActiveTab('activity')}
-          className={`flex-1 flex items-center justify-center gap-2 px-4 py-3 text-xs font-medium transition-colors ${
+          className={`flex-1 flex items-center justify-center gap-1.5 px-2 py-3 text-[10px] font-medium transition-colors ${
             activeTab === 'activity'
               ? 'text-white bg-neutral-900 border-b-2 border-yellow-500'
               : 'text-neutral-500 hover:text-white hover:bg-neutral-900/50'
           }`}
         >
-          <Clock className="w-4 h-4" />
+          <Clock className="w-3.5 h-3.5" />
           Activity
-          <span className="text-[9px] text-neutral-600">({activities.length})</span>
+          <span className="text-[8px] text-neutral-600">({activities.length})</span>
+        </button>
+        <button
+          onClick={() => setActiveTab('xsignals')}
+          className={`flex-1 flex items-center justify-center gap-1.5 px-2 py-3 text-[10px] font-medium transition-colors ${
+            activeTab === 'xsignals'
+              ? 'text-white bg-neutral-900 border-b-2 border-cyan-500'
+              : 'text-neutral-500 hover:text-white hover:bg-neutral-900/50'
+          }`}
+        >
+          <Radio className="w-3.5 h-3.5" />
+          X
+          {intel && <span className="text-[8px] text-cyan-500">({intel.shadowSignals.length})</span>}
         </button>
       </div>
 
       {/* Tab Content */}
-      <div className="overflow-y-auto flex-1">
-        {activeTab === 'news' ? (
+      <div className="overflow-y-auto max-h-[min(65vh,720px)]">
+        {activeTab === 'xsignals' ? (
+          <div className="divide-y divide-neutral-800/50 normal-case">
+            {!intel ? (
+              <div className="px-4 py-8 text-center text-[10px] text-neutral-500">Loading X signals…</div>
+            ) : (
+              <>
+                {intel.shadowSignals.slice(0, 6).map((s) => (
+                  <a key={s.id} href={s.url} target="_blank" rel="noopener noreferrer" className="block px-4 py-3 hover:bg-neutral-900/50">
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className="text-[10px] text-cyan-400">@{s.handle}</span>
+                      {s.cityName && <span className="text-[9px] text-neutral-600">{s.cityName}</span>}
+                    </div>
+                    <p className="text-[10px] text-neutral-300 line-clamp-2">{s.text}</p>
+                  </a>
+                ))}
+                {intel.replyConfirmations.slice(0, 2).map((r) => (
+                  <div key={r.id} className="px-4 py-3 bg-cyan-500/5">
+                    <p className="text-[9px] text-cyan-400 mb-1">Elon reply · {r.confidence}</p>
+                    <p className="text-[10px] text-neutral-300 line-clamp-2">&quot;{r.elonReply.text}&quot;</p>
+                  </div>
+                ))}
+              </>
+            )}
+          </div>
+        ) : activeTab === 'news' ? (
           <>
             {/* News Content */}
             <div className="divide-y divide-neutral-800/50">

@@ -1,4 +1,4 @@
-import { supabaseAdmin } from './supabase';
+import { getSupabaseAdmin } from './supabase';
 import type { State, City, Milestone, MilestoneType, DashboardData } from '@/types/robotaxi';
 import { SEED_DATA } from './seed-data';
 
@@ -26,6 +26,11 @@ function emptyMilestonesRecord(): Record<MilestoneType, Milestone> {
 }
 
 export async function getDashboardDataFromDB(): Promise<DashboardData> {
+  const supabaseAdmin = getSupabaseAdmin();
+  if (!supabaseAdmin) {
+    return { states: SEED_DATA, lastUpdated: new Date().toISOString() };
+  }
+
   try {
     const [statesRes, citiesRes, milestonesRes] = await Promise.all([
       supabaseAdmin.from('states').select('*').order('name'),

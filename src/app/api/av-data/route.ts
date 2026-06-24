@@ -49,7 +49,7 @@ export async function GET() {
 
   try {
     const res = await fetch(
-      'https://raw.githubusercontent.com/EthanMcKanna/av-map-data/main/events.csv',
+      'https://raw.githubusercontent.com/path-avmap/av-map-data/main/events.csv',
       { signal: AbortSignal.timeout(8000), next: { revalidate: 3600 } }
     );
     if (!res.ok) throw new Error('CSV fetch failed');

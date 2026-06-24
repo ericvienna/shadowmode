@@ -1,15 +1,17 @@
 'use client';
 
 import { useMemo } from 'react';
-import { Shield, Car, Newspaper, Clock, CheckCircle2 } from 'lucide-react';
+import { Shield, Car, Newspaper, Clock, CheckCircle2, AlertTriangle } from 'lucide-react';
 import type { State } from '@/types/robotaxi';
+import type { IncidentFlash } from '@/types/x-intel';
 import { calculateSafetyMetrics } from '@/lib/utils';
 
 interface SafetySignalsProps {
   states: State[];
+  incidentFlashes?: IncidentFlash[];
 }
 
-export function SafetySignals({ states }: SafetySignalsProps) {
+export function SafetySignals({ states, incidentFlashes }: SafetySignalsProps) {
   const safety = useMemo(() => calculateSafetyMetrics(states), [states]);
 
   const formatMiles = (miles: number) => {
@@ -114,9 +116,35 @@ export function SafetySignals({ states }: SafetySignalsProps) {
           </p>
         </div>
 
+        {/* X Incident Flash — live early warning */}
+        {incidentFlashes && incidentFlashes.length > 0 && (
+          <div className="mt-4 pt-4 border-t border-red-500/20">
+            <div className="flex items-center gap-2 mb-2">
+              <AlertTriangle className="w-3.5 h-3.5 text-red-400" />
+              <p className="text-[10px] text-red-400 uppercase font-medium">X Incident Flash</p>
+            </div>
+            <div className="space-y-2 normal-case">
+              {incidentFlashes.slice(0, 3).map((inc) => (
+                <a
+                  key={inc.id}
+                  href={inc.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block p-2 rounded bg-red-500/5 border border-red-500/20 hover:border-red-500/40"
+                >
+                  <p className="text-[10px] text-neutral-300">{inc.headline}</p>
+                  {inc.xFirst && inc.newsLagHours && (
+                    <p className="text-[8px] text-cyan-400 mt-0.5">X first · {inc.newsLagHours}h before news</p>
+                  )}
+                </a>
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* Why This Matters */}
         <div className="mt-4 pt-3 border-t border-neutral-800">
-          <p className="text-[10px] text-neutral-500 leading-relaxed">
+          <p className="text-[10px] text-neutral-500 leading-relaxed normal-case">
             <span className="font-semibold text-emerald-400">Why we show this:</span>{' '}
             Safety skepticism is the #1 criticism. Transparently tracking what we know (and don&apos;t know)
             disarms critics and builds credibility without overclaiming.

@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useRef } from 'react';
 
-interface TickerItem {
+export interface TickerItem {
   id: string;
   label: string;
   value: string;
@@ -10,7 +10,10 @@ interface TickerItem {
   icon?: string;
 }
 
-export function HeroTicker() {
+// `signals` carries data-derived items (driverless status, fleet counts) computed
+// from the live milestone data by the parent — never hardcode those here, or the
+// "LIVE" ticker drifts out of sync with the actual tracker data.
+export function HeroTicker({ signals = [] }: { signals?: TickerItem[] }) {
   const [items, setItems] = useState<TickerItem[]>([
     { id: 'tsla-loading', label: 'TSLA', value: '...', color: 'text-neutral-500', icon: '$' },
     { id: 'elon-loading', label: 'ELON', value: 'loading...', color: 'text-neutral-600' },
@@ -62,13 +65,6 @@ export function HeroTicker() {
         }
       }
 
-      // Static signals
-      newItems.push(
-        { id: 'austin', label: 'AUSTIN TX', value: 'DRIVERLESS — Day 44+', color: 'text-red-400' },
-        { id: 'waymo', label: 'WAYMO', value: '12 US CITIES AUTONOMOUS', color: 'text-blue-400' },
-        { id: 'tsla-fleet', label: 'TESLA FLEET', value: '45 VEHICLES IN SERVICE', color: 'text-neutral-300' },
-      );
-
       if (newItems.length > 0) setItems(newItems);
     }
 
@@ -77,8 +73,10 @@ export function HeroTicker() {
     return () => clearInterval(interval);
   }, []);
 
+  // Live-fetched items (stock/tweets) + data-derived signals from props.
+  const allItems = [...items, ...signals];
   // Duplicate items for seamless loop
-  const doubled = [...items, ...items];
+  const doubled = [...allItems, ...allItems];
 
   return (
     <div className="w-full bg-neutral-950 border-b border-neutral-800 overflow-hidden h-8 flex items-center">
@@ -90,7 +88,7 @@ export function HeroTicker() {
         <div
           ref={scrollRef}
           className="flex items-center gap-0 animate-ticker whitespace-nowrap"
-          style={{ animationDuration: `${items.length * 8}s` }}
+          style={{ animationDuration: `${allItems.length * 8}s` }}
         >
           {doubled.map((item, i) => (
             <div key={`${item.id}-${i}`} className="flex items-center gap-1.5 px-4 border-r border-neutral-900">

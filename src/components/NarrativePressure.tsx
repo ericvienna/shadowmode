@@ -3,13 +3,15 @@
 import { useMemo } from 'react';
 import { Activity, Target, Zap, Briefcase, Gauge } from 'lucide-react';
 import type { State } from '@/types/robotaxi';
+import type { XIntelPayload } from '@/types/x-intel';
 import { calculateVelocityMetrics } from '@/lib/utils';
 
 interface NarrativePressureProps {
   states: State[];
+  xIntel?: XIntelPayload | null;
 }
 
-export function NarrativePressure({ states }: NarrativePressureProps) {
+export function NarrativePressure({ states, xIntel }: NarrativePressureProps) {
   // Calculate velocity for market implications
   const velocity = useMemo(() => calculateVelocityMetrics(states), [states]);
 
@@ -259,7 +261,12 @@ export function NarrativePressure({ states }: NarrativePressureProps) {
             <p className={`text-lg font-bold ${narrativePressure.halfLifeColor}`}>
               {narrativePressure.halfLifeLabel}
             </p>
-            <p className="text-[8px] text-neutral-600">{narrativePressure.daysSinceCatalyst}d since catalyst</p>
+            <p className="text-[8px] text-neutral-600">{narrativePressure.daysSinceCatalyst}d since milestone</p>
+            {xIntel && (
+              <p className="text-[8px] text-cyan-400 mt-1 normal-case">
+                X: {xIntel.narrativeHalfLife.label} · {xIntel.narrativeHalfLife.daysSinceLastSignal}d
+              </p>
+            )}
           </div>
 
           {/* Regulatory Surface Area */}
@@ -291,8 +298,13 @@ export function NarrativePressure({ states }: NarrativePressureProps) {
             <span className="text-[8px] text-neutral-600">Execution-led</span>
           </div>
           <p className={`text-[10px] mt-2 text-center font-medium ${narrativeDrift.color}`}>
-            {narrativeDrift.label}
+            {narrativeDrift.label} <span className="text-neutral-600">(milestones)</span>
           </p>
+          {xIntel && (
+            <p className="text-[9px] mt-1 text-center text-cyan-400 normal-case">
+              X drift: {xIntel.narrativeDrift.label.replace('-', ' ')} · {xIntel.narrativeDrift.promisesKept} kept / {xIntel.narrativeDrift.promisesMissed} missed
+            </p>
+          )}
         </div>
 
         {/* What Changes the Stock */}
@@ -321,19 +333,29 @@ export function NarrativePressure({ states }: NarrativePressureProps) {
             <Zap className="w-3 h-3 text-yellow-400" />
             <p className="text-[10px] text-yellow-400 uppercase font-medium">Last Catalyst Impact</p>
           </div>
-          <div className="bg-neutral-800/50 rounded-lg p-3">
-            <div className="flex items-center justify-between mb-1">
-              <span className="text-[10px] text-neutral-400">Austin Driverless Announced</span>
-              <span className="text-[10px] text-neutral-500">Dec 14, 2024</span>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="text-[10px] text-neutral-400">TSLA Response</span>
-              <span className="text-xs font-bold text-green-400">+8% next session</span>
-            </div>
-            <p className="text-[8px] text-neutral-600 mt-2 italic">
-              Execution milestones move the stock. Promises don&apos;t.
-            </p>
-          </div>
+          {(xIntel?.tweetCorrelations ?? []).slice(0, 2).map((c) => (
+            <a
+              key={c.id}
+              href={c.tweetUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block bg-neutral-800/50 rounded-lg p-3 mb-2 hover:bg-neutral-800 transition-colors normal-case"
+            >
+              <div className="flex items-center justify-between mb-1">
+                <span className="text-[10px] text-neutral-400 truncate pr-2">{c.eventLabel}</span>
+                <span className="text-[10px] text-neutral-500 shrink-0">@{c.tweetHandle}</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] text-neutral-400">TSLA next session</span>
+                <span className={`text-xs font-bold ${c.tslaNextSessionPct >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+                  {c.tslaNextSessionPct >= 0 ? '+' : ''}{c.tslaNextSessionPct.toFixed(1)}%
+                </span>
+              </div>
+            </a>
+          ))}
+          <p className="text-[8px] text-neutral-600 mt-1 italic normal-case">
+            Execution milestones move the stock. Promises don&apos;t.
+          </p>
         </div>
 
         {/* Market Read */}

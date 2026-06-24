@@ -10,16 +10,16 @@ const ibmPlexMono = IBM_Plex_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "SHADOWMODE | Tesla Robotaxi Deployment Tracker",
-  description: "Real-time tracking of Tesla FSD Robotaxi approvals, permits, and deployments across 21 cities and 9 US states. Live news, milestone tracking, and regulatory updates.",
-  keywords: "Tesla Robotaxi, Tesla FSD, Full Self Driving, autonomous vehicles, Tesla Austin, driverless cars, Tesla permits, Robotaxi tracker, Tesla unsupervised FSD",
+  title: "SHADOWMODE | Tesla Digital Energy Terminal",
+  description: "Sourced intelligence on Tesla's physical layer: Robotaxi deployment, Energy storage (GWh, Megapack deals), and Semi contract ledger. Falsifiable scoreboards for the power-is-the-bottleneck thesis.",
+  keywords: "Tesla Robotaxi, Tesla Energy, Megapack, Tesla Semi, digital energy, autonomous vehicles, energy storage, grid storage, Tesla FSD, shadowmode",
   icons: {
     icon: "/icon.png?v=2",
     apple: "/apple-icon.png?v=2",
   },
   openGraph: {
-    title: "SHADOWMODE | Tesla Robotaxi Deployment Tracker",
-    description: "Real-time intelligence on Tesla's autonomous future. Track every city, every milestone, every approval.",
+    title: "SHADOWMODE | Tesla Digital Energy Terminal",
+    description: "Robotaxi milestones, Energy storage scoreboard, Semi contract ledger — sourced, falsifiable intelligence on Tesla's physical layer.",
     url: "https://shadowmode.us",
     siteName: "SHADOWMODE",
     images: [
@@ -35,8 +35,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "SHADOWMODE | Tesla Robotaxi Tracker",
-    description: "Real-time tracking of Tesla Robotaxi deployments across the US. 21 cities, 9 states, live updates.",
+    title: "SHADOWMODE | Tesla Digital Energy Terminal",
+    description: "Robotaxi, Energy storage, Semi — sourced scoreboards for the digital energy thesis.",
     images: ["https://shadowmode.us/link-thumb.png?v=2"],
     creator: "@shadowabordeaux",
   },

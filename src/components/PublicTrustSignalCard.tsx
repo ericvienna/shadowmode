@@ -3,11 +3,14 @@
 import { useState } from 'react';
 import { ShieldCheck, FileCheck, Shield, Building2, Users, AlertTriangle, ChevronRight } from 'lucide-react';
 import type { PublicTrustData } from '@/lib/trustScore';
+import type { TrustPulse } from '@/types/x-intel';
 import { statusConfig, confidenceConfig } from '@/lib/trustScore';
 import { TrustEvidenceDrawer } from './TrustEvidenceDrawer';
+import { Heart } from 'lucide-react';
 
 interface PublicTrustSignalCardProps {
   data: PublicTrustData;
+  xTrust?: TrustPulse | null;
 }
 
 const metricIcons = {
@@ -19,7 +22,7 @@ const metricIcons = {
   government: Building2,
 };
 
-export function PublicTrustSignalCard({ data }: PublicTrustSignalCardProps) {
+export function PublicTrustSignalCard({ data, xTrust }: PublicTrustSignalCardProps) {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   const status = statusConfig[data.status];
@@ -120,11 +123,38 @@ export function PublicTrustSignalCard({ data }: PublicTrustSignalCardProps) {
 
           {/* Methodology Note */}
           <div className="mt-3 pt-3 border-t border-neutral-800">
-            <p className="text-[9px] text-neutral-600 leading-relaxed">
+            <p className="text-[9px] text-neutral-600 leading-relaxed normal-case">
               Measures &quot;permission to scale&quot; via external validation (permits, insurance, audits) — not Tesla claims.
               Updated: {data.lastUpdated}
             </p>
           </div>
+
+          {/* X Trust Pulse — live social layer */}
+          {xTrust && (
+            <div className="mt-4 pt-4 border-t border-cyan-500/20">
+              <div className="flex items-center gap-2 mb-3">
+                <Heart className="w-3.5 h-3.5 text-pink-400" />
+                <p className="text-[10px] text-cyan-400 uppercase font-medium">X Trust Pulse (Live)</p>
+                <span className="text-[8px] text-neutral-600 ml-auto normal-case">{xTrust.status}</span>
+              </div>
+              <div className="flex items-center gap-4 mb-3">
+                <p className="text-2xl font-bold text-white">{xTrust.score}</p>
+                <div className="flex-1 grid grid-cols-2 gap-2 text-center">
+                  <div className="bg-neutral-800/50 rounded p-1.5">
+                    <p className="text-[10px] text-green-400">{(xTrust.positiveRatio * 100).toFixed(0)}%</p>
+                    <p className="text-[8px] text-neutral-600">POS</p>
+                  </div>
+                  <div className="bg-neutral-800/50 rounded p-1.5">
+                    <p className="text-[10px] text-red-400">{(xTrust.negativeRatio * 100).toFixed(0)}%</p>
+                    <p className="text-[8px] text-neutral-600">NEG</p>
+                  </div>
+                </div>
+              </div>
+              {xTrust.incidentSpike && (
+                <p className="text-[9px] text-red-400 normal-case">Incident spike detected on X</p>
+              )}
+            </div>
+          )}
         </div>
       </div>
 

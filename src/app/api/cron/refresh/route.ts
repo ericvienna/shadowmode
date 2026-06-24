@@ -45,7 +45,7 @@ const UPSTREAMS: Upstream[] = [
   {
     name: 'av-data',
     feeds: '/api/av-data (av-map-data CSV)',
-    url: 'https://raw.githubusercontent.com/EthanMcKanna/av-map-data/main/events.csv',
+    url: 'https://raw.githubusercontent.com/path-avmap/av-map-data/main/events.csv',
     valid: (s, b) => s === 200 && b.split('\n').length > 1,
   },
   {

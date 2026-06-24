@@ -271,7 +271,7 @@ export function AVLandscape() {
         <span className="ml-auto text-[9px] text-neutral-600">
           Source:{' '}
           <a
-            href="https://github.com/EthanMcKanna/av-map-data"
+            href="https://github.com/path-avmap/av-map-data"
             target="_blank"
             rel="noopener noreferrer"
             className="text-neutral-500 hover:text-white transition-colors"
