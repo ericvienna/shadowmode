@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "verify-sources": "node scripts/verify-sources.mjs",
+    "predeploy": "VERIFY_SOURCES=1 node scripts/verify-sources.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.88.0",
