@@ -19,7 +19,7 @@ export function USMapBase({
   overlay,
   showGrid = false,
   stateFill = '#1a222d',
-  stateStroke = '#2d3a4a',
+  stateStroke = '#566a85',
 }: USMapBaseProps) {
   const statePaths = useMemo(() => getStatePaths(), []);
 
@@ -65,14 +65,14 @@ export function USMapBase({
               d={state.d}
               fill={stateFill}
               stroke={stateStroke}
-              strokeWidth={0.75}
+              strokeWidth={1}
               strokeLinejoin="round"
             />
           ))}
         </g>
 
         {/* Continental highlight rim */}
-        <g fill="none" stroke="#334155" strokeWidth={0.5} opacity={0.35}>
+        <g fill="none" stroke="#64748b" strokeWidth={0.5} opacity={0.5}>
           {statePaths.map((state) => (
             <path key={`rim-${state.id}`} d={state.d} />
           ))}

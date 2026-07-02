@@ -44,7 +44,6 @@ import {
   PromiseLedgerPanel,
   TweetCorrelationPanel,
   CascadePanel,
-  CityBuzzSection,
   IncidentPanel,
   CompetitivePanel,
   StokesSyncPanel,
@@ -510,24 +509,10 @@ export function RobotaxiDashboard({ data }: RobotaxiDashboardProps) {
             )}
 
             {viewMode === 'map' && (
-              <>
-                <USMap states={data.states} onCityClick={handleCityClick} />
-                {intel && (
-                  <div className="mt-4">
-                    <CityBuzzSection data={intel} />
-                  </div>
-                )}
-              </>
+              <USMap states={data.states} onCityClick={handleCityClick} />
             )}
           </div>
         </div>
-
-        {/* City buzz — compact, once per page */}
-        {intel && viewMode !== 'map' && (
-          <section className="mt-6">
-            <CityBuzzSection data={intel} />
-          </section>
-        )}
 
         {/* Live Fleet Tracking */}
         <section className="mt-8 space-y-4">
