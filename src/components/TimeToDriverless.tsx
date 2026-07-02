@@ -4,6 +4,7 @@ import { useMemo } from 'react';
 import { Clock, CheckCircle2, AlertCircle, HelpCircle } from 'lucide-react';
 import type { State, ProjectionRange, ConfidenceLevel } from '@/types/robotaxi';
 import { calculateAllProjections } from '@/lib/utils';
+import { EpistemicStamp } from './EpistemicStamp';
 
 interface TimeToDriverlessProps {
   states: State[];
@@ -68,6 +69,7 @@ export function TimeToDriverless({ states }: TimeToDriverlessProps) {
           <Clock className="w-4 h-4 text-purple-400" />
           <div>
             <h3 className="text-sm font-semibold text-neutral-200">Time-to-Driverless Projection</h3>
+            <EpistemicStamp tier="modeled" />
             <p className="text-[10px] text-neutral-500">Estimated timeline based on Austin baseline</p>
           </div>
         </div>

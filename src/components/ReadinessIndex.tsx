@@ -8,6 +8,7 @@ import {
   calculateStateReadiness,
   calculateNationalReadinessTrend,
 } from '@/lib/utils';
+import { EpistemicStamp } from './EpistemicStamp';
 
 interface ReadinessIndexProps {
   states: State[];
@@ -55,6 +56,7 @@ export function ReadinessIndex({ states }: ReadinessIndexProps) {
           <Gauge className="w-4 h-4 text-blue-400" />
           <div>
             <h3 className="text-sm font-semibold text-neutral-200">Readiness Index</h3>
+            <EpistemicStamp tier="modeled" />
             <p className="text-[10px] text-neutral-500">Weighted deployment score (0-100)</p>
           </div>
         </div>

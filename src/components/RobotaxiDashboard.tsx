@@ -26,6 +26,7 @@ import { SafetySignals } from './SafetySignals';
 import { EconomicImpact } from './EconomicImpact';
 import { PublicTrustSignalCard } from './PublicTrustSignalCard';
 import { EmailSignup } from './EmailSignup';
+import { EpistemicStamp } from './EpistemicStamp';
 import { FleetInsights } from './FleetInsights';
 import { AVLandscape } from './AVLandscape';
 import { ShadowmodeHero } from './ShadowmodeHero';
@@ -476,6 +477,7 @@ export function RobotaxiDashboard({ data }: RobotaxiDashboardProps) {
                   <h2 className="text-white text-sm font-semibold flex items-center gap-2">
                     <Car className="w-4 h-4 text-red-500" />
                     Deployment Progress by City
+                    <EpistemicStamp tier="sourced" />
                   </h2>
                   <span className="text-[10px] text-neutral-500 hidden sm:inline">
                     {filterOption !== 'all' && `Filtered • `}
@@ -541,7 +543,7 @@ export function RobotaxiDashboard({ data }: RobotaxiDashboardProps) {
           {/* Row 2: Narrative Pressure (v1 + X) + Promise Ledger */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4 items-start">
             <NarrativePressure states={data.states} xIntel={intel} />
-            {intel ? <PromiseLedgerPanel data={intel} /> : <RolloutVelocity states={data.states} />}
+            {intel && <PromiseLedgerPanel data={intel} />}
           </div>
 
           {/* Row 3: Cascade + Tweet Correlation — tight pair */}

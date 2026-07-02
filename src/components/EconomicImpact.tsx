@@ -4,6 +4,7 @@ import { useMemo, useState } from 'react';
 import { DollarSign, Car, TrendingUp, Building2, ChevronDown, ChevronUp } from 'lucide-react';
 import type { State, EconomicImpact as EconomicImpactType } from '@/types/robotaxi';
 import { calculateCityEconomicImpact, calculateNationalEconomicSummary } from '@/lib/utils';
+import { EpistemicStamp } from './EpistemicStamp';
 
 interface EconomicImpactProps {
   states: State[];
@@ -90,8 +91,11 @@ export function EconomicImpact({ states }: EconomicImpactProps) {
           <div className="flex items-center gap-2">
             <DollarSign className="w-4 h-4 text-green-400" />
             <div>
-              <h3 className="text-sm font-semibold text-neutral-200">Economic Impact</h3>
-              <p className="text-[10px] text-neutral-500">Revenue potential & TAM analysis</p>
+              <div className="flex items-center gap-2">
+                <h3 className="text-sm font-semibold text-neutral-200">Economic Impact</h3>
+                <EpistemicStamp tier="modeled" />
+              </div>
+              <p className="text-[10px] text-neutral-500">Estimates from stated assumptions — not reported revenue</p>
             </div>
           </div>
           <div className="text-right">
@@ -129,9 +133,9 @@ export function EconomicImpact({ states }: EconomicImpactProps) {
         {/* TAM Breakdown */}
         <div className="bg-gradient-to-r from-green-500/10 to-transparent border border-green-500/20 rounded-lg p-3 mb-4">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-[10px] text-neutral-400 uppercase">Current SAM vs TAM</span>
-            <span className="text-[10px] text-green-400">
-              {penetrationRate.toFixed(1)}% penetration
+            <span className="text-[10px] text-neutral-400 uppercase">Active-market run rate vs modeled TAM</span>
+            <span className="text-[10px] text-neutral-500">
+              TAM counts active cities only
             </span>
           </div>
           <div className="h-2 bg-neutral-800 rounded-full overflow-hidden">

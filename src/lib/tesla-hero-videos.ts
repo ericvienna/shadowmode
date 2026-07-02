@@ -6,6 +6,6 @@ export interface TeslaHeroClip {
 }
 
 export const TESLA_HERO_CLIPS: TeslaHeroClip[] = [
-  { src: '/videos/clip-cybercab.mp4', title: 'Cybercab — The Future is Autonomous', tag: 'cybercab' },
+  { src: '/videos/clip-cybercab.mp4', title: 'Cybercab — We, Robot unveil (Oct 2024)', tag: 'cybercab' },
   { src: '/videos/clip-werobot.mp4', title: 'We, Robot Recap', tag: 'event' },
 ];

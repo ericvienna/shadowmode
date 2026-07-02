@@ -688,18 +688,17 @@ export function calculateVelocityMetrics(states: State[]): VelocityMetrics {
  * Calculate Safety Metrics (estimated based on available data)
  */
 export function calculateSafetyMetrics(states: State[]): SafetyMetrics {
-  // These are estimates based on public information
-  // In a real app, would pull from news API or official sources
   const stats = calculateStats(states);
 
-  // Estimate miles: ~100 miles/day per vehicle for testing
-  const estimatedMilesDriven = stats.totalVehicles * 100 * 180; // 6 months of testing
+  // MODELED: fleet size × ~100 mi/day × ~180 days of operation
+  const estimatedMilesDriven = stats.totalVehicles * 100 * 180;
 
   return {
     estimatedMilesDriven,
-    incidentHeadlinesLast90Days: 0, // Would come from news API
-    daysSinceLastIncident: null,    // No known incidents
-    safetyRating: 'excellent',
+    // SOURCED: public crash reports compiled via @JonathanWStokes tracker (Dec 30, 2025)
+    reportedCrashes: 7,
+    reportedCrashesSince: 'Jun 2025',
+    reportedCrashRate: '~1 per 40K mi',
     lastUpdated: new Date().toISOString(),
   };
 }

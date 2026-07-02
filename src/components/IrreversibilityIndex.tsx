@@ -3,12 +3,13 @@
 import { useMemo } from 'react';
 import { Lock, Shield, Building2, Landmark, Cog } from 'lucide-react';
 import type { State } from '@/types/robotaxi';
+import { EpistemicStamp } from './EpistemicStamp';
 
 interface IrreversibilityIndexProps {
   states: State[];
 }
 
-type CommitmentLevel = 'Building' | 'Locked' | 'Inevitable';
+type CommitmentLevel = 'Building' | 'Locked' | 'Entrenched';
 type ReversalCost = 'Low' | 'Medium' | 'High' | 'Prohibitive';
 
 interface CommitmentItem {
@@ -79,7 +80,7 @@ export function IrreversibilityIndex({ states }: IrreversibilityIndexProps) {
     // Calculate overall commitment level
     const committedCount = items.filter(i => i.status === 'committed').length;
     let level: CommitmentLevel = 'Building';
-    if (committedCount >= 3) level = 'Inevitable';
+    if (committedCount >= 3) level = 'Entrenched';
     else if (committedCount >= 1) level = 'Locked';
 
     // Calculate reversal cost
@@ -98,7 +99,7 @@ export function IrreversibilityIndex({ states }: IrreversibilityIndexProps) {
   const levelConfig = {
     Building: { color: 'text-yellow-400', bg: 'bg-yellow-500/10 border-yellow-500/30' },
     Locked: { color: 'text-blue-400', bg: 'bg-blue-500/10 border-blue-500/30' },
-    Inevitable: { color: 'text-green-400', bg: 'bg-green-500/10 border-green-500/30' },
+    Entrenched: { color: 'text-green-400', bg: 'bg-green-500/10 border-green-500/30' },
   };
 
   const reversalConfig = {
@@ -125,6 +126,7 @@ export function IrreversibilityIndex({ states }: IrreversibilityIndexProps) {
           <div className="flex items-center gap-2">
             <Lock className="w-4 h-4 text-red-400" />
             <h3 className="text-sm font-semibold text-neutral-200">Irreversibility</h3>
+            <EpistemicStamp tier="modeled" />
           </div>
           <div className={`px-2 py-1 rounded border ${config.bg}`}>
             <span className={`text-xs font-bold ${config.color}`}>{commitments.level}</span>
@@ -184,10 +186,10 @@ export function IrreversibilityIndex({ states }: IrreversibilityIndexProps) {
         <div className="mt-3 pt-3 border-t border-neutral-800">
           <div className="flex items-center justify-between">
             <span className="text-[10px] text-neutral-500 uppercase">Last Commitment</span>
-            <span className="text-[10px] text-neutral-400">Dec 14, 2024</span>
+            <span className="text-[10px] text-neutral-400">Apr 2026</span>
           </div>
           <p className="text-[10px] text-green-400 mt-1">
-            Tesla • Austin driverless ops
+            Tesla • Dallas &amp; Houston driverless service
           </p>
         </div>
 
@@ -195,10 +197,10 @@ export function IrreversibilityIndex({ states }: IrreversibilityIndexProps) {
         <div className="mt-3 pt-3 border-t border-neutral-800">
           <p className="text-[9px] text-neutral-600 italic text-center">
             {commitments.reversalCost === 'Prohibitive'
-              ? 'Capital deployed. Narrative is over. Expansion is timing.'
+              ? 'Multi-state capital, insurance, and regulatory commitments in place.'
               : commitments.reversalCost === 'High'
-                ? 'Significant sunk costs. Reversal politically difficult.'
-                : 'Still in pilot phase. Commitments remain reversible.'}
+                ? 'Sunk costs concentrated in active deployments.'
+                : 'Pilot phase. Commitments remain reversible.'}
           </p>
         </div>
       </div>

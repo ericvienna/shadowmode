@@ -82,10 +82,12 @@ export interface VelocityMetrics {
 
 // Safety Signal Metrics
 export interface SafetyMetrics {
+  /** MODELED — fleet size × assumed daily miles; not a reported figure */
   estimatedMilesDriven: number;
-  incidentHeadlinesLast90Days: number;
-  daysSinceLastIncident: number | null;
-  safetyRating: 'excellent' | 'good' | 'monitoring';
+  /** SOURCED — crashes compiled from public reports */
+  reportedCrashes: number;
+  reportedCrashesSince: string;
+  reportedCrashRate: string;
   lastUpdated: string;
 }
 

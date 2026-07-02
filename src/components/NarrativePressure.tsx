@@ -5,6 +5,7 @@ import { Activity, Target, Zap, Briefcase, Gauge } from 'lucide-react';
 import type { State } from '@/types/robotaxi';
 import type { XIntelPayload } from '@/types/x-intel';
 import { calculateVelocityMetrics } from '@/lib/utils';
+import { EpistemicStamp } from './EpistemicStamp';
 
 interface NarrativePressureProps {
   states: State[];
@@ -234,6 +235,7 @@ export function NarrativePressure({ states, xIntel }: NarrativePressureProps) {
           <Gauge className="w-4 h-4 text-cyan-400" />
           <div>
             <h3 className="text-sm font-semibold text-neutral-200">Narrative Pressure Index</h3>
+            <EpistemicStamp tier="modeled" />
             <p className="text-[10px] text-neutral-500">Market patience & execution momentum</p>
           </div>
         </div>

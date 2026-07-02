@@ -1,10 +1,11 @@
 'use client';
 
 import { useMemo } from 'react';
-import { Shield, Car, Newspaper, Clock, CheckCircle2, AlertTriangle } from 'lucide-react';
+import { Shield, Car, FileText, Gauge, AlertTriangle } from 'lucide-react';
 import type { State } from '@/types/robotaxi';
 import type { IncidentFlash } from '@/types/x-intel';
 import { calculateSafetyMetrics } from '@/lib/utils';
+import { EpistemicStamp } from './EpistemicStamp';
 
 interface SafetySignalsProps {
   states: State[];
@@ -20,29 +21,6 @@ export function SafetySignals({ states, incidentFlashes }: SafetySignalsProps) {
     return miles.toString();
   };
 
-  const ratingConfig = {
-    excellent: {
-      color: 'text-green-400',
-      bgColor: 'bg-green-500/10 border-green-500/30',
-      label: 'Excellent',
-      icon: <CheckCircle2 className="w-5 h-5 text-green-400" />,
-    },
-    good: {
-      color: 'text-yellow-400',
-      bgColor: 'bg-yellow-500/10 border-yellow-500/30',
-      label: 'Good',
-      icon: <CheckCircle2 className="w-5 h-5 text-yellow-400" />,
-    },
-    monitoring: {
-      color: 'text-orange-400',
-      bgColor: 'bg-orange-500/10 border-orange-500/30',
-      label: 'Monitoring',
-      icon: <Shield className="w-5 h-5 text-orange-400" />,
-    },
-  };
-
-  const rating = ratingConfig[safety.safetyRating];
-
   return (
     <div className="bg-neutral-900 border border-neutral-800 rounded-lg overflow-hidden">
       {/* Header */}
@@ -52,12 +30,8 @@ export function SafetySignals({ states, incidentFlashes }: SafetySignalsProps) {
             <Shield className="w-4 h-4 text-emerald-400" />
             <div>
               <h3 className="text-sm font-semibold text-neutral-200">Safety Signals</h3>
-              <p className="text-[10px] text-neutral-500">Preempting the safety question</p>
+              <p className="text-[10px] text-neutral-500">What the public record shows</p>
             </div>
-          </div>
-          <div className={`flex items-center gap-1 px-2 py-1 rounded-lg border ${rating.bgColor}`}>
-            {rating.icon}
-            <span className={`text-xs font-semibold ${rating.color}`}>{rating.label}</span>
           </div>
         </div>
       </div>
@@ -65,40 +39,42 @@ export function SafetySignals({ states, incidentFlashes }: SafetySignalsProps) {
       <div className="p-4">
         {/* Key Metrics */}
         <div className="grid grid-cols-3 gap-3 mb-4">
-          {/* Miles Driven */}
+          {/* Miles Driven — modeled */}
           <div className="bg-neutral-800/50 rounded-lg p-3 text-center">
             <Car className="w-5 h-5 text-blue-400 mx-auto mb-1" />
             <p className="text-lg font-bold text-neutral-200">
               {formatMiles(safety.estimatedMilesDriven)}
             </p>
-            <p className="text-[9px] text-neutral-500">Est. Miles (Driverless)</p>
+            <p className="text-[9px] text-neutral-500 mb-1">Est. Miles (Driverless)</p>
+            <EpistemicStamp tier="modeled" />
           </div>
 
-          {/* Incident Headlines */}
+          {/* Reported Crashes — sourced */}
           <div className="bg-neutral-800/50 rounded-lg p-3 text-center">
-            <Newspaper className="w-5 h-5 text-purple-400 mx-auto mb-1" />
-            <p className="text-lg font-bold text-neutral-200">
-              {safety.incidentHeadlinesLast90Days}
+            <FileText className="w-5 h-5 text-orange-400 mx-auto mb-1" />
+            <p className="text-lg font-bold text-neutral-200">{safety.reportedCrashes}</p>
+            <p className="text-[9px] text-neutral-500 mb-1">
+              Crashes reported since {safety.reportedCrashesSince}
             </p>
-            <p className="text-[9px] text-neutral-500">Incidents (90d)</p>
+            <EpistemicStamp tier="sourced" />
           </div>
 
-          {/* Days Since Incident */}
+          {/* Crash Rate — modeled */}
           <div className="bg-neutral-800/50 rounded-lg p-3 text-center">
-            <Clock className="w-5 h-5 text-green-400 mx-auto mb-1" />
-            <p className="text-lg font-bold text-neutral-200">
-              {safety.daysSinceLastIncident ?? 'N/A'}
-            </p>
-            <p className="text-[9px] text-neutral-500">Days Since Last</p>
+            <Gauge className="w-5 h-5 text-purple-400 mx-auto mb-1" />
+            <p className="text-lg font-bold text-neutral-200">{safety.reportedCrashRate}</p>
+            <p className="text-[9px] text-neutral-500 mb-1">Reported crash rate</p>
+            <EpistemicStamp tier="modeled" />
           </div>
         </div>
 
-        {/* Safety Narrative */}
-        <div className="bg-gradient-to-r from-emerald-500/10 to-transparent border border-emerald-500/20 rounded-lg p-3 mb-4">
+        {/* The Record */}
+        <div className="bg-neutral-800/30 border border-neutral-800 rounded-lg p-3 mb-4">
           <p className="text-[11px] text-neutral-300 leading-relaxed">
-            <span className="font-semibold text-emerald-400">No major safety incidents reported</span>{' '}
-            in Tesla robotaxi testing. The driverless operation in Austin began Dec 14, 2024 with
-            third-party route and safety validation completed prior to launch.
+            {safety.reportedCrashes} crashes reported in Austin robotaxi operations since{' '}
+            {safety.reportedCrashesSince} per public reports ({safety.reportedCrashRate}).
+            Internal driverless testing began Dec 14, 2025; public driverless rides began Jan 2026.
+            No independent audit of these figures exists.
           </p>
         </div>
 
@@ -112,7 +88,8 @@ export function SafetySignals({ states, incidentFlashes }: SafetySignalsProps) {
             <span className="text-[10px] text-yellow-400">Medium</span>
           </div>
           <p className="text-[9px] text-neutral-600">
-            Mile estimates based on fleet size × avg daily miles. Incident tracking from public reports only.
+            Mile estimates based on fleet size × avg daily miles. Crash tracking from public reports
+            only — Tesla does not publish per-mile safety data for this fleet.
           </p>
         </div>
 
@@ -122,6 +99,7 @@ export function SafetySignals({ states, incidentFlashes }: SafetySignalsProps) {
             <div className="flex items-center gap-2 mb-2">
               <AlertTriangle className="w-3.5 h-3.5 text-red-400" />
               <p className="text-[10px] text-red-400 uppercase font-medium">X Incident Flash</p>
+              <EpistemicStamp tier="claimed" />
             </div>
             <div className="space-y-2 normal-case">
               {incidentFlashes.slice(0, 3).map((inc) => (
@@ -146,8 +124,8 @@ export function SafetySignals({ states, incidentFlashes }: SafetySignalsProps) {
         <div className="mt-4 pt-3 border-t border-neutral-800">
           <p className="text-[10px] text-neutral-500 leading-relaxed normal-case">
             <span className="font-semibold text-emerald-400">Why we show this:</span>{' '}
-            Safety skepticism is the #1 criticism. Transparently tracking what we know (and don&apos;t know)
-            disarms critics and builds credibility without overclaiming.
+            Safety is the question that decides this rollout. We publish what the public record
+            supports — and label what it doesn&apos;t.
           </p>
         </div>
       </div>
