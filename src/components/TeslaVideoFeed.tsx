@@ -2,11 +2,15 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Pause, Play } from 'lucide-react';
-import { TESLA_HERO_CLIPS } from '@/lib/tesla-hero-videos';
+import { TESLA_HERO_CLIPS, type TeslaHeroClip } from '@/lib/tesla-hero-videos';
 
 const ROTATE_MS = 30_000;
 
-export function TeslaVideoFeed() {
+interface TeslaVideoFeedProps {
+  clips?: TeslaHeroClip[];
+}
+
+export function TeslaVideoFeed({ clips = TESLA_HERO_CLIPS }: TeslaVideoFeedProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const indexRef = useRef(0);
   const [clipIndex, setClipIndex] = useState(0);
@@ -14,13 +18,13 @@ export function TeslaVideoFeed() {
   const [playing, setPlaying] = useState(true);
   const [error, setError] = useState(false);
 
-  const current = TESLA_HERO_CLIPS[clipIndex];
+  const current = clips[clipIndex % clips.length];
 
   const advance = useCallback(() => {
-    indexRef.current = (indexRef.current + 1) % TESLA_HERO_CLIPS.length;
+    indexRef.current = (indexRef.current + 1) % clips.length;
     setClipIndex(indexRef.current);
     setLoaded(false);
-  }, []);
+  }, [clips.length]);
 
   useEffect(() => {
     const timer = setInterval(advance, ROTATE_MS);

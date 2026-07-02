@@ -5,6 +5,8 @@ import Link from 'next/link';
 import { ArrowLeft, Battery } from 'lucide-react';
 import { EnergyPanel } from './EnergyPanel';
 import { VerticalNav } from '../shared/VerticalNav';
+import { TeslaVideoFeed } from '../TeslaVideoFeed';
+import { ENERGY_HERO_CLIPS } from '@/lib/tesla-hero-videos';
 
 export function EnergyPageShell() {
   return (
@@ -37,6 +39,9 @@ export function EnergyPageShell() {
       </header>
 
       <main className="w-full px-3 sm:px-4 lg:px-6 py-6">
+        <div className="relative mb-6 h-52 w-full overflow-hidden rounded-xl border border-neutral-800 bg-black md:h-64 lg:h-80">
+          <TeslaVideoFeed clips={ENERGY_HERO_CLIPS} />
+        </div>
         <EnergyPanel />
       </main>
     </div>
