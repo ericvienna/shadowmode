@@ -27,6 +27,8 @@ import { EconomicImpact } from './EconomicImpact';
 import { PublicTrustSignalCard } from './PublicTrustSignalCard';
 import { EmailSignup } from './EmailSignup';
 import { EpistemicStamp } from './EpistemicStamp';
+import { ChangeLog } from './ChangeLog';
+import { PredictionsLedger } from './PredictionsLedger';
 import { FleetInsights } from './FleetInsights';
 import { AVLandscape } from './AVLandscape';
 import { ShadowmodeHero } from './ShadowmodeHero';
@@ -327,6 +329,21 @@ export function RobotaxiDashboard({ data }: RobotaxiDashboardProps) {
         {/* Executive Summary - Mobile only: After Stats, Before Email */}
         <section className="mb-6 lg:hidden">
           <ExecutiveSummary states={data.states} />
+        </section>
+
+        {/* The Ledger — the diff and the record */}
+        <section className="mb-6">
+          <div className="flex items-center gap-2 mb-3">
+            <div className="w-1 h-5 bg-gradient-to-b from-neutral-400 to-neutral-600 rounded-full" />
+            <h2 className="text-white text-sm font-semibold">The Ledger</h2>
+            <span className="text-[10px] text-neutral-500 px-2 py-0.5 bg-neutral-900 border border-neutral-800 rounded">
+              What changed, and what we said would happen
+            </span>
+          </div>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 items-start">
+            <ChangeLog />
+            <PredictionsLedger />
+          </div>
         </section>
 
         {/* Email Signup */}
