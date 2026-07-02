@@ -36,7 +36,7 @@ export function EnergyPageShell() {
         </div>
       </header>
 
-      <main className="w-full px-3 sm:px-4 lg:px-6 py-6 max-w-6xl mx-auto">
+      <main className="w-full px-3 sm:px-4 lg:px-6 py-6">
         <EnergyPanel />
       </main>
     </div>

@@ -30,7 +30,7 @@ export function EmailSignup() {
 
       if (response.ok) {
         setStatus('success');
-        setMessage('You\'ll be notified when cities go driverless');
+        setMessage('Subscribed. You\'ll get an alert when a tracked cell flips.');
         setEmail('');
       } else {
         setStatus('error');
@@ -63,10 +63,11 @@ export function EmailSignup() {
     <div className="bg-neutral-900 border border-neutral-800 rounded-lg p-4">
       <div className="flex items-center gap-2 mb-2">
         <Bell className="w-4 h-4 text-red-500" />
-        <span className="text-sm font-semibold text-white">Get Driverless Alerts</span>
+        <span className="text-sm font-semibold text-white">Milestone Alerts</span>
       </div>
       <p className="text-[11px] text-neutral-400 mb-3">
-        Enter your email to get notified when new cities launch driverless robotaxi service.
+        When a tracked cell flips — a permit granted, a monitor removed, a correction logged — you
+        get the entry. Timestamped, sourced, tiered. Nothing else.
       </p>
       <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-2">
         <input

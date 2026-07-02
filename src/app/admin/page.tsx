@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useState, useEffect, useCallback } from 'react';
 import { Send, Users, CheckCircle, AlertCircle, Lock, Map, ChevronRight, Save } from 'lucide-react';
+import { CHANGELOG, formatChangeDate } from '@/lib/changelog';
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -409,12 +410,101 @@ function MilestonesTab({ password }: { password: string }) {
   );
 }
 
+// ─── Alerts Tab ───────────────────────────────────────────────────────────────
+
+function AlertsTab({ password, subscriberCount }: { password: string; subscriberCount: number | null }) {
+  const [selected, setSelected] = useState<string[]>([]);
+  const [sending, setSending]   = useState(false);
+  const [result, setResult]     = useState<{ success: boolean; message: string } | null>(null);
+
+  const toggle = (id: string) =>
+    setSelected(prev => (prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]));
+
+  const handleDispatch = async () => {
+    if (selected.length === 0) return;
+    setSending(true);
+    setResult(null);
+    try {
+      const res = await fetch('/api/alerts/dispatch', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password, entryIds: selected }),
+      });
+      const data = await res.json();
+      setResult(
+        res.ok
+          ? { success: true, message: data.message }
+          : { success: false, message: data.error || 'Dispatch failed' }
+      );
+      if (res.ok) setSelected([]);
+    } catch {
+      setResult({ success: false, message: 'Dispatch failed' });
+    } finally {
+      setSending(false);
+    }
+  };
+
+  return (
+    <div className="bg-neutral-900 border border-neutral-800 rounded-xl p-6">
+      <div className="flex items-center justify-between mb-4">
+        <div>
+          <h2 className="text-white font-semibold">Dispatch Change-Log Alert</h2>
+          <p className="text-neutral-500 text-xs mt-1">
+            Select ledger entries and email them to {subscriberCount ?? '—'} subscribers. Every alert
+            carries its tier and source.
+          </p>
+        </div>
+        <button
+          onClick={handleDispatch}
+          disabled={sending || selected.length === 0}
+          className="flex items-center gap-2 bg-white text-black font-semibold px-4 py-2 rounded-lg hover:bg-neutral-200 transition-colors disabled:opacity-40"
+        >
+          <Send className="w-4 h-4" />
+          {sending ? 'Sending…' : `Send (${selected.length})`}
+        </button>
+      </div>
+
+      {result && (
+        <div
+          className={`flex items-center gap-2 text-sm mb-4 ${result.success ? 'text-green-400' : 'text-red-400'}`}
+        >
+          {result.success ? <CheckCircle className="w-4 h-4" /> : <AlertCircle className="w-4 h-4" />}
+          {result.message}
+        </div>
+      )}
+
+      <div className="divide-y divide-neutral-800 border border-neutral-800 rounded-lg overflow-hidden">
+        {CHANGELOG.map(entry => (
+          <label
+            key={entry.id}
+            className="flex items-start gap-3 px-4 py-3 hover:bg-neutral-800/50 cursor-pointer"
+          >
+            <input
+              type="checkbox"
+              checked={selected.includes(entry.id)}
+              onChange={() => toggle(entry.id)}
+              className="mt-1"
+            />
+            <div>
+              <p className="text-neutral-200 text-sm">{entry.change}</p>
+              <p className="text-neutral-500 text-[11px] mt-0.5">
+                {formatChangeDate(entry.date)} · {entry.scope} · {entry.kind.toUpperCase()} ·{' '}
+                {entry.tier.toUpperCase()}
+              </p>
+            </div>
+          </label>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 // ─── Main Admin Page ──────────────────────────────────────────────────────────
 
 export default function AdminPage() {
   const [password, setPassword]             = useState('');
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [activeTab, setActiveTab]           = useState<'email' | 'milestones'>('milestones');
+  const [activeTab, setActiveTab]           = useState<'email' | 'milestones' | 'alerts'>('milestones');
   const [subscriberCount, setSubscriberCount] = useState<number | null>(null);
 
   useEffect(() => {
@@ -439,7 +529,7 @@ export default function AdminPage() {
 
         {/* Tabs */}
         <div className="flex gap-1 bg-neutral-900 border border-neutral-800 rounded-xl p-1 mb-8 w-fit">
-          {(['milestones', 'email'] as const).map((tab) => (
+          {(['milestones', 'alerts', 'email'] as const).map((tab) => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
@@ -447,13 +537,15 @@ export default function AdminPage() {
                 activeTab === tab ? 'bg-white text-black' : 'text-neutral-400 hover:text-white'
               }`}
             >
-              {tab === 'email' ? 'Send Email' : 'Milestones'}
+              {tab === 'email' ? 'Send Email' : tab === 'alerts' ? 'Alerts' : 'Milestones'}
             </button>
           ))}
         </div>
 
         {activeTab === 'milestones' ? (
           <MilestonesTab password={password} />
+        ) : activeTab === 'alerts' ? (
+          <AlertsTab password={password} subscriberCount={subscriberCount} />
         ) : (
           <EmailTab password={password} subscriberCount={subscriberCount} />
         )}
