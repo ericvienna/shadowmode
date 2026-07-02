@@ -6,12 +6,10 @@ import { MetricCard } from '../MetricCard';
 import { SemiContractLedger } from './SemiContractLedger';
 import { SourceLink } from '../energy/SourceLink';
 
-export function SemiPanel() {
-  const conversion = getSemiConversionStats();
-  const hvip = semiPanelData.scoreboard[0];
-
+/** Thesis + conversion flags — rendered by the shell beside the hero video */
+export function SemiIntro() {
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       <div className="rounded-xl border border-neutral-800 bg-neutral-950 px-4 py-3">
         <p className="text-[11px] text-neutral-400 leading-relaxed normal-case">{semiPanelData.thesisLine}</p>
         <p className="mt-2 text-[9px] text-neutral-600">
@@ -48,7 +46,16 @@ export function SemiPanel() {
           </div>
         ))}
       </div>
+    </div>
+  );
+}
 
+export function SemiPanel() {
+  const conversion = getSemiConversionStats();
+  const hvip = semiPanelData.scoreboard[0];
+
+  return (
+    <div className="space-y-6">
       {/* HVIP hero — least-spinnable demand signal */}
       <div className="rounded-xl border border-cyan-500/30 bg-cyan-500/5 px-4 py-4">
         <div className="flex items-start justify-between gap-4">

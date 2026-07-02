@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowLeft, Truck } from 'lucide-react';
-import { SemiPanel } from './SemiPanel';
+import { SemiPanel, SemiIntro } from './SemiPanel';
 import { VerticalNav } from '../shared/VerticalNav';
 import { TeslaVideoFeed } from '../TeslaVideoFeed';
 import { SEMI_HERO_CLIPS } from '@/lib/tesla-hero-videos';
@@ -39,8 +39,13 @@ export function SemiPageShell() {
       </header>
 
       <main className="w-full px-3 sm:px-4 lg:px-6 py-6">
-        <div className="relative mb-6 h-52 w-full overflow-hidden rounded-xl border border-neutral-800 bg-black md:h-64 lg:h-80">
-          <TeslaVideoFeed clips={SEMI_HERO_CLIPS} />
+        <div className="mb-6 grid grid-cols-1 items-start gap-4 lg:grid-cols-12">
+          <div className="lg:col-span-7">
+            <SemiIntro />
+          </div>
+          <div className="relative aspect-video w-full overflow-hidden rounded-xl border border-neutral-800 bg-black lg:col-span-5">
+            <TeslaVideoFeed clips={SEMI_HERO_CLIPS} />
+          </div>
         </div>
         <SemiPanel />
       </main>

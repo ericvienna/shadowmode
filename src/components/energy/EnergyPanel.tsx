@@ -6,13 +6,10 @@ import { MetricCard } from '../MetricCard';
 import { MegapackDealLedger } from './MegapackDealLedger';
 import { SourceLink } from './SourceLink';
 
-export function EnergyPanel() {
-  const latest = energyPanelData.deployments[energyPanelData.deployments.length - 1];
-  const fy2025 = energyPanelData.deployments.find((d) => d.quarter === 'FY2025');
-  const ttm = fy2025?.gwh ?? 0;
-
+/** Thesis + flags — rendered by the shell beside the hero video */
+export function EnergyIntro() {
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       {/* Thesis */}
       <div className="rounded-xl border border-neutral-800 bg-neutral-950 px-4 py-3">
         <p className="text-[11px] text-neutral-400 leading-relaxed normal-case">{energyPanelData.thesisLine}</p>
@@ -44,7 +41,17 @@ export function EnergyPanel() {
           </div>
         ))}
       </div>
+    </div>
+  );
+}
 
+export function EnergyPanel() {
+  const latest = energyPanelData.deployments[energyPanelData.deployments.length - 1];
+  const fy2025 = energyPanelData.deployments.find((d) => d.quarter === 'FY2025');
+  const ttm = fy2025?.gwh ?? 0;
+
+  return (
+    <div className="space-y-6">
       {/* Scoreboard metrics */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
         <MetricCard
