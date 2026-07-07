@@ -27,6 +27,20 @@ export interface ChangeLogEntry {
 
 export const CHANGELOG: ChangeLogEntry[] = [
   {
+    id: 'cl-2026-07-03-miami-launch',
+    date: '2026-07-03',
+    scope: 'Miami, FL',
+    kind: 'milestone',
+    change: 'Miami goes live: public robotaxi rides, unsupervised from day one.',
+    detail:
+      "Tesla launched public robotaxi service in Miami on Jul 3, 2026: its first market outside Texas and California and first on the East Coast. No driver or in-car safety monitor from day one. Model Y fleet. Roughly 20 sq mi zone including MIA airport (no terminal pickups yet). Milestones flipped: public_test_program_launched, no_safety_monitor, robotaxi_app_access_opens.",
+    tier: 'sourced',
+    source: {
+      label: 'Not a Tesla App, Jul 3 2026',
+      url: 'https://www.notateslaapp.com/news/4394/tesla-launches-unsupervised-robotaxi-rides-in-miami',
+    },
+  },
+  {
     id: 'cl-2026-07-02-safety-correction',
     date: '2026-07-02',
     scope: 'Terminal',

@@ -240,6 +240,9 @@ export const SEED_DATA: State[] = [
           permit_received: createMilestone('permit_received', 'N/A'),
           vehicle_operator_ads: createMilestone('vehicle_operator_ads', '2025-08-05'),
           robotaxi_fleet_support_ads: createMilestone('robotaxi_fleet_support_ads', '2025-10-26'),
+          robotaxi_app_access_opens: createMilestone('robotaxi_app_access_opens', '2026-07-03', 'completed', 'Rides hailable via the Tesla app at launch. Src: Not a Tesla App, Jul 3 2026.'),
+          public_test_program_launched: createMilestone('public_test_program_launched', '2026-07-03', 'completed', "Public robotaxi rides live Jul 3 2026 - Tesla's first market outside TX/CA and first on the East Coast; ~20 sq mi zone incl. MIA airport (no terminal pickups yet). Src: Not a Tesla App, Jul 3 2026."),
+          no_safety_monitor: createMilestone('no_safety_monitor', '2026-07-03', 'completed', 'Unsupervised from day one - no driver or in-car safety monitor at launch; Model Y fleet. Src: Not a Tesla App, Jul 3 2026.'),
         },
       },
       {

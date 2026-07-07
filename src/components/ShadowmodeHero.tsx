@@ -7,11 +7,44 @@ import { HeroTicker, type TickerItem } from './HeroTicker';
 import { HeroOpsPanel } from './HeroOpsPanel';
 import { DeploymentPulseMap } from './DeploymentPulseMap';
 import { TeslaVideoFeed } from './TeslaVideoFeed';
-import { calculateStats } from '@/lib/utils';
+import { calculateStats, formatShortDate } from '@/lib/utils';
 
 interface ShadowmodeHeroProps {
   states: State[];
   intel?: XIntelPayload | null;
+}
+
+// How long a fresh market launch owns the hero before the banner retires itself.
+const LAUNCH_BANNER_WINDOW_DAYS = 30;
+
+interface NewestLaunch {
+  cityName: string;
+  stateAbbr: string;
+  date: string;
+  days: number;
+  unsupervisedDayOne: boolean;
+}
+
+// Newest public launch, derived from the live milestone data — never hardcode a
+// city here. The banner and ticker item retire on their own as the launch ages.
+function findNewestLaunch(states: State[]): NewestLaunch | null {
+  let newest: NewestLaunch | null = null;
+  for (const state of states) {
+    for (const city of state.cities) {
+      const launch = city.milestones.public_test_program_launched;
+      if (launch?.status !== 'completed' || !launch.date || /^\d{4}$/.test(launch.date)) continue;
+      if (newest && launch.date <= newest.date) continue;
+      const dl = city.milestones.no_safety_monitor;
+      newest = {
+        cityName: city.name,
+        stateAbbr: state.abbreviation,
+        date: launch.date,
+        days: differenceInDays(new Date(), parseISO(launch.date)),
+        unsupervisedDayOne: dl?.status === 'completed' && dl.date === launch.date,
+      };
+    }
+  }
+  return newest;
 }
 
 // Build the ticker's data-derived signals from the live milestone data, so the
@@ -20,6 +53,16 @@ interface ShadowmodeHeroProps {
 function buildTickerSignals(states: State[]): TickerItem[] {
   const stats = calculateStats(states);
   const signals: TickerItem[] = [];
+
+  const launch = findNewestLaunch(states);
+  if (launch && launch.days >= 0 && launch.days <= LAUNCH_BANNER_WINDOW_DAYS) {
+    signals.push({
+      id: 'new-market',
+      label: `${launch.cityName.toUpperCase()} ${launch.stateAbbr}`,
+      value: `LIVE — DAY ${launch.days}${launch.unsupervisedDayOne ? ' · UNSUPERVISED DAY ONE' : ''}`,
+      color: 'text-green-400',
+    });
+  }
 
   const austin = states.flatMap((s) => s.cities).find((c) => c.name.toLowerCase() === 'austin');
   const dl = austin?.milestones?.no_safety_monitor;
@@ -86,15 +129,45 @@ function buildXTickerSignals(intel: XIntelPayload): TickerItem[] {
   return items;
 }
 
+function LaunchBanner({ launch }: { launch: NewestLaunch }) {
+  return (
+    <div className="mt-4 flex items-center gap-3 overflow-hidden rounded-xl border border-green-500/30 bg-green-500/5 px-4 py-3 font-mono uppercase tracking-wide">
+      <span className="relative flex h-2.5 w-2.5 shrink-0">
+        <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-60" />
+        <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-green-500" />
+      </span>
+      <div className="min-w-0">
+        <div className="text-[9px] font-semibold tracking-widest text-green-500">New market live</div>
+        <div className="truncate text-sm font-bold text-white sm:text-base">
+          {launch.cityName}, {launch.stateAbbr}
+          <span className="ml-2 font-normal text-neutral-400">
+            public rides since {formatShortDate(launch.date)}
+            {launch.unsupervisedDayOne ? ' · unsupervised day one' : ''}
+          </span>
+        </div>
+      </div>
+      <div className="ml-auto shrink-0 text-right">
+        <div className="text-lg font-bold leading-none text-green-400 sm:text-xl">Day {launch.days}</div>
+        <div className="text-[8px] tracking-widest text-neutral-600">In service</div>
+      </div>
+    </div>
+  );
+}
+
 export function ShadowmodeHero({ states, intel }: ShadowmodeHeroProps) {
   const signals = [
     ...buildTickerSignals(states),
     ...(intel ? buildXTickerSignals(intel) : []),
   ];
+  const launch = findNewestLaunch(states);
+  const showLaunchBanner = launch !== null && launch.days >= 0 && launch.days <= LAUNCH_BANNER_WINDOW_DAYS;
   return (
     <section className="mb-8">
       {/* Signal Ticker — full width */}
       <HeroTicker signals={signals} />
+
+      {/* Newest-market launch banner — data-derived, self-retiring */}
+      {showLaunchBanner && launch && <LaunchBanner launch={launch} />}
 
       {/* Hero: wider left column + 16:9 video above map on the right */}
       <div className="mt-6 grid grid-cols-1 items-start gap-4 lg:mt-8 lg:grid-cols-12">
