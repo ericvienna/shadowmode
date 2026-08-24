@@ -25,6 +25,43 @@ function emptyMilestonesRecord(): Record<MilestoneType, Milestone> {
   return record as Record<MilestoneType, Milestone>;
 }
 
+/**
+ * The real "as of" date for DB-served data, derived rather than guessed.
+ *
+ * WHY THIS EXISTS (2026-08-24): the success path returned
+ * `lastUpdated: new Date().toISOString()` — the time the QUERY RAN, not when the
+ * DATA CHANGED. Paired with a UI badge, that rendered a pulsing green "LIVE ·
+ * less than a minute ago" over rows of genuinely unknown age. Fetch-freshness
+ * presented as data-freshness. Nothing writes to this database (the Firecrawl
+ * crons never touched it), so "we just queried it" says nothing at all about
+ * whether the numbers are current.
+ *
+ * It is SCHEMA-AGNOSTIC on purpose. The queries already `select('*')`, so any
+ * timestamp column the tables happen to carry is ALREADY in the response and was
+ * simply unused. This reads whichever of the usual names is present and takes the
+ * newest. If the tables carry none, it returns null and the caller falls back to
+ * SEED_AS_OF — an honest old date. It never invents one.
+ *
+ * The point is that we do not have to KNOW the schema to stop lying about it.
+ */
+const TIMESTAMP_KEYS = ['updated_at', 'updatedAt', 'last_updated', 'lastUpdated', 'modified_at', 'created_at'];
+
+function latestRowTimestamp(...rowSets: unknown[][]): string | null {
+  let newest = 0;
+  for (const rows of rowSets) {
+    for (const row of rows) {
+      if (!row || typeof row !== 'object') continue;
+      for (const key of TIMESTAMP_KEYS) {
+        const v = (row as Record<string, unknown>)[key];
+        if (typeof v !== 'string' && typeof v !== 'number') continue;
+        const t = new Date(v).getTime();
+        if (!isNaN(t) && t > newest) newest = t;
+      }
+    }
+  }
+  return newest > 0 ? new Date(newest).toISOString() : null;
+}
+
 export async function getDashboardDataFromDB(): Promise<DashboardData> {
   const supabaseAdmin = getSupabaseAdmin();
   if (!supabaseAdmin) {
@@ -87,7 +124,9 @@ export async function getDashboardDataFromDB(): Promise<DashboardData> {
       };
     });
 
-    return { states, lastUpdated: new Date().toISOString() };
+    // Real data date if the rows carry one; an honest old date if they do not.
+    // Never the query time — that is not a fact about the data.
+    return { states, lastUpdated: latestRowTimestamp(statesData, citiesData, milestonesData) ?? SEED_AS_OF };
   } catch (err) {
     console.error('[db] getDashboardDataFromDB failed, falling back to seed data:', err);
     // Graceful fallback to hardcoded seed data if DB is unavailable
