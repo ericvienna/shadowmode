@@ -255,6 +255,9 @@ export const SEED_DATA: State[] = [
           permit_received: createMilestone('permit_received', 'N/A'),
           vehicle_operator_ads: createMilestone('vehicle_operator_ads', '2025-08-05'),
           robotaxi_fleet_support_ads: createMilestone('robotaxi_fleet_support_ads', '2025-10-26'),
+          robotaxi_app_access_opens: createMilestone('robotaxi_app_access_opens', '2026-07-21', 'completed', 'Src: tesla.com/support/robotaxi ("we provide service in limited areas of Miami, Orlando and Tampa, Florida and Austin, Dallas, and Houston, Texas"), confirmed 2026-08-24; launch date per TechCrunch + Not a Tesla App, Jul 21 2026.'),
+          public_test_program_launched: createMilestone('public_test_program_launched', '2026-07-21', 'completed', 'Public robotaxi rides live Jul 21 2026. Src: tesla.com/support/robotaxi ("we provide service in limited areas of Miami, Orlando and Tampa, Florida and Austin, Dallas, and Houston, Texas"), confirmed 2026-08-24; launch date per TechCrunch + Not a Tesla App, Jul 21 2026.'),
+          no_safety_monitor: createMilestone('no_safety_monitor', '2026-07-21', 'completed', 'Unsupervised - no safety personnel in vehicle at launch. Src: tesla.com/support/robotaxi ("we provide service in limited areas of Miami, Orlando and Tampa, Florida and Austin, Dallas, and Houston, Texas"), confirmed 2026-08-24; launch date per TechCrunch + Not a Tesla App, Jul 21 2026.'),
         },
       },
       {
@@ -267,6 +270,9 @@ export const SEED_DATA: State[] = [
           permit_received: createMilestone('permit_received', 'N/A'),
           vehicle_operator_ads: createMilestone('vehicle_operator_ads', '2025-08-05'),
           robotaxi_fleet_support_ads: createMilestone('robotaxi_fleet_support_ads', '2025-10-28'),
+          robotaxi_app_access_opens: createMilestone('robotaxi_app_access_opens', '2026-07-21', 'completed', 'Src: tesla.com/support/robotaxi ("we provide service in limited areas of Miami, Orlando and Tampa, Florida and Austin, Dallas, and Houston, Texas"), confirmed 2026-08-24; launch date per TechCrunch + Not a Tesla App, Jul 21 2026.'),
+          public_test_program_launched: createMilestone('public_test_program_launched', '2026-07-21', 'completed', 'Public robotaxi rides live Jul 21 2026. Src: tesla.com/support/robotaxi ("we provide service in limited areas of Miami, Orlando and Tampa, Florida and Austin, Dallas, and Houston, Texas"), confirmed 2026-08-24; launch date per TechCrunch + Not a Tesla App, Jul 21 2026.'),
+          no_safety_monitor: createMilestone('no_safety_monitor', '2026-07-21', 'completed', 'Unsupervised - no safety personnel in vehicle at launch. Src: tesla.com/support/robotaxi ("we provide service in limited areas of Miami, Orlando and Tampa, Florida and Austin, Dallas, and Houston, Texas"), confirmed 2026-08-24; launch date per TechCrunch + Not a Tesla App, Jul 21 2026.'),
         },
       },
     ],
@@ -474,7 +480,7 @@ export const SEED_DATA: State[] = [
  * If you change the numbers in this file, change this date. If you did not
  * change the numbers, leave it — an honest old date is the product working.
  */
-export const SEED_AS_OF = '2026-07-07';
+export const SEED_AS_OF = '2026-08-24';
 
 export function getDashboardData() {
   return {
