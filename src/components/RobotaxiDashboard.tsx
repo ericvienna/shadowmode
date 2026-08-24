@@ -22,7 +22,7 @@ import { TimeToDriverless } from './TimeToDriverless';
 import { RolloutVelocity } from './RolloutVelocity';
 import { IrreversibilityIndex } from './IrreversibilityIndex';
 import { RegulatoryFriction } from './RegulatoryFriction';
-import { SafetySignals } from './SafetySignals';
+import { FleetBuildout } from './FleetBuildout';
 import { EconomicImpact } from './EconomicImpact';
 import { PublicTrustSignalCard } from './PublicTrustSignalCard';
 import { EmailSignup } from './EmailSignup';
@@ -558,7 +558,7 @@ export function RobotaxiDashboard({ data }: RobotaxiDashboardProps) {
 
           {/* Row 4: Safety (v1 + X incidents) + Trust (v1 + X pulse) */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
-            <SafetySignals states={data.states} incidentFlashes={intel?.incidentFlashes} />
+            <FleetBuildout states={data.states} incidentFlashes={intel?.incidentFlashes} />
             <PublicTrustSignalCard data={mockTrustData} xTrust={intel?.trustPulse} />
           </div>
 

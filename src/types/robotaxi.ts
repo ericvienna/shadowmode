@@ -80,17 +80,6 @@ export interface VelocityMetrics {
   monthlyTrend: number[];           // Last 6 months of new city entries
 }
 
-// Safety Signal Metrics
-export interface SafetyMetrics {
-  /** MODELED — fleet size × assumed daily miles; not a reported figure */
-  estimatedMilesDriven: number;
-  /** SOURCED — crashes compiled from public reports */
-  reportedCrashes: number;
-  reportedCrashesSince: string;
-  reportedCrashRate: string;
-  lastUpdated: string;
-}
-
 // Economic Impact Estimates
 export interface EconomicImpact {
   cityId: string;

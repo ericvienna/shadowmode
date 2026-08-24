@@ -514,3 +514,36 @@ MIT — do whatever you want with it.
 <p align="center">
   <a href="https://shadowmode.us">shadowmode.us</a>
 </p>
+
+---
+
+## ⚠️ DEPLOY FOOTGUN — read before `vercel --prod`
+
+**This repo and `shadowmode-calendar` are linked to the SAME Vercel project.**
+
+```
+this repo              .vercel/project.json -> prj_pzDL9LNZPi7QXPOPQAcZVUVVFxNa  (projectName: tesla-robotaxi-tracker)
+shadowmode-calendar    .vercel/project.json -> prj_pzDL9LNZPi7QXPOPQAcZVUVVFxNa  (projectName: shadowmode)
+```
+
+The `projectName` strings differ, which makes them *look* like two projects. **The
+projectId is identical, and the projectId is what deploys.** A `vercel --prod` from
+either repo replaces the other's production. There is no warning.
+
+**Before any production deploy:**
+1. `cat .vercel/project.json` and confirm the projectId above.
+2. Fetch https://shadowmode.us and confirm which app is actually serving — do not
+   assume. As of 2026-08-12, shadowmode.us serves THIS repo (title "SHADOWMODE |
+   Tesla Digital Energy Terminal").
+
+   **robotaxitracker.com is NOT ours** — confirmed by Eric, 2026-08-12. It is a
+   third-party site that was being scraped with Firecrawl. Despite this repo's
+   directory name, the product is **Shadowmode**. Never deploy to, or reason
+   about, robotaxitracker.com as if it were this project.
+3. After deploying, verify **both** apps, not just the one you meant to change.
+
+**Preview deploys do not verify this app.** Preview has its own Supabase
+credentials (separate, ~153 days old) and renders with no fleet data, so the
+safety panel and vehicle counts are absent from preview entirely. A preview that
+looks "fine" tells you nothing about those components — verify on production, or
+verify the logic directly.

@@ -22,10 +22,60 @@ export interface ChangeLogEntry {
   change: string;
   detail?: string;
   tier: EpistemicTier;
-  source: { label: string; url: string };
+  /* Optional: several entries are first-party observations of our own
+     terminal, or had an attribution removed as incorrect (see the
+     2026-08-12 entry). An absent source renders as no link.
+
+     ── DEFERRED REFACTOR — do this before adding many more entries ──
+     This field is the wrong shape and it caused a real defect on 2026-08-12.
+     A data citation and a CREDIT are structurally identical here: both are
+     just { label, url }. The site footer carries "Inspired by @<handle>" as a
+     credit; that same handle ended up attached to a crash statistic as its
+     SOURCE. Nothing in the type — and nothing a later reader, human or model,
+     can see — distinguishes "this person produced this figure" from "this
+     person inspired the project". A captured credit is worse than an invented
+     source: the name is real, the spelling is right, it genuinely is in the
+     repo, so it passes every check except the one nobody runs.
+
+     Intended shape:
+
+       source: {
+         kind: 'primary' | 'compilation' | 'credit' | 'unsourced';
+         label?: string;
+         url?: string;
+       }
+
+     Two deliberate properties, both load-bearing:
+
+     1. The DISCRIMINATOR stops a credit being silently promoted into a
+        citation — promotion now requires typing a different `kind`, so
+        someone has to mean it.
+     2. REQUIRED, with an explicit 'unsourced' kind, rather than optional.
+        Optional makes an absent source and an unsourced figure the same
+        byte, so you can never tell "nobody filled it in" from "nobody needed
+        to". Required turns absence into a DECLARATION: greppable, countable,
+        renderable ("7 of 41 figures are unsourced"), and gateable in CI. The
+        hardcoded crash count that started all this had no source at all —
+        the discriminator alone would still not have caught it.
+
+     Credit: mechanism found while retiring the safety panel; the
+     required-plus-unsourced argument is gonzo's, from hitting the identical
+     hole in their own transmission schema (empty array and missing array
+     meaning the same nothing, hiding 45 unsourced signals). */
+  source?: { label: string; url: string };
 }
 
 export const CHANGELOG: ChangeLogEntry[] = [
+  {
+    id: 'cl-2026-08-12-safety-panel-retired',
+    date: '2026-08-12',
+    scope: 'Terminal',
+    kind: 'correction',
+    change: 'Safety Signals panel retired and replaced with Fleet Buildout.',
+    detail:
+      'The panel reported a crash count and a crashes-per-mile rate. Three problems, found together: the mileage denominator was modeled from assumed constants (fleet size x 100 mi/day x 180 days) rather than measured; the crash count was a hardcoded figure that had not changed since Dec 2025, so the displayed rate improved automatically as the fleet grew even though no new crash data had arrived; and the cited source was a private individual with no discernible connection to autonomous-vehicle reporting, who never produced the figure attributed to him. That attribution has been removed from this changelog as well. Rather than publish a corrected estimate, the panel has been replaced with Fleet Buildout, which counts vehicles deployed, driverless cities and active states directly from the milestone record — no modeling and no third-party attribution. Tesla does not publish robotaxi production figures, so deployment is what can be counted and is labelled as such.',
+    tier: 'sourced',
+  },
   {
     id: 'cl-2026-07-03-miami-launch',
     date: '2026-07-03',
@@ -47,9 +97,8 @@ export const CHANGELOG: ChangeLogEntry[] = [
     kind: 'correction',
     change: 'Safety panel corrected: "0 incidents · Excellent" removed.',
     detail:
-      'The panel previously hardcoded zero incidents and an "Excellent" verdict. Public reports compiled by the Stokes tracker record 7 crashes since Jun 2025 (~1 per 40K mi). The panel now shows the reported figures and no verdict badge.',
+      'The panel previously hardcoded zero incidents and an "Excellent" verdict. It was replaced with reported crash figures attributed to a third-party compilation. The attribution was later found to be incorrect and the whole panel was retired on Aug 12, 2026 — see that entry.',
     tier: 'sourced',
-    source: { label: '@JonathanWStokes tracker', url: 'https://x.com/JonathanWStokes' },
   },
   {
     id: 'cl-2026-07-02-austin-date-correction',
@@ -60,7 +109,6 @@ export const CHANGELOG: ChangeLogEntry[] = [
     detail:
       'Two panels showed "Dec 14, 2024" for the start of Austin driverless operations — a year off from the sourced record. Internal/employee driverless testing began Dec 14, 2025; public driverless rides began Jan 2026.',
     tier: 'sourced',
-    source: { label: '@JonathanWStokes tracker', url: 'https://x.com/JonathanWStokes' },
   },
   {
     id: 'cl-2026-07-02-epistemic-tiers',
@@ -80,7 +128,6 @@ export const CHANGELOG: ChangeLogEntry[] = [
     kind: 'milestone',
     change: 'Driverless service began in Dallas and Houston.',
     tier: 'sourced',
-    source: { label: 'Public reports', url: 'https://x.com/JonathanWStokes' },
   },
   {
     id: 'cl-2026-01-austin-public-driverless',
@@ -89,7 +136,6 @@ export const CHANGELOG: ChangeLogEntry[] = [
     kind: 'milestone',
     change: 'Public driverless rides began (no safety monitor).',
     tier: 'sourced',
-    source: { label: 'Public reports', url: 'https://x.com/JonathanWStokes' },
   },
   {
     id: 'cl-2025-12-14-austin-internal',
@@ -98,7 +144,6 @@ export const CHANGELOG: ChangeLogEntry[] = [
     kind: 'milestone',
     change: 'Internal/employee driverless testing observed — empty driver seat confirmed on ~2 vehicles.',
     tier: 'sourced',
-    source: { label: '@JonathanWStokes tracker', url: 'https://x.com/JonathanWStokes' },
   },
   {
     id: 'cl-2025-11-17-az-approval',

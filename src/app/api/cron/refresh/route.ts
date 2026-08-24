@@ -87,18 +87,36 @@ async function fetchOnce(url: string): Promise<{ status: number; body: string }>
 async function checkUpstream(u: Upstream): Promise<CheckResult> {
   const started = Date.now();
   const base = { name: u.name, feeds: u.feeds };
-  // One retry on transient throttle/5xx — datacenter IPs get 429'd often
-  // (Yahoo, Twitter), so a single 429 is not an outage.
+  // ONE RETRY ON *ANY* INVALID RESPONSE — not just throttle/5xx.
+  //
+  // WAS: only 429 and 5xx were retried; every other invalid response went straight to
+  // 'down' with zero retries. 2026-08-12 13:01Z that paged Eric for a TRANSIENT 404 from
+  // api.fxtwitter.com (61-byte body — not FxTwitter's standard 34-byte not-found, so some
+  // momentary error shape). By 16:50Z the same URL returned 200 with 55KB of live results.
+  // The upstream was never down; a single unlucky sample was reported as an outage AND
+  // attributed to a source that was healthy, which sent two agents hunting a retired
+  // endpoint that does not exist.
+  //
+  // A one-shot probe cannot distinguish a blip from an outage. Two can, cheaply.
+  //
+  // 🔴 THE RISK THIS TRADES AGAINST, and why the test below matters: widening the retry
+  // could SWALLOW A REAL OUTAGE — a false page traded for a missed one, which is the worse
+  // direction. It does not, because the retry only DELAYS the verdict; a persistent failure
+  // still reaches 'down' on attempt 2. The test asserts BOTH halves: exactly one retry on a
+  // transient 404, AND that a persistent 404 still pages.
+  //
+  // The rate_limited/down split is UNCHANGED and still correct — it is why `stock` behaved
+  // sensibly (throttled, no page) in the same alert that mis-paged `tweets`.
   for (let attempt = 0; attempt < 2; attempt++) {
     try {
       const { status, body } = await fetchOnce(u.url);
       const ms = Date.now() - started;
       if (u.valid(status, body)) return { ...base, state: 'ok', status, ms };
+      if (attempt === 0) {
+        await new Promise((r) => setTimeout(r, 1500));
+        continue;
+      }
       if (status === 429 || status >= 500) {
-        if (attempt === 0) {
-          await new Promise((r) => setTimeout(r, 1500));
-          continue;
-        }
         return { ...base, state: 'rate_limited', status, ms, error: `throttled (HTTP ${status})` };
       }
       return { ...base, state: 'down', status, ms, error: `unexpected response (status ${status}, ${body.length}b)` };

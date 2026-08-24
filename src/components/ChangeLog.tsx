@@ -72,15 +72,21 @@ export function ChangeLog() {
                   {entry.detail && (
                     <p className="text-[10px] text-neutral-500 leading-snug mt-0.5 normal-case">{entry.detail}</p>
                   )}
-                  <a
-                    href={entry.source.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1 text-[9px] text-neutral-500 hover:text-neutral-300 mt-1 transition-colors"
-                  >
-                    {entry.source.label}
-                    <ExternalLink className="w-2.5 h-2.5" />
-                  </a>
+                  {/* `source` is optional: some entries are first-party observations of
+                      this terminal, and one had its attribution REMOVED on 2026-08-12 for
+                      being incorrect. Render nothing rather than a dead or wrong link —
+                      a missing citation is honest, a false one is not. */}
+                  {entry.source && (
+                    <a
+                      href={entry.source.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1 text-[9px] text-neutral-500 hover:text-neutral-300 mt-1 transition-colors"
+                    >
+                      {entry.source.label}
+                      <ExternalLink className="w-2.5 h-2.5" />
+                    </a>
+                  )}
                 </div>
               </div>
             </div>

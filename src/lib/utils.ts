@@ -10,7 +10,6 @@ import type {
   ProjectionRange,
   VelocityMetrics,
   VelocityTrend,
-  SafetyMetrics,
   EconomicImpact,
   NationalEconomicSummary,
   ExecutiveSummary,
@@ -681,25 +680,6 @@ export function calculateVelocityMetrics(states: State[]): VelocityMetrics {
     driverlessEventsThisYear,
     overallTrend,
     monthlyTrend,
-  };
-}
-
-/**
- * Calculate Safety Metrics (estimated based on available data)
- */
-export function calculateSafetyMetrics(states: State[]): SafetyMetrics {
-  const stats = calculateStats(states);
-
-  // MODELED: fleet size × ~100 mi/day × ~180 days of operation
-  const estimatedMilesDriven = stats.totalVehicles * 100 * 180;
-
-  return {
-    estimatedMilesDriven,
-    // SOURCED: public crash reports compiled via @JonathanWStokes tracker (Dec 30, 2025)
-    reportedCrashes: 7,
-    reportedCrashesSince: 'Jun 2025',
-    reportedCrashRate: '~1 per 40K mi',
-    lastUpdated: new Date().toISOString(),
   };
 }
 

@@ -56,7 +56,7 @@ function renderEntry(e: ChangeLogEntry): string {
               </div>
               <p style="margin: 0; color: #ffffff; font-size: 16px; font-weight: 600; line-height: 1.4;">${escapeHtml(e.change)}</p>
               ${e.detail ? `<p style="margin: 8px 0 0 0; color: #a3a3a3; font-size: 13px; line-height: 1.6;">${escapeHtml(e.detail)}</p>` : ''}
-              <p style="margin: 10px 0 0 0;"><a href="${e.source.url}" style="color: #737373; font-size: 12px;">Source: ${escapeHtml(e.source.label)}</a></p>
+              ${e.source ? `<p style="margin: 10px 0 0 0;"><a href="${e.source.url}" style="color: #737373; font-size: 12px;">Source: ${escapeHtml(e.source.label)}</a></p>` : ''}
             </td>
           </tr>`;
 }

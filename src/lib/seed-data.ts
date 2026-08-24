@@ -328,8 +328,24 @@ export const SEED_DATA: State[] = [
         milestones: {
           ...createEmptyMilestones(),
           tesla_insurance_available: createMilestone('tesla_insurance_available', '2022'),
-          permit_applied: createMilestone('permit_applied', '2025-09-03'),
-          permit_received: createMilestone('permit_received', '2025-09-11'),
+          // NOTE (2026-08-14): these were previously the Nevada DMV TESTING REGISTRY dates
+          // (applied 2025-09-03, approved 2025-09-10). That is a different permit, from a
+          // different agency, for a different activity — permission to TEST, not to operate a
+          // commercial service. The milestone that matters for deployment is the Nevada
+          // Transportation Authority AVNC certificate, so these now track that. DMV dates
+          // preserved in the notes below rather than deleted.
+          permit_applied: createMilestone(
+            'permit_applied',
+            '2026-06-05',
+            'completed',
+            'NTA Autonomous Vehicle Network Company (AVNC) application, Docket 26-05015, Clark County. Requests up to 5,000 vehicles in year one; covers Harry Reid International and Henderson Executive airports. Objection deadline was 2026-07-05. (Separate earlier step: Nevada DMV testing registry applied 2025-09-03, approved 2025-09-10.)',
+          ),
+          permit_received: createMilestone(
+            'permit_received',
+            '2026-08-13',
+            'in_progress',
+            'REPORTED, NOT INDEPENDENTLY CONFIRMED. Nevada Transportation Authority carrier list shows Tesla Robotaxi, LLC holding certificate AVNC 002, status Active (Zoox holds AVNC 001, so the sequence is consistent). Source is a screenshot of the NTA page dated 2026-08-13. Could not verify directly: the state certificate lookup at tsa1.nv.gov returns a TLS hostname mismatch, and no press has reported the grant — unusual for an approved 5,000-vehicle permit. Upgrade to completed on either a reachable NTA registry entry or credible reporting.',
+          ),
           vehicle_operator_ads: createMilestone('vehicle_operator_ads', '2025-08-25'),
           route_validation_tests: createMilestone('route_validation_tests', '2025-10-12'),
           geofence_expanded: createMilestone('geofence_expanded', '2025-11-24'),

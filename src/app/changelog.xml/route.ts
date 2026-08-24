@@ -14,7 +14,10 @@ function escapeXml(s: string): string {
 export async function GET() {
   const items = CHANGELOG.map(e => {
     const title = `[${e.scope}] ${e.change}`;
-    const description = [e.detail, `Tier: ${e.tier.toUpperCase()}`, `Source: ${e.source.label}`, `As of: ${formatChangeDate(e.date)}`]
+    /* `Source:` is omitted entirely when an entry has none — the .filter(Boolean)
+       below drops the undefined. Better an item with no source line than one
+       reading "Source: undefined". */
+    const description = [e.detail, `Tier: ${e.tier.toUpperCase()}`, e.source ? `Source: ${e.source.label}` : null, `As of: ${formatChangeDate(e.date)}`]
       .filter(Boolean)
       .join(' — ');
     return `    <item>
