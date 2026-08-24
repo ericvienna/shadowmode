@@ -417,7 +417,7 @@ export const SEED_DATA: State[] = [
           public_test_program_launched: createMilestone('public_test_program_launched', '2025-06-22'),
           geofence_expanded: createMilestone('geofence_expanded', '2025-07-14'),
           vehicles_deployed_20_plus: createMilestone('vehicles_deployed_20_plus', '135+'),
-          no_safety_monitor: createMilestone('no_safety_monitor', '2025-12-14', 'in_progress', 'Internal testing only - public rides still have safety monitors'),
+          no_safety_monitor: createMilestone('no_safety_monitor', '2026-01-22', 'completed', 'Supervision updated to Autonomous 2026-01-22; fleet reported at 10 unsupervised Model Ys by 2026-04-01. Src: path-avmap/av-map-data events.csv (supervision=Autonomous, access=Public) citing tesla.com/robotaxi; corroborated by tesla.com/support/robotaxi listing the city as an active service area, confirmed 2026-08-24.'),
         },
       },
       {
@@ -425,6 +425,7 @@ export const SEED_DATA: State[] = [
         name: 'Dallas',
         milestones: {
           ...createEmptyMilestones(),
+          no_safety_monitor: createMilestone('no_safety_monitor', '2026-04-18', 'completed', 'Service created 2026-04-18 with supervision=Autonomous, access=Public. Src: path-avmap/av-map-data events.csv (supervision=Autonomous, access=Public) citing tesla.com/robotaxi; corroborated by tesla.com/support/robotaxi listing the city as an active service area, confirmed 2026-08-24.'),
           tesla_insurance_available: createMilestone('tesla_insurance_available', '2021'),
           permit_applied: createMilestone('permit_applied', 'Unk'),
           permit_received: createMilestone('permit_received', '2025-08-06'),
@@ -439,6 +440,7 @@ export const SEED_DATA: State[] = [
         name: 'Houston',
         milestones: {
           ...createEmptyMilestones(),
+          no_safety_monitor: createMilestone('no_safety_monitor', '2026-04-18', 'completed', 'Service created 2026-04-18 with supervision=Autonomous, access=Public. Src: path-avmap/av-map-data events.csv (supervision=Autonomous, access=Public) citing tesla.com/robotaxi; corroborated by tesla.com/support/robotaxi listing the city as an active service area, confirmed 2026-08-24.'),
           tesla_insurance_available: createMilestone('tesla_insurance_available', '2021'),
           permit_applied: createMilestone('permit_applied', 'Unk'),
           permit_received: createMilestone('permit_received', '2025-08-06'),
