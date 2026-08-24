@@ -1,6 +1,6 @@
 import { getSupabaseAdmin } from './supabase';
 import type { State, City, Milestone, MilestoneType, DashboardData } from '@/types/robotaxi';
-import { SEED_DATA } from './seed-data';
+import { SEED_DATA, SEED_AS_OF } from './seed-data';
 
 const MILESTONE_TYPES: MilestoneType[] = [
   'tesla_insurance_available',
@@ -28,7 +28,7 @@ function emptyMilestonesRecord(): Record<MilestoneType, Milestone> {
 export async function getDashboardDataFromDB(): Promise<DashboardData> {
   const supabaseAdmin = getSupabaseAdmin();
   if (!supabaseAdmin) {
-    return { states: SEED_DATA, lastUpdated: new Date().toISOString() };
+    return { states: SEED_DATA, lastUpdated: SEED_AS_OF };
   }
 
   try {
@@ -91,6 +91,6 @@ export async function getDashboardDataFromDB(): Promise<DashboardData> {
   } catch (err) {
     console.error('[db] getDashboardDataFromDB failed, falling back to seed data:', err);
     // Graceful fallback to hardcoded seed data if DB is unavailable
-    return { states: SEED_DATA, lastUpdated: new Date().toISOString() };
+    return { states: SEED_DATA, lastUpdated: SEED_AS_OF };
   }
 }

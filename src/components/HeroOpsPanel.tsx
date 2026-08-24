@@ -110,7 +110,14 @@ export function HeroOpsPanel({ states }: HeroOpsPanelProps) {
           <MetricCard
             label="Fleet"
             value={stats.totalVehicles > 0 ? `${stats.totalVehicles}+` : '—'}
-            subtitle="Vehicles deployed"
+            /* "Est." is load-bearing, not hedging (2026-08-24). This card and the
+               Community Fleet Intel panel show DIFFERENT QUANTITIES: this one is
+               compiled from our per-city deployment records; that one counts only
+               vehicles the upstream av-map source explicitly cites, so it is a
+               floor by construction and reads lower. Unqualified "Vehicles
+               deployed" made the two look like one number with two values.
+               StatsCards already says "Est. Vehicles" — this matches it. */
+            subtitle="Est. vehicles deployed"
             icon={<Car className="h-4 w-4 text-green-400" />}
           />
           <MetricCard

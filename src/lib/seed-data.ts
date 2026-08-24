@@ -457,6 +457,25 @@ export const SEED_DATA: State[] = [
   },
 ];
 
+/**
+ * 🔴 THE DATE THIS SEED DATA WAS LAST ACTUALLY UPDATED. MAINTAIN BY HAND.
+ *
+ * It is deliberately a literal and not derived from anything. Every automatic
+ * source of "when was this updated" available here reports the wrong thing:
+ * `new Date()` reports when the PAGE WAS RENDERED, file mtime reports when the
+ * file was TOUCHED, and git reports when it was COMMITTED — none of which is
+ * when someone last checked these numbers against the world.
+ *
+ * A generated freshness stamp is worse than none: it makes stale data look
+ * current and it cannot be caught by inspection, because the code reads
+ * correctly. On 2026-08-24 the dashboard was serving July figures while the
+ * header showed a live green dot and "updated less than a minute ago".
+ *
+ * If you change the numbers in this file, change this date. If you did not
+ * change the numbers, leave it — an honest old date is the product working.
+ */
+export const SEED_AS_OF = '2026-07-07';
+
 export function getDashboardData() {
   return {
     states: SEED_DATA,
