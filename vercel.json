@@ -1,7 +1,1 @@
-{
-  "crons": [
-    { "path": "/api/cron/refresh", "schedule": "0 13 * * *" },
-    { "path": "/api/cron/living-receipts", "schedule": "0 14 * * *" },
-    { "path": "/api/cron/x-intel-scrape", "schedule": "30 6 * * *" }
-  ]
-}
+{}
