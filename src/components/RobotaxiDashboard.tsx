@@ -22,6 +22,7 @@ import { TimeToDriverless } from './TimeToDriverless';
 import { RolloutVelocity } from './RolloutVelocity';
 import { IrreversibilityIndex } from './IrreversibilityIndex';
 import { RegulatoryFriction } from './RegulatoryFriction';
+import { ServiceAreaMap } from './ServiceAreaMap';
 import { FleetBuildout } from './FleetBuildout';
 import { EconomicImpact } from './EconomicImpact';
 import { PublicTrustSignalCard } from './PublicTrustSignalCard';
@@ -513,6 +514,13 @@ export function RobotaxiDashboard({ data }: RobotaxiDashboardProps) {
             )}
           </div>
         </div>
+
+        {/* Service-area comparison — operators in the same metro, drawn to one scale.
+            Shown regardless of viewMode: the geofence footprint is a headline fact, not
+            a drill-down. Boundaries are community traces and label themselves as such. */}
+        <section className="mt-8">
+          <ServiceAreaMap />
+        </section>
 
         {/* Live Fleet Tracking */}
         <section className="mt-8 space-y-4">
