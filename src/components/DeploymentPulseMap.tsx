@@ -6,6 +6,7 @@ import { USMapBase } from '@/components/USMapBase';
 import { buildMapCityPoints, markerColor, markerSize } from '@/lib/us-map-layout';
 import { MAP_VIEWBOX, projectCity } from '@/lib/us-map-projection';
 
+import { ServiceAreaMap } from './ServiceAreaMap';
 import { hasServiceAreaData } from '@/lib/service-area-projection';
 
 interface DeploymentPulseMapProps {
@@ -15,6 +16,7 @@ interface DeploymentPulseMapProps {
 }
 
 export function DeploymentPulseMap({ states, onCityClick }: DeploymentPulseMapProps) {
+  const [focusCity, setFocusCity] = useState<string | null>(null);
   const [hoveredId, setHoveredId] = useState<string | null>(null);
   const cities = useMemo(() => buildMapCityPoints(states), [states]);
 
@@ -26,21 +28,40 @@ export function DeploymentPulseMap({ states, onCityClick }: DeploymentPulseMapPr
       <div className="flex items-center justify-between border-b border-neutral-800 px-5 py-3 shrink-0">
         <div>
           <div className="text-[10px] font-bold uppercase tracking-[0.32em] text-neutral-500">
-            US Robotaxi Map
+            {focusCity ? `${focusCity} Service Areas` : 'US Robotaxi Map'}
           </div>
           <div className="mt-1 text-[11px] text-neutral-600 normal-case">
-            Shadowmode deployment pulse · self-hosted SVG
+            {focusCity
+              ? 'Operators active in the same metro, drawn to the same scale'
+              : 'Shadowmode deployment pulse · self-hosted SVG'}
           </div>
         </div>
         <div className="text-right">
-          <div className="text-[10px] uppercase tracking-[0.28em] text-neutral-700">Shadowmode</div>
-          <div className="mt-1 text-[11px] text-neutral-500">
-            {cities.length} cities · {driverlessCount} driverless/testing
-          </div>
+          {focusCity ? (
+            <button
+              onClick={() => setFocusCity(null)}
+              className="rounded border border-neutral-800 px-2 py-1 text-[10px] uppercase tracking-[0.2em] text-neutral-400 transition hover:text-neutral-100"
+            >
+              ← Back to US map
+            </button>
+          ) : (
+            <>
+              <div className="text-[10px] uppercase tracking-[0.28em] text-neutral-700">Shadowmode</div>
+              <div className="mt-1 text-[11px] text-neutral-500">
+                {cities.length} cities · {driverlessCount} driverless/testing
+              </div>
+            </>
+          )}
         </div>
       </div>
 
       <div className="relative flex-1 min-h-[280px]">
+        {focusCity ? (
+          /* Same card, different view. Combining them keeps one map surface instead of two
+             stacked cards competing for the same job. */
+          <ServiceAreaMap focusCity={focusCity.toLowerCase()} embedded />
+        ) : (
+          <>
         <USMapBase showGrid overlay={
           <>
             <div className="pointer-events-none absolute inset-0 bg-[#0b0f13]/25" />
@@ -73,7 +94,7 @@ export function DeploymentPulseMap({ states, onCityClick }: DeploymentPulseMapPr
                 transform={`translate(${projected.x}, ${projected.y})`}
                 onMouseEnter={() => setHoveredId(city.id)}
                 onMouseLeave={() => setHoveredId(null)}
-                onClick={hasAreas ? () => onCityClick?.(city.name) : undefined}
+                onClick={hasAreas ? () => { setFocusCity(city.name); onCityClick?.(city.name); } : undefined}
                 role={hasAreas ? 'button' : undefined}
                 aria-label={hasAreas ? `Show ${city.name} service areas` : undefined}
                 style={{ cursor: hasAreas ? 'pointer' : 'default' }}
@@ -136,6 +157,8 @@ export function DeploymentPulseMap({ states, onCityClick }: DeploymentPulseMapPr
           <p className="text-[8px] uppercase tracking-widest text-neutral-600">Pulse status</p>
           <p className="text-sm font-bold text-cyan-400">LIVE</p>
         </div>
+          </>
+        )}
       </div>
 
       <div className="shrink-0 border-t border-neutral-800 bg-[#080a0d] px-3 py-2">

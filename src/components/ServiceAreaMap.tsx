@@ -40,9 +40,12 @@ const PROVIDER_STYLE: Record<Provider, { stroke: string; fill: string; label: st
 export function ServiceAreaMap({
   focusCity,
   onClose,
+  embedded = false,
 }: {
   focusCity?: string;
   onClose?: () => void;
+  /** Rendered INSIDE the pulse-map card: drop our own frame and header, the host owns them. */
+  embedded?: boolean;
 }) {
   const cities = useMemo(() => getContestedCities(), []);
   const [city, setCity] = useState(focusCity ?? cities[0]?.city ?? '');
@@ -62,8 +65,8 @@ export function ServiceAreaMap({
   }, []);
 
   return (
-    <section className="rounded-lg border border-neutral-800 bg-neutral-950 p-4">
-      <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+    <section className={embedded ? 'flex h-full flex-col p-3' : 'rounded-lg border border-neutral-800 bg-neutral-950 p-4'}>
+      <div className={embedded ? 'hidden' : 'mb-3 flex flex-wrap items-center justify-between gap-2'}>
         <div>
           <h3 className="text-sm font-semibold text-neutral-100">{heading}</h3>
           <p className="text-[11px] text-neutral-500">
