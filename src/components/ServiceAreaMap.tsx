@@ -6,6 +6,8 @@ import {
   SERVICE_AREA_SOURCE,
   getContestedCities,
   projectCityServiceAreas,
+  tileUrl,
+  BASEMAP_ATTRIBUTION,
   type Provider,
 } from '@/lib/service-area-projection';
 
@@ -50,7 +52,7 @@ export function ServiceAreaMap({
     if (focusCity) setCity(focusCity);
   }, [focusCity]);
 
-  const { paths } = useMemo(() => projectCityServiceAreas(city), [city]);
+  const { paths, tiles } = useMemo(() => projectCityServiceAreas(city), [city]);
   const active = cities.find((c) => c.city === city);
   const heading = drillDown ? `${city.replace(/\b\w/g, (m) => m.toUpperCase())} service areas` : 'Service areas';
 
@@ -100,19 +102,63 @@ export function ServiceAreaMap({
         role="img"
         aria-label={`Robotaxi service areas in ${active?.name ?? city}, drawn to a common scale`}
       >
-        {paths.map((p) => {
-          const s = PROVIDER_STYLE[p.provider];
-          return (
-            <path
-              key={`${p.provider}-${p.slug}`}
-              d={p.d}
-              fill={s.fill}
-              stroke={s.stroke}
-              strokeWidth={1.5}
-              strokeLinejoin="round"
-            />
-          );
-        })}
+        <defs>
+          {/* Base darkened to sit under the palette; labels lifted so they read THROUGH
+              the polygon fills. Without the second filter the place names vanish under
+              a 0.18-alpha fill, which is most of what makes it look like a map. */}
+          <filter id="sa-dark">
+            <feColorMatrix type="matrix" values="0.30 0 0 0 0  0 0.30 0 0 0  0 0 0.34 0 0  0 0 0 1 0" />
+          </filter>
+          <filter id="sa-label">
+            <feColorMatrix type="matrix" values="0.75 0 0 0 0  0 0.75 0 0 0  0 0 0.80 0 0  0 0 0 0.85 0" />
+          </filter>
+          <clipPath id="sa-clip">
+            <rect width={SERVICE_AREA_VIEWBOX.width} height={SERVICE_AREA_VIEWBOX.height} rx={6} />
+          </clipPath>
+        </defs>
+
+        <g clipPath="url(#sa-clip)">
+          <g filter="url(#sa-dark)">
+            {tiles.map((t) => (
+              <image
+                key={`b-${t.z}-${t.x}-${t.y}`}
+                href={tileUrl(t, 'Base')}
+                x={t.px}
+                y={t.py}
+                width={256}
+                height={256}
+              />
+            ))}
+          </g>
+
+          {paths.map((p) => {
+            const s = PROVIDER_STYLE[p.provider];
+            return (
+              <path
+                key={`${p.provider}-${p.slug}`}
+                d={p.d}
+                fill={s.fill}
+                stroke={s.stroke}
+                strokeWidth={2}
+                strokeLinejoin="round"
+              />
+            );
+          })}
+
+          {/* Labels last, on top of the fills, or they are unreadable. */}
+          <g filter="url(#sa-label)">
+            {tiles.map((t) => (
+              <image
+                key={`r-${t.z}-${t.x}-${t.y}`}
+                href={tileUrl(t, 'Reference')}
+                x={t.px}
+                y={t.py}
+                width={256}
+                height={256}
+              />
+            ))}
+          </g>
+        </g>
       </svg>
 
       <div className="mt-3 flex flex-wrap items-center gap-3">
@@ -137,7 +183,7 @@ export function ServiceAreaMap({
         <a href={SERVICE_AREA_SOURCE.repo} className="underline hover:text-neutral-300" rel="noopener noreferrer" target="_blank">
           Robotaxi-Tracker/robotaxi-service-areas
         </a>{' '}
-        ({SERVICE_AREA_SOURCE.license}) · data as of {asOf}
+        ({SERVICE_AREA_SOURCE.license}) · data as of {asOf} · Basemap {BASEMAP_ATTRIBUTION}
       </p>
     </section>
   );

@@ -120,31 +120,80 @@ export function getContestedCities(): Array<{ city: string; name: string; provid
  *
  * Anything that renders two providers side by side MUST come through this function.
  */
-export function projectTogether(
-  subject: ServiceArea[],
-): { paths: Array<{ provider: Provider; slug: string; name: string; d: string }>; empty: boolean } {
-  if (subject.length === 0) return { paths: [], empty: true };
+const TILE = 256;
 
-  const collection = {
-    type: 'FeatureCollection' as const,
-    features: subject.map((a) => a.boundary),
-  };
+/** One basemap tile placed in viewBox coordinates. */
+export interface Tile { x: number; y: number; z: number; px: number; py: number }
 
-  const projection = geoMercator().fitExtent(
-    [
-      [16, 16],
-      [SERVICE_AREA_VIEWBOX.width - 16, SERVICE_AREA_VIEWBOX.height - 16],
-    ],
-    collection,
-  );
+/**
+ * Esri World Dark Gray Canvas — keyless, and dark enough to sit under the palette.
+ *
+ * TWO LAYERS, NOT ONE. Esri splits geography (Base) from place/road LABELS (Reference).
+ * Base alone renders a grey shape with no "Dallas" or "Highland Park" on it, which is what
+ * makes a map read as a map. Both are fetched; Reference draws ON TOP of the polygons so
+ * labels stay legible through the fills.
+ *
+ * NOTE THE PATH ORDER: /tile/{z}/{y}/{x} — y BEFORE x, unlike the usual {z}/{x}/{y} slippy
+ * scheme. Getting it backwards scrambles the map without erroring.
+ *
+ * CARTO was tried first and rejected: it now stamps "API KEY REQUIRED" across every tile.
+ * A single hand-fetched test tile came back clean, which is exactly how that trap works.
+ */
+const ESRI = 'https://services.arcgisonline.com/ArcGIS/rest/services/Canvas';
+export const tileUrl = (t: Tile, layer: 'Base' | 'Reference') =>
+  `${ESRI}/World_Dark_Gray_${layer}/MapServer/tile/${t.z}/${t.y}/${t.x}`;
+
+/** Licence requirement, not decoration — must be rendered wherever tiles are. */
+export const BASEMAP_ATTRIBUTION = '© Esri, HERE, Garmin, © OpenStreetMap contributors';
+
+export function projectTogether(subject: ServiceArea[]): {
+  paths: Array<{ provider: Provider; slug: string; name: string; d: string }>;
+  tiles: Tile[];
+  empty: boolean;
+} {
+  if (subject.length === 0) return { paths: [], tiles: [], empty: true };
+
+  const { width: W, height: H } = SERVICE_AREA_VIEWBOX;
+
+  // Combined bbox of every area in the set — the shared frame that makes the comparison honest.
+  let lo: [number, number] = [180, 90];
+  let hi: [number, number] = [-180, -90];
+  for (const a of subject) {
+    const g = a.boundary.geometry;
+    const rings = g.type === 'Polygon' ? g.coordinates : g.coordinates.flat();
+    for (const ring of rings)
+      for (const [x, y] of ring as Array<[number, number]>) {
+        lo = [Math.min(lo[0], x), Math.min(lo[1], y)];
+        hi = [Math.max(hi[0], x), Math.max(hi[1], y)];
+      }
+  }
+
+  // Integer zoom so tiles land on exact pixel boundaries; 0.90 leaves a margin.
+  const lat2y = (la: number) => Math.log(Math.tan(Math.PI / 4 + (la * Math.PI) / 360));
+  const wLng = (hi[0] - lo[0]) / 360;
+  const wLat = (lat2y(hi[1]) - lat2y(lo[1])) / (2 * Math.PI);
+  const z = Math.max(1, Math.min(14, Math.floor(Math.log2(Math.min(W / (TILE * wLng), H / (TILE * wLat)) * 0.9))));
+
+  const projection = geoMercator().scale((TILE * Math.pow(2, z)) / (2 * Math.PI)).translate([0, 0]);
+  const centre = projection([(lo[0] + hi[0]) / 2, (lo[1] + hi[1]) / 2]) ?? [0, 0];
+  projection.translate([W / 2 - centre[0], H / 2 - centre[1]]);
 
   const path = geoPath(projection);
+  const [tx, ty] = projection.translate();
+  const k = Math.pow(2, z);
+
+  const tiles: Tile[] = [];
+  for (let X = Math.floor(-tx / TILE + k / 2); X < Math.ceil((W - tx) / TILE + k / 2); X++)
+    for (let Y = Math.floor(-ty / TILE + k / 2); Y < Math.ceil((H - ty) / TILE + k / 2); Y++) {
+      if (Y < 0 || Y >= k) continue;
+      tiles.push({ x: ((X % k) + k) % k, y: Y, z, px: (X - k / 2) * TILE + tx, py: (Y - k / 2) * TILE + ty });
+    }
 
   const paths = subject
     .map((a) => ({ provider: a.provider, slug: a.slug, name: a.name, d: path(a.boundary) ?? '' }))
     .filter((p) => p.d.length > 0);
 
-  return { paths, empty: paths.length === 0 };
+  return { paths, tiles, empty: paths.length === 0 };
 }
 
 /**
