@@ -6,11 +6,15 @@ import { USMapBase } from '@/components/USMapBase';
 import { buildMapCityPoints, markerColor, markerSize } from '@/lib/us-map-layout';
 import { MAP_VIEWBOX, projectCity } from '@/lib/us-map-projection';
 
+import { hasServiceAreaData } from '@/lib/service-area-projection';
+
 interface DeploymentPulseMapProps {
+  /** Fires only for cities we hold boundaries for. Optional — the map works without it. */
+  onCityClick?: (cityName: string) => void;
   states: State[];
 }
 
-export function DeploymentPulseMap({ states }: DeploymentPulseMapProps) {
+export function DeploymentPulseMap({ states, onCityClick }: DeploymentPulseMapProps) {
   const [hoveredId, setHoveredId] = useState<string | null>(null);
   const cities = useMemo(() => buildMapCityPoints(states), [states]);
 
@@ -56,6 +60,9 @@ export function DeploymentPulseMap({ states }: DeploymentPulseMapProps) {
           {cities.map(({ city, state, progress, driverless, testing }) => {
             const projected = projectCity(city.id);
             if (!projected) return null;
+            // Gate the affordance on real data: a dot that looks clickable and opens
+            // an empty panel is worse than one that does nothing.
+            const hasAreas = hasServiceAreaData(city.name);
             const color = markerColor(progress, driverless, testing);
             const size = markerSize(progress, driverless, testing);
             const pulse = driverless || testing || progress >= 50;
@@ -66,7 +73,10 @@ export function DeploymentPulseMap({ states }: DeploymentPulseMapProps) {
                 transform={`translate(${projected.x}, ${projected.y})`}
                 onMouseEnter={() => setHoveredId(city.id)}
                 onMouseLeave={() => setHoveredId(null)}
-                style={{ cursor: 'default' }}
+                onClick={hasAreas ? () => onCityClick?.(city.name) : undefined}
+                role={hasAreas ? 'button' : undefined}
+                aria-label={hasAreas ? `Show ${city.name} service areas` : undefined}
+                style={{ cursor: hasAreas ? 'pointer' : 'default' }}
               >
                 {pulse && (
                   <circle r={(size + 18) / 2} fill={color} opacity={0.25}>

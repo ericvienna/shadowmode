@@ -1,4 +1,4 @@
-import { geoMercator, geoPath } from 'd3-geo';
+import { geoMercator, geoPath, geoArea } from 'd3-geo';
 import type { Feature, Polygon, MultiPolygon } from 'geojson';
 import bundle from '@/data/service-areas.json';
 
@@ -37,7 +37,37 @@ export interface ServiceArea {
   boundary: Feature<Polygon | MultiPolygon>;
 }
 
-const areas = bundle.areas as unknown as ServiceArea[];
+/**
+ * 🔴 WINDING ORDER — WHY EVERY POLYGON RENDERED AS A BOX FILLING THE FRAME.
+ *
+ * d3-geo treats polygons as SPHERICAL. Per RFC 7946 an exterior ring must be wound
+ * counter-clockwise; a clockwise ring is read as its COMPLEMENT — the whole globe minus
+ * the area. The upstream bundle winds clockwise.
+ *
+ * MEASURED on Tesla Dallas: geoArea() returned 12.5664 steradians, which is exactly 4π —
+ * the entire sphere. fitExtent then chose scale 96.8 (a world fit), so the real 0.2°
+ * geofence drew as a sub-pixel speck while the "polygon" (the rest of the planet) filled
+ * the viewport. That is the empty outline box.
+ * After reversing the rings: geoArea 5.175e-6 sr, scale 177571. Correct.
+ *
+ * CONDITIONAL, NOT BLIND. We rewind only when geoArea says the ring is inverted (> 2π).
+ * A blind reversal would silently re-break everything the day upstream fixes their winding,
+ * and that breakage would look identical to this one.
+ */
+function rewindIfInverted<T extends Feature<Polygon | MultiPolygon>>(feature: T): T {
+  if (geoArea(feature) <= 2 * Math.PI) return feature;
+  const g = feature.geometry;
+  const coordinates =
+    g.type === 'Polygon'
+      ? g.coordinates.map((ring) => [...ring].reverse())
+      : g.coordinates.map((poly) => poly.map((ring) => [...ring].reverse()));
+  return { ...feature, geometry: { ...g, coordinates } } as T;
+}
+
+const areas = (bundle.areas as unknown as ServiceArea[]).map((a) => ({
+  ...a,
+  boundary: rewindIfInverted(a.boundary),
+}));
 
 export function getAreas(provider?: Provider): ServiceArea[] {
   return provider ? areas.filter((a) => a.provider === provider) : areas;
@@ -117,8 +147,46 @@ export function projectTogether(
   return { paths, empty: paths.length === 0 };
 }
 
-/** All providers present in one city, projected comparably. Keyed on name, not slug. */
-export function projectCity(city: string) {
-  const k = city.trim().toLowerCase();
-  return projectTogether(areas.filter((a) => cityKey(a) === k));
+/**
+ * All providers present in one city, projected comparably. Keyed on name, not slug.
+ *
+ * NAMED projectCityServiceAreas, NOT projectCity, deliberately: DeploymentPulseMap already
+ * has a local projectCity(city.id) that projects a city POINT to map XY. Two functions with
+ * one name and different meanings in the same codebase is a bug waiting for whoever imports
+ * the wrong one — and it would typecheck.
+ */
+export function projectCityServiceAreas(city: string) {
+  return projectTogether(areasForDashboardCity(city));
+}
+
+/**
+ * Dashboard city name -> service-area city key.
+ *
+ * The dashboard splits the Bay Area into separate cities (San Francisco, Oakland, San Jose)
+ * while the boundary data ships ONE "Bay Area" polygon per operator. Without this, clicking
+ * San Francisco would report "no service area" for a metro all three operators serve.
+ *
+ * The upstream bundle HAS an `aliases` field, which would be the natural place for this —
+ * but it is empty for all 20 areas (checked, not assumed), so the mapping is maintained
+ * here. If upstream ever populates aliases, prefer theirs and delete this.
+ *
+ * Everything not listed falls through to an exact name match, which covers Austin, Dallas,
+ * Houston, Las Vegas, Los Angeles, Miami, Orlando and Phoenix.
+ */
+const CITY_ALIASES: Record<string, string> = {
+  'san francisco': 'bay area',
+  'oakland': 'bay area',
+  'san jose': 'bay area',
+};
+
+/** Service areas for a city as the DASHBOARD names it. Empty array = genuinely no data. */
+export function areasForDashboardCity(city: string): ServiceArea[] {
+  const raw = city.trim().toLowerCase();
+  const key = CITY_ALIASES[raw] ?? raw;
+  return areas.filter((a) => cityKey(a) === key);
+}
+
+/** Cheap predicate for deciding whether a city dot should be clickable at all. */
+export function hasServiceAreaData(city: string): boolean {
+  return areasForDashboardCity(city).length > 0;
 }

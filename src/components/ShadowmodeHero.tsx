@@ -5,7 +5,9 @@ import type { State } from '@/types/robotaxi';
 import type { XIntelPayload } from '@/types/x-intel';
 import { HeroTicker, type TickerItem } from './HeroTicker';
 import { HeroOpsPanel } from './HeroOpsPanel';
+import { useState } from 'react';
 import { DeploymentPulseMap } from './DeploymentPulseMap';
+import { ServiceAreaMap } from './ServiceAreaMap';
 import { TeslaVideoFeed } from './TeslaVideoFeed';
 import { calculateStats, formatShortDate } from '@/lib/utils';
 
@@ -155,6 +157,7 @@ function LaunchBanner({ launch }: { launch: NewestLaunch }) {
 }
 
 export function ShadowmodeHero({ states, intel }: ShadowmodeHeroProps) {
+  const [focusCity, setFocusCity] = useState<string | null>(null);
   const signals = [
     ...buildTickerSignals(states),
     ...(intel ? buildXTickerSignals(intel) : []),
@@ -180,7 +183,14 @@ export function ShadowmodeHero({ states, intel }: ShadowmodeHeroProps) {
             <TeslaVideoFeed />
           </div>
           <div className="min-h-[340px]">
-            <DeploymentPulseMap states={states} />
+            <DeploymentPulseMap states={states} onCityClick={setFocusCity} />
+            {/* Drill-down: clicking a city dot with boundary data opens its service
+                areas in place, rather than as a separate section competing with the map. */}
+            {focusCity && (
+              <div className="mt-4">
+                <ServiceAreaMap focusCity={focusCity} onClose={() => setFocusCity(null)} />
+              </div>
+            )}
           </div>
         </div>
       </div>

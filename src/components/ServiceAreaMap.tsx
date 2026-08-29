@@ -1,11 +1,11 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import {
   SERVICE_AREA_VIEWBOX,
   SERVICE_AREA_SOURCE,
   getContestedCities,
-  projectCity,
+  projectCityServiceAreas,
   type Provider,
 } from '@/lib/service-area-projection';
 
@@ -26,12 +26,33 @@ const PROVIDER_STYLE: Record<Provider, { stroke: string; fill: string; label: st
   zoox:  { stroke: '#a855f7', fill: 'rgba(168,85,247,0.14)', label: 'Zoox' },
 };
 
-export function ServiceAreaMap({ initialCity }: { initialCity?: string }) {
+/**
+ * Two modes, deliberately:
+ *  - BROWSE (no focusCity): tabs across the contested metros.
+ *  - DRILL-DOWN (focusCity set, from a map click): that one city, no tabs, dismissible.
+ *
+ * Drill-down accepts ANY city we hold boundaries for, not only contested ones — Tampa is
+ * Tesla-only and still worth seeing. Restricting the drill-down to the contested set would
+ * make a clickable dot open an empty panel.
+ */
+export function ServiceAreaMap({
+  focusCity,
+  onClose,
+}: {
+  focusCity?: string;
+  onClose?: () => void;
+}) {
   const cities = useMemo(() => getContestedCities(), []);
-  const [city, setCity] = useState(initialCity ?? cities[0]?.city ?? '');
+  const [city, setCity] = useState(focusCity ?? cities[0]?.city ?? '');
+  const drillDown = Boolean(focusCity);
 
-  const { paths } = useMemo(() => projectCity(city), [city]);
+  useEffect(() => {
+    if (focusCity) setCity(focusCity);
+  }, [focusCity]);
+
+  const { paths } = useMemo(() => projectCityServiceAreas(city), [city]);
   const active = cities.find((c) => c.city === city);
+  const heading = drillDown ? `${city.replace(/\b\w/g, (m) => m.toUpperCase())} service areas` : 'Service areas';
 
   const asOf = useMemo(() => {
     const d = new Date(SERVICE_AREA_SOURCE.generatedAt);
@@ -42,11 +63,19 @@ export function ServiceAreaMap({ initialCity }: { initialCity?: string }) {
     <section className="rounded-lg border border-neutral-800 bg-neutral-950 p-4">
       <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
         <div>
-          <h3 className="text-sm font-semibold text-neutral-100">Service areas</h3>
+          <h3 className="text-sm font-semibold text-neutral-100">{heading}</h3>
           <p className="text-[11px] text-neutral-500">
             Operators active in the same metro, drawn to the same scale
           </p>
         </div>
+        {drillDown ? (
+          <button
+            onClick={onClose}
+            className="rounded bg-neutral-900 px-2 py-1 text-[11px] text-neutral-400 transition hover:text-neutral-200"
+          >
+            Close
+          </button>
+        ) : (
         <div className="flex flex-wrap gap-1">
           {cities.map((c) => (
             <button
@@ -62,6 +91,7 @@ export function ServiceAreaMap({ initialCity }: { initialCity?: string }) {
             </button>
           ))}
         </div>
+        )}
       </div>
 
       <svg
