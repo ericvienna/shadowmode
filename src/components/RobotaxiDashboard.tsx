@@ -13,6 +13,7 @@ import { CountdownWidget } from './CountdownWidget';
 import { USMap } from './USMap';
 import { TimelineView } from './TimelineView';
 import { CityModal } from './CityModal';
+import { HeadlineModal } from './HeadlineModal';
 import { CompareModal } from './CompareModal';
 import { FilterSort, type SortOption, type SortDirection, type FilterOption } from './FilterSort';
 import { ExecutiveSummary } from './ExecutiveSummary';
@@ -607,6 +608,7 @@ export function RobotaxiDashboard({ data }: RobotaxiDashboardProps) {
       </footer>
 
       {/* Modals */}
+      <HeadlineModal />
       <CityModal
         city={selectedCity}
         state={selectedState}
