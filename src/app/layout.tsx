@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { IBM_Plex_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/react";
+import { CONTACT_EMAIL, REPO_URL, REPO_ISSUES_URL } from "@/lib/contact";
 import "./globals.css";
 
 const ibmPlexMono = IBM_Plex_Mono({
@@ -56,6 +57,37 @@ export const metadata: Metadata = {
   },
 };
 
+// NOTE: every field below is verifiable. `address` is deliberately absent
+// rather than filled with a plausible one — a fabricated postal address in
+// structured data is exactly the signal this markup exists to establish.
+// Add it (and CONTACT_EMAIL in src/lib/contact.ts) when there is a real one.
+const organizationLd = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "@id": "https://shadowmode.us/#organization",
+  "name": "SHADOWMODE",
+  "url": "https://shadowmode.us",
+  "logo": "https://shadowmode.us/shadowmode-logo.svg",
+  "description": "Sourced intelligence on Tesla's physical layer: robotaxi deployment, energy storage, and the Semi contract ledger.",
+  "contactPoint": [
+    {
+      "@type": "ContactPoint",
+      "contactType": "technical support",
+      "url": REPO_ISSUES_URL,
+      "availableLanguage": "English",
+      ...(CONTACT_EMAIL ? { email: CONTACT_EMAIL } : {}),
+    },
+    {
+      "@type": "ContactPoint",
+      "contactType": "customer support",
+      "url": "https://shadowmode.us/contact",
+      "availableLanguage": "English",
+      ...(CONTACT_EMAIL ? { email: CONTACT_EMAIL } : {}),
+    },
+  ],
+  "sameAs": [REPO_URL],
+};
+
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "WebApplication",
@@ -70,8 +102,7 @@ const jsonLd = {
     "priceCurrency": "USD"
   },
   "creator": {
-    "@type": "Organization",
-    "name": "SHADOWMODE"
+    "@id": "https://shadowmode.us/#organization"
   }
 };
 
@@ -85,8 +116,14 @@ export default function RootLayout({
       <head>
         <script
           type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationLd) }}
+        />
+        <script
+          type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
+        <link rel="alternate" type="text/markdown" href="https://shadowmode.us/md" />
+        <link rel="alternate" type="application/json" href="https://shadowmode.us/openapi.json" title="OpenAPI specification" />
       </head>
       <body className={`${ibmPlexMono.variable} antialiased`}>
         {children}
