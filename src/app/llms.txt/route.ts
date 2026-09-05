@@ -74,6 +74,16 @@ reasonable. Errors return JSON with \`error\`, \`message\` and \`hint\`.
 - [Contact](https://shadowmode.us/contact)
 - [Privacy](https://shadowmode.us/privacy)
 
+## Plain-text versions
+
+Every page above is also served as markdown at its own URL — no Accept header
+needed, and no content negotiation to get wrong:
+
+- <https://shadowmode.us/md> (home)
+- <https://shadowmode.us/md/about>
+- <https://shadowmode.us/md/contact>
+- <https://shadowmode.us/md/privacy>
+
 ## Optional
 
 - [Change feed (XML)](https://shadowmode.us/changelog.xml)

@@ -1,9 +1,1 @@
-{
-  "$schema": "https://openapi.vercel.sh/vercel.json",
-  "headers": [
-    {
-      "source": "/(|about|contact|privacy)",
-      "headers": [{ "key": "Vary", "value": "Accept, Accept-Encoding" }]
-    }
-  ]
-}
+{}

@@ -3,13 +3,19 @@ import { MARKDOWN_PAGES } from '@/lib/markdown-pages';
 export const dynamic = 'force-static';
 
 /**
- * Markdown variants of the content pages, served under Accept negotiation.
+ * Markdown variants of the content pages, at their own URLs.
  *
- * middleware.ts rewrites here when a client asks for text/markdown and sets
- * `Vary: Accept` on every response so a CDN cannot hand the HTML variant to an
- * agent that asked for markdown (or the reverse) depending on which one landed
- * in cache first. The path is also directly fetchable — /md/about — because an
- * agent that cannot set headers should still be able to get the text.
+ * Deliberately NOT served by Accept negotiation on /about. That was built,
+ * deployed and then removed on 2026-09-05, because it cannot be made safe here:
+ * Next owns the Vary header for RSC routing and strips Accept from it, and a
+ * vercel.json edge header does not survive either — verified on production,
+ * where /about came back `Vary: rsc, next-router-*` with `x-vercel-cache: HIT`.
+ * Negotiating two representations at one URL while the CDN keys the cache
+ * without Accept means an agent asking for markdown can be handed a cached HTML
+ * page, or a browser handed markdown. Two URLs have no such failure mode.
+ *
+ * Discovery instead comes from <link rel="alternate" type="text/markdown"> in
+ * the document head, the entries in /llms.txt, and the guessable path itself.
  *
  * These carry no figures. Numbers live behind /openapi.json where they arrive
  * with their source and caveat attached; a number copied into prose here would
