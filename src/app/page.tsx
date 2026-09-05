@@ -6,5 +6,16 @@ export const revalidate = 60;
 
 export default async function Home() {
   const data = await getDashboardDataFromDB();
-  return <RobotaxiDashboard data={data} />;
+  return (
+    <>
+      {/* The terminal carries its name as a logo, so the document had no H1 at
+          all — a crawler reading raw HTML saw a page with no stated subject.
+          Visually hidden, present in the server-rendered markup. */}
+      <h1 className="sr-only">
+        SHADOWMODE — Tesla robotaxi deployment tracker: regulatory milestones,
+        supervision level and fleet observations across US metros
+      </h1>
+      <RobotaxiDashboard data={data} />
+    </>
+  );
 }

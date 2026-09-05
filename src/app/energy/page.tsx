@@ -6,5 +6,13 @@ export const metadata = {
 };
 
 export default function EnergyPage() {
-  return <EnergyPageShell />;
+  return (
+    <>
+      <h1 className="sr-only">
+        Tesla Energy storage scoreboard — GWh deployed, margins and the Megapack
+        deal ledger
+      </h1>
+      <EnergyPageShell />
+    </>
+  );
 }

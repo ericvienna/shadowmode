@@ -7,5 +7,13 @@ export const metadata = {
 };
 
 export default function SemiPage() {
-  return <SemiPageShell />;
+  return (
+    <>
+      <h1 className="sr-only">
+        Tesla Semi contract ledger — order book, conversion gap, production ramp
+        and megacharger infrastructure
+      </h1>
+      <SemiPageShell />
+    </>
+  );
 }
